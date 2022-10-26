@@ -1,7 +1,7 @@
---DROP DATABASE databasename;
+/*DROP DATABASE databasename;*/
 
 
---Entidad MotivoConstruccion 
+/*Entidad MotivoConstruccion */
 CREATE TABLE `sduma_db`.`motivoconstruccion`
  (`id` INT NOT NULL AUTO_INCREMENT ,
   `nombre` VARCHAR(45) NOT NULL , 
@@ -10,7 +10,7 @@ CREATE TABLE `sduma_db`.`motivoconstruccion`
   ) 
   ENGINE = InnoDB;
 
---Entidad TipoPredio
+/*Entidad TipoPredio*/
 CREATE TABLE `sduma_db`.`tipopredio`
  (`id` INT NOT NULL AUTO_INCREMENT ,
   `nombre` VARCHAR(45) NOT NULL , 
@@ -19,7 +19,7 @@ CREATE TABLE `sduma_db`.`tipopredio`
   ) 
   ENGINE = InnoDB;
 
---Entidad contacto
+/*Entidad contacto*/
 CREATE TABLE `sduma_db`.`contacto`
  (`id` INT NOT NULL AUTO_INCREMENT ,
   `Email` VARCHAR(45), 
@@ -29,7 +29,7 @@ CREATE TABLE `sduma_db`.`contacto`
   ENGINE = InnoDB;
 
 
---Entidad GeneroConstrucción
+/*Entidad GeneroConstrucción*/
 CREATE TABLE `sduma_db`.`generoconstruccion`
  (`id` INT NOT NULL AUTO_INCREMENT ,
   `nombre` VARCHAR(45) NOT NULL , 
@@ -38,7 +38,7 @@ CREATE TABLE `sduma_db`.`generoconstruccion`
   ) 
   ENGINE = InnoDB;
 
---Entidad TipoConstrucción
+/*Entidad TipoConstrucción*/
 CREATE TABLE `sduma_db`.`tipoconstruccion`
  (`id` INT NOT NULL AUTO_INCREMENT ,
   `nombre` VARCHAR(45) NOT NULL , 
@@ -47,7 +47,7 @@ CREATE TABLE `sduma_db`.`tipoconstruccion`
   ) 
   ENGINE = InnoDB;
 
---Entidad TipoTramite
+/*Entidad TipoTramite*/
 CREATE TABLE `sduma_db`.`tipotramite`
  (`id` INT NOT NULL AUTO_INCREMENT ,
   `nombre` VARCHAR(45) NOT NULL , 
@@ -56,7 +56,7 @@ CREATE TABLE `sduma_db`.`tipotramite`
   ) 
   ENGINE = InnoDB;
 
---Entidad Documento
+/*Entidad Documento*/
 CREATE TABLE `sduma_db`.`documento`
  (`id` INT NOT NULL AUTO_INCREMENT ,
   `nombre` VARCHAR(45) NOT NULL , 
@@ -65,7 +65,7 @@ CREATE TABLE `sduma_db`.`documento`
   ) 
   ENGINE = InnoDB;
 
---Entidad Roles
+/*Entidad Roles*/
 CREATE TABLE `sduma_db`.`roles`
  (`id` INT NOT NULL AUTO_INCREMENT ,
   `nombre` VARCHAR(45) NOT NULL , 
@@ -74,7 +74,7 @@ CREATE TABLE `sduma_db`.`roles`
   ) 
   ENGINE = InnoDB;
 
---Entidad Persona
+/*Entidad Persona*/
 CREATE TABLE `sduma_db`.`persona`
  (`id` INT NOT NULL AUTO_INCREMENT ,
   `nombre` VARCHAR(45) NOT NULL , 
