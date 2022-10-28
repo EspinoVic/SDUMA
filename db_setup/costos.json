@@ -1,0 +1,55 @@
+{
+    "construccion":{
+      "Habitacional/Unifamiliar":{
+        "Interes Social o Popular":{
+            
+        }
+      },
+      "Muros":{
+        
+      },
+      "Hotel/Motel/Posada":{
+        
+      },
+      "Comercial":{
+        
+      },      
+      "Industrial":{
+        
+      },
+      "Educación":{
+
+      },
+      "Hospitales":{
+         
+
+      }
+      ,
+      "Centro Recreativo":{
+        
+      }
+    } 
+   
+}
+
+
+
+
+
+
+
+/* 
+  "array": [
+    1,
+    2,
+    3
+  ],
+  "boolean": true,
+  "color": "gold",
+  "null": null,
+  "number": 123,
+  "object": {
+    "a": "b",
+    "c": "d"
+  },
+  "string": "Hello World" */
