@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS sduma;
+/* DROP DATABASE IF EXISTS sduma;
 
-CREATE DATABASE sduma;
+CREATE DATABASE sduma; */
 
 CREATE TABLE IF NOT EXISTS `sduma`.`MotivoConstruccion` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -68,19 +68,21 @@ ENGINE = InnoDB;
   
 
 CREATE TABLE IF NOT EXISTS `sduma`.`TipoConstruccion` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `isActivo` VARCHAR(45) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `sduma`.`TipoTramite` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `isActivo` VARCHAR(45) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
+INSERT INTO `mydb`.`TipoTramite` (`id`, `nombre`, `isActivo`)
+ VALUES (NULL, 'CONSTRUCCION', NULL);
 
  CREATE TABLE IF NOT EXISTS `sduma`.`Documento` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -113,7 +115,7 @@ ENGINE = InnoDB;
 
 
 CREATE TABLE IF NOT EXISTS `sduma`.`Persona` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(255) NOT NULL,
   `apellidoP` VARCHAR(255) NOT NULL,
   `apellidoM` VARCHAR(255) NULL,
@@ -121,18 +123,29 @@ CREATE TABLE IF NOT EXISTS `sduma`.`Persona` (
 ENGINE = InnoDB;
 
 CREATE TABLE IF NOT EXISTS `sduma`.`Horario` (
-  `id` INT NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
-  `inicioActividad` TIME NULL DEFAULT '8:10:00',
-  `finActividad` TIME NULL DEFAULT '13:00:00',
+  `inicioActividad` TIME NOT NULL DEFAULT '8:00:00',
+  `finActividad` TIME NOT NULL DEFAULT '13:00:00',
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
+
+INSERT INTO `sduma`.`Horario` ( `nombre`) 
+VALUES ('DEFAULT');
+
 
 CREATE TABLE IF NOT EXISTS `sduma`.`Rol` (
   `Id` INT NOT NULL,
   `Nombre` VARCHAR(45) NULL,
   PRIMARY KEY (`Id`))
 ENGINE = InnoDB;
+
+INSERT INTO `mydb`.`Rol` (`Id`, `Nombre`) 
+VALUES 
+(NULL, 'ADMIN'),
+(NULL, 'INTERNO')
+(NULL, 'EXTERNO')
+;
 
 
 /* SELECT  EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = `sduma`.`User`) */
@@ -151,7 +164,9 @@ ADD CONSTRAINT `fk_User_Horario`
     FOREIGN KEY (`id_Horario`)
     REFERENCES `sduma`.`Horario` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION;
+    ON UPDATE NO ACTION
+ALTER 'id_Horario' SET DEFAULT 1
+    ;
 
 
 /* CREATE INDEX [index name] ON [table name]([column name]);  */
@@ -344,7 +359,7 @@ ENGINE = InnoDB;
 
 
 CREATE TABLE IF NOT EXISTS `sduma`.`Expediente` (
-  `id` DOUBLE NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `idAnual` INT NOT NULL,
   `anio` INT NOT NULL,
   `fechaCreacion` DATETIME NOT NULL,
