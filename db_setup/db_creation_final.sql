@@ -140,13 +140,13 @@ TRUNCATE TABLE  `sduma`.`User`;
 
 
 ALTER TABLE `sduma`.`User`
-ADD `id_Datos_Persona` INT NOT NULL,
+/* ADD `id_Datos_Persona` INT NOT NULL, */
 ADD CONSTRAINT `fk_Users_Propietario`
     FOREIGN KEY (`id_Datos_Persona`)
     REFERENCES `sduma`.`Persona` (`id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-ADD  `id_Horario` INT NOT NULL,
+/* ADD  `id_Horario` INT NOT NULL, */
 ADD CONSTRAINT `fk_User_Horario`
     FOREIGN KEY (`id_Horario`)
     REFERENCES `sduma`.`Horario` (`id`)
