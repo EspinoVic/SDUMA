@@ -147,6 +147,14 @@ VALUES
 (NULL, 'EXTERNO')
 ;
 
+CREATE TABLE IF NOT EXISTS `sduma`.`UserLevel` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `Nombre` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+INSERT INTO `sduma`.`UserLevel` (`Nombre`) VALUES ( 'EXTERNO');
+INSERT INTO `sduma`.`UserLevel` (`Nombre`) VALUES ( 'INTERNO');
+INSERT INTO `sduma`.`UserLevel` (`Nombre`) VALUES ( 'ADMINISTRADOR');
 
 /* SELECT  EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = `sduma`.`User`) */
 TRUNCATE TABLE  `sduma`.`User`;
@@ -164,10 +172,21 @@ ADD CONSTRAINT `fk_User_Horario`
     FOREIGN KEY (`id_Horario`)
     REFERENCES `sduma`.`Horario` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION;
+    ON UPDATE NO ACTION,
+ADD CONSTRAINT `fk_User_UserLevel`
+    FOREIGN KEY (`id_UserLevel`)
+    REFERENCES `sduma`.`UserLevel` (`id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION    
+    
+    ;
 
 ALTER TABLE `sduma`.`User`
 ALTER `id_Horario` SET DEFAULT 1; 
+
+
+ 
+
 
 
 

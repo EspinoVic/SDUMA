@@ -27,6 +27,7 @@ class m130524_201442_init extends Migration
             //VIC Complemento
             'id_Datos_Persona' => $this->integer()->notNull(),
             'id_Horario' => $this->integer()->notNull(),
+            'id_UserLevel' => $this->integer()->notNull()->defaultValue(0)
         ], $tableOptions);
     }
 
