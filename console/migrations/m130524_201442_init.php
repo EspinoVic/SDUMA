@@ -23,6 +23,10 @@ class m130524_201442_init extends Migration
             'status' => $this->smallInteger()->notNull()->defaultValue(10),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
+             //VIC Complemento
+            'id_Datos_Persona' => $this->integer()->notNull(),
+            'id_Horario' => $this->integer()->notNull(),
+            'id_UserLevel' => $this->integer()->notNull()->defaultValue(0)
         ], $tableOptions);
     }
 
