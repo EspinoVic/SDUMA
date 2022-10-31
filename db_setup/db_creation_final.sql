@@ -81,8 +81,8 @@ CREATE TABLE IF NOT EXISTS `sduma`.`TipoTramite` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
 
-INSERT INTO `mydb`.`TipoTramite` (`id`, `nombre`, `isActivo`)
- VALUES (NULL, 'CONSTRUCCION', NULL);
+INSERT INTO `sduma`.`TipoTramite` (`id`, `nombre`)
+ VALUES (NULL, 'CONSTRUCCION');
 
  CREATE TABLE IF NOT EXISTS `sduma`.`Documento` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -135,15 +135,15 @@ VALUES ('DEFAULT');
 
 
 CREATE TABLE IF NOT EXISTS `sduma`.`Rol` (
-  `Id` INT NOT NULL,
-  `Nombre` VARCHAR(45) NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(45) NULL,
   PRIMARY KEY (`Id`))
 ENGINE = InnoDB;
 
-INSERT INTO `mydb`.`Rol` (`Id`, `Nombre`) 
+INSERT INTO `sduma`.`Rol` (`id`, `nombre`) 
 VALUES 
 (NULL, 'ADMIN'),
-(NULL, 'INTERNO')
+(NULL, 'INTERNO'),
 (NULL, 'EXTERNO')
 ;
 
@@ -164,9 +164,11 @@ ADD CONSTRAINT `fk_User_Horario`
     FOREIGN KEY (`id_Horario`)
     REFERENCES `sduma`.`Horario` (`id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-ALTER 'id_Horario' SET DEFAULT 1
-    ;
+    ON UPDATE NO ACTION;
+
+ALTER TABLE `sduma`.`User`
+ALTER `id_Horario` SET DEFAULT 1; 
+
 
 
 /* CREATE INDEX [index name] ON [table name]([column name]);  */
