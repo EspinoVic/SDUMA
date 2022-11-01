@@ -256,4 +256,21 @@ class SiteController extends Controller
             'model' => $model
         ]);
     }
+
+
+    public function actionPersona()
+    {
+        $model = new \common\models\persona();
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+                // form inputs are valid, do something here
+                return;
+            }
+        }
+
+        return $this->render('persona', [
+            'model' => $model,
+        ]);
+    }
 }

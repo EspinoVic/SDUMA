@@ -5,6 +5,7 @@ namespace frontend\models;
 use Yii;
 use yii\base\Model;
 use common\models\User;
+use common\models\Persona;
 
 /**
  * Signup form
@@ -14,7 +15,12 @@ class SignupForm extends Model
     public $username;
     public $email;
     public $password;
+    /* VIC COMPLEMENTS */
+    public $nombre;
+    public $apellidoP;
+    public $apellidoM;
 
+ 
 
     /**
      * {@inheritdoc}
@@ -35,8 +41,34 @@ class SignupForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
+        
+            ['nombre', 'required'],
+            ['nombre', 'string', 'max' => 255],
+
+            ['apellidoP', 'required'],
+            ['apellidoP', 'string', 'max' => 255 /* (new Persona)->getValidators()[1]->max */],
+            
+           /*  ['apellidoM', 'required'], */
+            ['apellidoM', 'string', 'max' => 255 ],
+
+        
         ];
     }
+
+    public function attributeLabels()
+    {    
+        return array(
+
+            'nombre' => 'Nombre',
+            'apellidoP' => 'Apellido Paterno',
+            'apellidoM' => 'Apellido Materno',
+            'username' => 'Nombre de usuario',
+            'password' => 'Contraseña',
+    
+        );
+    
+    }
+
 
     /**
      * Signs user up.
@@ -56,7 +88,23 @@ class SignupForm extends Model
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
 
-        return $user->save() && $this->sendEmail($user);
+
+        $user->nombre = $this->nombre;
+        $user->apellidoP = $this->apellidoP;
+        $user->apellidoM = $this->apellidoM;
+
+        
+
+        return /* $user->save() */ /* && */ $this->sendEmail($user);
+    }
+
+
+    protected function createUser($user){
+
+        $command = Yii::$app->db->createCommand('dfdf');
+
+        
+
     }
 
     /**
