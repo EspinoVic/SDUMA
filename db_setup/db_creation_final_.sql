@@ -184,6 +184,8 @@ ADD CONSTRAINT `fk_User_UserLevel`
 ALTER TABLE `sduma`.`User`
 ALTER `id_Horario` SET DEFAULT 1; 
 
+ALTER TABLE `sduma`.`User`
+ALTER `id_UserLevel` SET DEFAULT 1; 
 
  
 
