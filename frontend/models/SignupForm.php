@@ -6,6 +6,10 @@ use Yii;
 use yii\base\Model;
 use common\models\User;
 use common\models\Persona;
+use common\models\SPNewUserParams;
+use Exception;
+use Faker\Provider\ar_EG\Person;
+use yii\debug\models\search\Log;
 
 /**
  * Signup form
@@ -77,9 +81,9 @@ class SignupForm extends Model
      */
     public function signup()
     {
-        if (!$this->validate()) {
+        /* if (!$this->validate()) {
             return null;
-        }
+        } */
         
         $user = new User();
         $user->username = $this->username;
@@ -88,21 +92,84 @@ class SignupForm extends Model
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
 
+        $newUser = new SPNewUserParams();
+        $newUser->username = $user->username;
+        $newUser->email = $user->email;
 
-        $user->nombre = $this->nombre;
-        $user->apellidoP = $this->apellidoP;
-        $user->apellidoM = $this->apellidoM;
+        $newUser->auth_key = $user->auth_key;
+        $newUser->password_hash = $user->password_hash;;
+        $newUser->password_reset_token = $user->password_reset_token;
+        //$newUser->verification_token = $user->verification_token;
+
+        $newUser->nombre = $this->nombre ;
+        $newUser->apellidoP = $this->apellidoP;
+        $newUser->apellidoM = $this->apellidoM;
+
+
+        /* SE PUEDE HACER ASI POR PARTES; pero mejor uso el SP */
+      /*   $datosPersona = new Persona();
+        $datosPersona->apellidoP =  $this->apellidoP;
+        $datosPersona->nombre =      $this->nombre  ;
+        $datosPersona->apellidoM =  $this->apellidoM; */
 
         
 
-        return /* $user->save() */ /* && */ $this->sendEmail($user);
+        return  $this->createUser($newUser) > 0/*  && $this->sendEmail($newUser) */;
+        /* $user->save() */  
+       
     }
+ 
+     /**
+     * Sends confirmation email to user
+     * @param User $user user model to with email should be send
+     * @return bool whether the email was sent
+     */
+    public function createUser($newUser){
 
+        $sql ="EXEC sp_create_user :username,:email,:password_hash,:auth_key,:password_reset_token ,:verification_token,:nombre,:apellidoP,:apellidoM";
+        $params =[
+                ':username'=>$newUser->username,
+                ':email'=>$newUser->email,
+                ':password_hash'=>$newUser->password_hash,
+                ':auth_key'=>$newUser->auth_key,
+                ':password_reset_token'=>$newUser->password_reset_token,
+                ':verification_token'=>$newUser->verification_token,
+                ':nombre'=>$newUser->nombre,
+                ':apellidoP'=>$newUser->apellidoP,
+                ':apellidoM'=>$newUser->apellidoM
+        ];
+        $sql2 = "EXEC sduma.dbo.testSP :vicParam";
+        $val = "ALV";
+        $params2 =[
+            ':vicParam'=> $val
+        ];
+        /* ->bindValue(':username',$newUser->username)
+        ->bindValue(':email',$newUser->email)
+        ->bindValue(':password_hash',$newUser->password_hash)
+        ->bindValue(':auth_key',$newUser->auth_key)
+        ->bindValue(':password_reset_token',$newUser->password_reset_token)
+        ->bindValue(':verification_token',$newUser->verification_token)
+        ->bindValue(':nombre',$newUser->nombre)
+        ->bindValue(':apellidoP',$newUser->apellidoP)
+        ->bindValue(':apellidoM',$newUser->apellidoM); */
+        $res = -1;
+        try{
+            $res =  Yii::$app->db->createCommand($sql, $params)->execute( );
 
-    protected function createUser($user){
+        }
+        catch(Exception $ex){
+            Yii::info($ex, $category = 'DBBB');
 
-        $command = Yii::$app->db->createCommand('dfdf');
-
+        }
+        Yii::info($res, $category = 'DB ACTION');
+        return $res;
+         /* yii\log\Logger::get */
+         /* Yii::getLogger()->info */
+        
+       /*  $result = \Yii::$app->db->createCommand("CALL storedProcedureName(:paramName1, :paramName2)") 
+        ->bindValue(':paramName1' , $param1 )
+        ->bindValue(':paramName2', $param2)
+        ->execute(); */
         
 
     }
