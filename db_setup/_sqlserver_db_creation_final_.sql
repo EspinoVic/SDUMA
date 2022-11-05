@@ -265,7 +265,7 @@ CREATE TABLE  sduma.dbo.CorrSeguridadEstruc (
 CREATE TABLE sduma.dbo.DirectorResponsableObra (
   id INT NOT NULL IDENTITY(1,1),
   titulo NVARCHAR(45) NOT NULL,
-  abreviaci�n NVARCHAR(10) NOT NULL,
+  abreviacion NVARCHAR(10) NOT NULL,
   cedula NVARCHAR(45) NOT NULL,
   isActivo BIT NOT NULL DEFAULT 1,
   id_Persona INT NOT NULL,

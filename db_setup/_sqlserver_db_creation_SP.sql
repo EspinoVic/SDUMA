@@ -7,25 +7,33 @@ CREATE PROCEDURE dbo.sp_create_user
     @verification_token nvarchar(255),
     @nombre nvarchar(255),
     @apellidoP nvarchar(255),
-    @apellidoM nvarchar(255)
-
+    @apellidoM nvarchar(255) 
+    
  AS
     BEGIN TRY
         BEGIN TRANSACTION CreateUserTran;
             
-
+            SET NOCOUNT ON ;
+            
             IF( EXISTS ( SELECT TOP 1 * FROM sduma.dbo.[user] WHERE username = @username ))--solo si es agente
             BEGIN ;
                 THROW 54321, 'Ese nombre de usuario ya existe.',1;
             END;
 
+            IF( EXISTS ( SELECT TOP 1 * FROM sduma.dbo.[user] WHERE email = @email ))--solo si es agente
+            BEGIN ;
+                THROW 54322, 'Ese email ya está asociado a una cuenta.',1;
+            END;
 
             INSERT INTO sduma.dbo.Persona ( nombre, apellidoP, apellidoM) 
             VALUES ( @nombre, @apellidoP, @apellidoP);        
             
+           
+
             DECLARE @personaInsertedIndex int = (SELECT SCOPE_IDENTITY() );
-            
-            INSERT INTO [user] (
+            DECLARE @rowsInserted INT = @@ROWCOUNT;
+
+            INSERT INTO sduma.dbo.[user] (
                 [username],
                 [auth_key], [password_hash], [password_reset_token], 
                 [email], [status], 
@@ -43,7 +51,10 @@ CREATE PROCEDURE dbo.sp_create_user
                 @verification_token
             );
 
+            SET @rowsInserted = @rowsInserted + @@ROWCOUNT;
+
         COMMIT TRANSACTION CreateUserTran;
+        SELECT  @rowsInserted AS ROWS_INSERTED;
     END TRY
     
     BEGIN CATCH
@@ -53,7 +64,14 @@ CREATE PROCEDURE dbo.sp_create_user
 
 		DECLARE @ERROR_STATE INT = ERROR_STATE();
         --RAISE  EXCEPTION 
-        ROLLBACK TRANSACTION CreateReportDtlTran;
-        THROW @ERROR_NUM, @ERROR_MSG, @ERROR_STATE;
+        ROLLBACK TRANSACTION CreateUserTran;
+        THROW; --@ERROR_NUM, @ERROR_MSG, @ERROR_STATE;
 
     END CATCH
+
+
+--TEST
+
+CREATE PROCEDURE dbo.testSP
+ AS
+ Insert into dbo.Persona ("uwu","uwu2","uwu3")   
