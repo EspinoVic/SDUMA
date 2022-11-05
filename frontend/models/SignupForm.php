@@ -114,7 +114,7 @@ class SignupForm extends Model
 
         
 
-        return  $this->createUser($newUser) > 0/*  && $this->sendEmail($newUser) */;
+        return  $this->createUser($newUser) == 2/*  && $this->sendEmail($newUser) */;
         /* $user->save() */  
        
     }
@@ -126,7 +126,7 @@ class SignupForm extends Model
      */
     public function createUser($newUser){
 
-        $sql ="EXEC sp_create_user :username,:email,:password_hash,:auth_key,:password_reset_token ,:verification_token,:nombre,:apellidoP,:apellidoM";
+        $sql ="  EXEC sp_create_user :username,:email,:password_hash,:auth_key,:password_reset_token ,:verification_token,:nombre,:apellidoP,:apellidoM; ";
         $params =[
                 ':username'=>$newUser->username,
                 ':email'=>$newUser->email,
@@ -154,7 +154,9 @@ class SignupForm extends Model
         ->bindValue(':apellidoM',$newUser->apellidoM); */
         $res = -1;
         try{
-            $res =  Yii::$app->db->createCommand($sql, $params)->execute( );
+            $rows =  Yii::$app->db->createCommand($sql, $params) ->queryAll( );
+
+            $res = $rows[0]["ROWS_INSERTED"] ;
 
         }
         catch(Exception $ex){
@@ -162,7 +164,7 @@ class SignupForm extends Model
 
         }
         Yii::info($res, $category = 'DB ACTION');
-        return $res;
+        return $res;//$res;
          /* yii\log\Logger::get */
          /* Yii::getLogger()->info */
         
