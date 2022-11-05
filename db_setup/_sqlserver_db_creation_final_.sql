@@ -156,7 +156,7 @@ CREATE TABLE  sduma.dbo.Rol (
   INDEX fk_Rol_User1_idx (id_User ASC),
   CONSTRAINT fk_Rol_User1
     FOREIGN KEY (id_User)
-    REFERENCES sduma.dbo.[User] (id)
+    REFERENCES sduma.dbo.[user] (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 	);
@@ -219,8 +219,8 @@ ADD created_at datetime2 ;
 --ADD CONSTRAINT DV_User_UserLevel
 --DEFAULT 1 FOR id_UserLevel;
 
-CREATE INDEX fk_Users_Propietario_idx ON sduma.dbo.[User](id_Datos_Persona ASC);
-CREATE INDEX fk_User_Horario_idx ON  sduma.dbo.[User](id_Horario ASC);
+CREATE INDEX fk_Users_Propietario_idx ON sduma.dbo.[user](id_Datos_Persona ASC);
+CREATE INDEX fk_User_Horario_idx ON  sduma.dbo.[user](id_Horario ASC);
 
 
 -- CREATE TABLE sduma.dbo.User_has_Rol (
@@ -351,12 +351,12 @@ CREATE TABLE sduma.dbo.SolicitudConstruccion (
     ON UPDATE NO ACTION,
   CONSTRAINT fk_SolicitudConstruccion_UserCreadoPor
     FOREIGN KEY (id_Persona_CreadoPor)
-    REFERENCES sduma.dbo.[User] (id)
+    REFERENCES sduma.dbo.[user] (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT fk_SolicitudConstruccion_UserModificadoPor
     FOREIGN KEY (id_Persona_ModificadoPor)
-    REFERENCES sduma.dbo.[User] (id)
+    REFERENCES sduma.dbo.[user] (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT fk_SolicitudConstruccion_GeneroConstruccion1
@@ -411,12 +411,12 @@ CREATE TABLE sduma.dbo.Expediente (
     ON UPDATE NO ACTION,
   CONSTRAINT fk_Expediente_UserCreadoPor
     FOREIGN KEY (id_User_CreadoPor)
-    REFERENCES sduma.dbo.[User] (id)
+    REFERENCES sduma.dbo.[user] (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT fk_Expediente_UserModifPor
     FOREIGN KEY (id_User_modificadoPor)
-    REFERENCES sduma.dbo.[User] (id)
+    REFERENCES sduma.dbo.[user] (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 	);
