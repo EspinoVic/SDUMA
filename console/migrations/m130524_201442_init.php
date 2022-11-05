@@ -20,13 +20,15 @@ class m130524_201442_init extends Migration
             'password_reset_token' => $this->string()->unique(),
             'email' => $this->string()->notNull()->unique(),
 
-            'status' => $this->smallInteger()->notNull()->defaultValue(10),
-            'created_at' => $this->integer()->notNull(),
-            'updated_at' => $this->integer()->notNull(),
+            'status' => $this->smallInteger()->notNull()->defaultValue(9),
+            'created_at' => $this->dateTime()->notNull(),
+            'updated_at' => $this->dateTime(),
              //VIC Complemento
             'id_Datos_Persona' => $this->integer()->notNull(),
-            'id_Horario' => $this->integer()->notNull(),
-            'id_UserLevel' => $this->integer()->notNull()->defaultValue(0)
+            'id_Horario' => $this->integer()->notNull()->defaultValue(1),
+            'id_UserLevel' => $this->integer()->notNull()->defaultValue(1)
+
+        
         ], $tableOptions);
     }
 
