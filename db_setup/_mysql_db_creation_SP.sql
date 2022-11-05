@@ -18,6 +18,7 @@ BEGIN
     BEGIN
         /* LOG */
         ROLLBACK;
+         
         /*  EXIT PROCEDURE */
     END;
 
@@ -40,7 +41,33 @@ BEGIN
             LAST_INSERT_ID(), '1', '1',
             verification_token);
         END;
-
+        COMMIT;
+         SELECT mysql_affected_rows() AS AffectedRows;
 END //
+
+DELIMITER ;
+
+
+/* DELIMITER //
+CREATE PROCEDURE sp_test(
+    IN username varchar(255),
+    IN email varchar(255)
+ )
+BEGIN
+    INSERT INTO sduma.probaractive
+    VALUES ("FFF2", username,9);
+END //
+
+DELIMITER ;
+
+
+
+DELIMITER //
+CREATE PROCEDURE sp_test_v2(
+    
+ )
+BEGIN
+    SELECT 2;
+END // */
 
 DELIMITER ;

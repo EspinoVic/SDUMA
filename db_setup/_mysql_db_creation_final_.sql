@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS `sduma`.`Domicilio` (
   `calle` VARCHAR(45) NOT NULL,
   `numExt` VARCHAR(45) NULL,
   `numInt` VARCHAR(45) NOT NULL,
-  `cp` VARCHAR(45) NOT NULL,
+  `cp` VARCHAR(45) NOT NULL, 
   `entreCallesH` VARCHAR(90) NOT NULL,
   `entreCallesV` VARCHAR(90) NOT NULL,
   PRIMARY KEY (`Id`))
