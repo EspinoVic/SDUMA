@@ -11,6 +11,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
+use common\models\ProbarActive;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
@@ -154,14 +155,33 @@ class SiteController extends Controller
     public function actionSignup()
     {
         $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-            return $this->goHome();
+        if ($model->load(Yii::$app->request->post())  ) {
+
+            $resSignup = $model->signup();
+            
+            /* error,danger,success,info,warning */
+            if($resSignup["success"]){
+
+                Yii::$app->session->setFlash('success', 
+                "Gracias por su registro. Email de verificación fue enviada a su correo $model->email.");
+                return $this->goHome();
+            }else{
+                    Yii::$app->session->setFlash('danger', 
+                    $resSignup["MSG"]
+                );
+               
+            }
         }
 
         return $this->render('signup', [
             'model' => $model,
         ]);
+        
+    }
+
+
+    public function actionProbarActiveR(){
+        ProbarActive::insertarAlv();
     }
 
     /**

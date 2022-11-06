@@ -113,8 +113,37 @@ class SignupForm extends Model
         $datosPersona->apellidoM =  $this->apellidoM; */
 
         
+        /* 
+         0 -> error crear user
+         1 -> error user created but email
+         2 -> success
+        */
+        $resSignup = [];
+        
+        $userCreationResult = $this->createUser($newUser) ;
 
-        return  $this->createUser($newUser) == 2/*  && $this->sendEmail($newUser) */;
+        if($userCreationResult["ROWS_INSERTED"] == 2){//true
+
+            if($this->sendEmail($newUser)){
+                return [
+                    "success" => true, 
+                    "MSG"=> ""
+                ];
+            }else{
+                return [
+                    "success" => false, 
+                    "MSG"=> "Error al enviar el correo de verificación. Vaya a la pantalla de inicio de sesión y de click en 'Reenviar Verificación."
+                ];
+            }
+
+
+        }else{//fail so return message
+            return [
+                    "success" => false, 
+                    "MSG"=> "Error al crear usuario: {$userCreationResult['ERROR_MSG']} "
+            ];
+        }
+         
         /* $user->save() */  
        
     }
@@ -161,17 +190,11 @@ class SignupForm extends Model
         }
         catch(Exception $ex){
             Yii::info($ex, $category = 'DBBB');
-
+            return ["ROWS_INSERTED" => -1, "ERROR_MSG" => $ex->getMessage()];
         }
         Yii::info($res, $category = 'DB ACTION');
-        return $res;//$res;
-         /* yii\log\Logger::get */
-         /* Yii::getLogger()->info */
-        
-       /*  $result = \Yii::$app->db->createCommand("CALL storedProcedureName(:paramName1, :paramName2)") 
-        ->bindValue(':paramName1' , $param1 )
-        ->bindValue(':paramName2', $param2)
-        ->execute(); */
+        return ["ROWS_INSERTED" =>  $res ]; 
+ 
         
 
     }
