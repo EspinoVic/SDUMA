@@ -88,7 +88,7 @@ class SignupForm extends Model
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
-        $user->setPassword($this->password);
+        $user->setPassword($this->password);//pass hash
         $user->generateAuthKey();
         $user->generateEmailVerificationToken();
 
@@ -98,8 +98,8 @@ class SignupForm extends Model
 
         $newUser->auth_key = $user->auth_key;
         $newUser->password_hash = $user->password_hash;;
-        $newUser->password_reset_token = $user->password_reset_token;
-        //$newUser->verification_token = $user->verification_token;
+        $newUser->password_reset_token = $user->password_reset_token;//empty
+        $newUser->verification_token = $user->verification_token;
 
         $newUser->nombre = $this->nombre ;
         $newUser->apellidoP = $this->apellidoP;
@@ -204,16 +204,16 @@ class SignupForm extends Model
      * @param User $user user model to with email should be send
      * @return bool whether the email was sent
      */
-    protected function sendEmail($user)
+    protected function sendEmail($userr)
     {
         return Yii::$app
             ->mailer
             ->compose(
                 ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
-                ['user' => $user]
+                ['user' => $userr]
             )
             ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
-            ->setTo($this->email)
+            ->setTo($userr->email)
             ->setSubject('Account registration at ' . Yii::$app->name)
             ->send();
     }
