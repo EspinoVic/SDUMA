@@ -17,16 +17,20 @@ class m130524_201442_init extends Migration
             'username' => $this->string()->notNull()->unique(),
             'auth_key' => $this->string(32)->notNull(),
             'password_hash' => $this->string()->notNull(),
-            'password_reset_token' => $this->string()->unique(),
+            'password_reset_token' => $this->string(),
             'email' => $this->string()->notNull()->unique(),
 
-            'status' => $this->smallInteger()->notNull()->defaultValue(10),
-            'created_at' => $this->integer()->notNull(),
-            'updated_at' => $this->integer()->notNull(),
+            'status' => $this->smallInteger()->notNull()->defaultValue(9),
+            /* 'created_at' => $this->integer()->notNull(), //se borró el Behavior , del modelo User TimestampBehavior::class,
+            'updated_at' => $this->integer(), */
              //VIC Complemento
+
             'id_Datos_Persona' => $this->integer()->notNull(),
-            'id_Horario' => $this->integer()->notNull(),
-            'id_UserLevel' => $this->integer()->notNull()->defaultValue(0)
+            'id_Horario' => $this->integer()->notNull()->defaultValue(1),
+            'id_UserLevel' => $this->integer()->notNull()->defaultValue(1),
+            'createdAt' => $this->dateTime()->notNull(),
+            'updatedAt' => $this->dateTime(),
+        
         ], $tableOptions);
     }
 

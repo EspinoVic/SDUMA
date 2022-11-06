@@ -29,11 +29,11 @@ class VerifyEmailForm extends Model
     public function __construct($token, array $config = [])
     {
         if (empty($token) || !is_string($token)) {
-            throw new InvalidArgumentException('Verify email token cannot be blank.');
+            throw new InvalidArgumentException('Token de verificación no puede estar vacío.');
         }
         $this->_user = User::findByVerificationToken($token);
         if (!$this->_user) {
-            throw new InvalidArgumentException('Wrong verify email token.');
+            throw new InvalidArgumentException('Token de verificacion no valido.');
         }
         parent::__construct($config);
     }

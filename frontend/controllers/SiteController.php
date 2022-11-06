@@ -11,6 +11,7 @@ use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use common\models\LoginForm;
+use common\models\ProbarActive;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
@@ -154,14 +155,33 @@ class SiteController extends Controller
     public function actionSignup()
     {
         $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post()) && $model->signup()) {
-            Yii::$app->session->setFlash('success', 'Thank you for registration. Please check your inbox for verification email.');
-            return $this->goHome();
+        if ($model->load(Yii::$app->request->post())  ) {
+
+            $resSignup = $model->signup();
+            
+            /* error,danger,success,info,warning */
+            if($resSignup["success"]){
+
+                Yii::$app->session->setFlash('success', 
+                "Gracias por su registro. Email de verificación fue enviada a su correo $model->email.");
+                return $this->goHome();
+            }else{
+                    Yii::$app->session->setFlash('danger', 
+                    $resSignup["MSG"]
+                );
+               
+            }
         }
 
         return $this->render('signup', [
             'model' => $model,
         ]);
+
+    }
+
+
+    public function actionProbarActiveR(){
+        ProbarActive::insertarAlv();
     }
 
     /**
@@ -228,11 +248,11 @@ class SiteController extends Controller
             throw new BadRequestHttpException($e->getMessage());
         }
         if (($user = $model->verifyEmail()) && Yii::$app->user->login($user)) {
-            Yii::$app->session->setFlash('success', 'Your email has been confirmed!');
+            Yii::$app->session->setFlash('success', 'Tu email ha sido confirmado!');
             return $this->goHome();
         }
 
-        Yii::$app->session->setFlash('error', 'Sorry, we are unable to verify your account with provided token.');
+        Yii::$app->session->setFlash('error', 'No fue posible verificar su cuenta con el link usado.');
         return $this->goHome();
     }
 
@@ -254,6 +274,23 @@ class SiteController extends Controller
 
         return $this->render('resendVerificationEmail', [
             'model' => $model
+        ]);
+    }
+
+
+    public function actionPersona()
+    {
+        $model = new \common\models\persona();
+
+        if ($model->load(Yii::$app->request->post())) {
+            if ($model->validate()) {
+                // form inputs are valid, do something here
+                return;
+            }
+        }
+
+        return $this->render('persona', [
+            'model' => $model,
         ]);
     }
 }
