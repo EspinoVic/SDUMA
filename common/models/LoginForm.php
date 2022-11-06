@@ -10,11 +10,12 @@ use yii\base\Model;
  */
 class LoginForm extends Model
 {
+    //valores del FORM  ingresados por el usuario.
     public $username;
     public $password;
     public $rememberMe = true;
 
-    private $_user;
+    private $_user;//viene de la DB
 
 
     /**
@@ -38,12 +39,15 @@ class LoginForm extends Model
      *
      * @param string $attribute the attribute currently being validated
      * @param array $params the additional name-value pairs given in the rule
+     * 
+     * //No funciona por retorno de flag que indique el error, internamente el modelo
+     * //incluye errores $this->addError(...)
      */
     public function validatePassword($attribute, $params)
     {
         if (!$this->hasErrors()) {
             $user = $this->getUser();
-            if (!$user || !$user->validatePassword($this->password)) {
+            if (!$user || !$user->validatePassword($this->password)) {//el password en el textbox
                 $this->addError($attribute, 'Incorrect username or password.');
             }
         }
@@ -56,8 +60,8 @@ class LoginForm extends Model
      */
     public function login()
     {
-        if ($this->validate()) {
-            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 30 : 0);
+        if ($this->validate()) {//1 dia
+            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600 * 24 * 1 /* 30 */ : 0);
         }
         
         return false;

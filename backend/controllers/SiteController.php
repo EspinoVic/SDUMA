@@ -26,6 +26,7 @@ class SiteController extends Controller
                     [
                         'actions' => ['login', 'error'],
                         'allow' => true,
+                        'roles'['?']
                     ],
                     [
                         'actions' => ['logout', 'index'],
@@ -72,15 +73,28 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        //si ya hay sesión
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
-
+/* Si no la hay entonces trata de hacer login */
+/*         if(!Yii::$app->user->level) */
         $this->layout = 'blank';
 
         $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login()) {
-            return $this->goBack();
+        if (
+            $model->load(Yii::$app->request->post()) 
+            && $model->login()
+            
+        ) {
+            if(Yii::$app->user->identity->id_UserLevel == 3)
+            {                
+                return $this->goBack();
+            }
+            else{
+
+            } 
+            
         }
 
         $model->password = '';

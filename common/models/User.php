@@ -23,6 +23,7 @@ use yii\web\IdentityInterface;
  * @property integer $updated_at
  * @property string $password write-only password
  * 
+ * Tambien
  * ,[id_Datos_Persona]
  *     ,[id_Horario]
  *     ,[id_UserLevel]
@@ -34,6 +35,10 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
 
+
+    const USER_LEVEL_ADMIN = 3;
+    const USER_LEVEL_INTERNO = 2;
+    const USER_LEVEL_EXTERNO = 1;
 
     /**
      * {@inheritdoc}
