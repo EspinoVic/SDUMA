@@ -3,6 +3,8 @@
 namespace common\models;
 
 use Yii;
+use yii\base\NotSupportedException;
+use yii\web\IdentityInterface;
 
 /**
  * This is the model class for table "user".
@@ -31,8 +33,11 @@ use Yii;
  * @property UserHasRol[] $userHasRols
  * @property Userlevel $userLevel
  */
-class User2 extends \yii\db\ActiveRecord
+class User3 extends \yii\db\ActiveRecord implements IdentityInterface
 {
+    const STATUS_DELETED = 0;
+    const STATUS_INACTIVE = 9;
+    const STATUS_ACTIVE = 10;
     /**
      * {@inheritdoc}
      */
@@ -80,6 +85,51 @@ class User2 extends \yii\db\ActiveRecord
             'id_UserLevel' => 'Id User Level',
             'verification_token' => 'Verification Token',
         ];
+    }
+
+    public static function findByVerificationToken($token) {
+        return static::findOne([
+            'verification_token' => $token,
+            'status' => self::STATUS_INACTIVE
+        ]);
+    }
+
+    /*  */
+    public static function findIdentity($id)
+    {
+        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+    }
+    
+    /**
+     * {@inheritdoc}
+     */
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        throw new NotSupportedException('"findIdentityByAccessToken" is not implemented.');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getAuthKey()
+    {
+        return $this->auth_key;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return $this->getPrimaryKey();
+    }
+    
+      /**
+     * {@inheritdoc}
+     */
+    public function validateAuthKey($authKey)
+    {
+        return $this->getAuthKey() === $authKey;
     }
 
     /**

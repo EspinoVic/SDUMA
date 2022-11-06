@@ -21,13 +21,15 @@ class m130524_201442_init extends Migration
             'email' => $this->string()->notNull()->unique(),
 
             'status' => $this->smallInteger()->notNull()->defaultValue(9),
-            'created_at' => $this->dateTime()->notNull(),
-            'updated_at' => $this->dateTime(),
+            /* 'created_at' => $this->integer()->notNull(), //se borró el Behavior , del modelo User TimestampBehavior::class,
+            'updated_at' => $this->integer(), */
              //VIC Complemento
+
             'id_Datos_Persona' => $this->integer()->notNull(),
             'id_Horario' => $this->integer()->notNull()->defaultValue(1),
-            'id_UserLevel' => $this->integer()->notNull()->defaultValue(1)
-
+            'id_UserLevel' => $this->integer()->notNull()->defaultValue(1),
+            'createdAt' => $this->dateTime()->notNull(),
+            'updatedAt' => $this->dateTime(),
         
         ], $tableOptions);
     }

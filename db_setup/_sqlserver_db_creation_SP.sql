@@ -37,18 +37,20 @@ CREATE PROCEDURE dbo.sp_create_user
                 [username],
                 [auth_key], [password_hash], [password_reset_token], 
                 [email], [status], 
-                [created_at], [updated_at], 
+              --  [created_at], [updated_at], 
                 [id_Datos_Persona], [id_Horario], [id_UserLevel],
-                [verification_token]
+                [verification_token],
+                createdAt, updatedAt
                 ) 
             VALUES (
                 @username, 
                 @auth_key, @password_hash, @password_reset_token, 
                 @email, '9', --INACTIVE
-                SYSDATETIME() , SYSDATETIME(),
+              --  SYSDATETIME() , SYSDATETIME(),
                 @personaInsertedIndex, --Persona PK id inserted
                 '1', '1',
-                @verification_token
+                @verification_token,
+                SYSDATETIME() , SYSDATETIME()
             );
 
             SET @rowsInserted = @rowsInserted + @@ROWCOUNT;

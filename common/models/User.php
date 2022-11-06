@@ -22,6 +22,11 @@ use yii\web\IdentityInterface;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
+ * 
+ * ,[id_Datos_Persona]
+ *     ,[id_Horario]
+ *     ,[id_UserLevel]
+ *   ,[verification_token]
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -44,7 +49,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::class,
+            /* TimestampBehavior::class, */
         ];
     }
 
@@ -56,6 +61,37 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
+            [['username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at', 'id_Datos_Persona'], 'required'],
+            [['status', 'created_at', 'updated_at', 'id_Datos_Persona', 'id_Horario', 'id_UserLevel'], 'integer'],
+            [['username', 'password_hash', 'password_reset_token', 'email', 'verification_token'], 'string', 'max' => 255],
+            [['auth_key'], 'string', 'max' => 32],
+            [['username'], 'unique'],
+            [['email'], 'unique'],
+            [['password_reset_token'], 'unique'],
+            [['id_Horario'], 'exist', 'skipOnError' => true, 'targetClass' => Horario::class, 'targetAttribute' => ['id_Horario' => 'id']],
+            [['id_UserLevel'], 'exist', 'skipOnError' => true, 'targetClass' => Userlevel::class, 'targetAttribute' => ['id_UserLevel' => 'id']],
+            [['id_Datos_Persona'], 'exist', 'skipOnError' => true, 'targetClass' => Persona::class, 'targetAttribute' => ['id_Datos_Persona' => 'id']],
+        ];
+    }
+  /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'ID',
+            'username' => 'Username',
+            'auth_key' => 'Auth Key',
+            'password_hash' => 'Password Hash',
+            'password_reset_token' => 'Password Reset Token',
+            'email' => 'Email',
+            'status' => 'Status',
+            'created_at' => 'Created At',
+            'updated_at' => 'Updated At',
+            'id_Datos_Persona' => 'Id Datos Persona',
+            'id_Horario' => 'Id Horario',
+            'id_UserLevel' => 'Id User Level',
+            'verification_token' => 'Verification Token',
         ];
     }
 
