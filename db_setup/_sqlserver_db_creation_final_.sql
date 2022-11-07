@@ -137,13 +137,13 @@ VALUES ('Horario Externo', '0:00:00','23:59:59');
 INSERT INTO sduma.dbo.Horario ( nombre) 
 VALUES ('DEFAULT');
 
---CREATE TABLE sduma.dbo.Rol (
---  id INT NOT NULL IDENTITY(1,1),
---  nombre NVARCHAR(45) NULL,
---  PRIMARY KEY (Id)
+CREATE TABLE sduma.dbo.Rol (
+  id INT NOT NULL IDENTITY(1,1),
+  nombre NVARCHAR(45) NULL,
+  PRIMARY KEY (Id)
   
---);
-
+);
+/* 
 CREATE TABLE  sduma.dbo.Rol (
   id INT NOT NULL IDENTITY(1,1),
   nombre NVARCHAR(45) NULL,
@@ -159,14 +159,35 @@ CREATE TABLE  sduma.dbo.Rol (
     REFERENCES sduma.dbo.[user] (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-	);
+	); */
 
 INSERT INTO sduma.dbo.Rol (  nombre) 
 VALUES 
 ( 'ADMIN'),
 ( 'INTERNO'),
-('EXTERNO')
-;
+('EXTERNO');
+
+CREATE TABLE sduma.dbo.User_has_Rol (
+  id_User INT NOT NULL,
+  id_Rol INT NOT NULL,
+  ver BIT NOT NULL DEFAULT 1,
+  editar BIT NOT NULL DEFAULT 1,
+  actualizar BIT NOT NULL DEFAULT 1,
+  eliminar BIT NOT NULL DEFAULT 1,
+  PRIMARY KEY (id_User, id_Rol),
+  INDEX fk_User_has_Roles_Roles_idx (id_Rol ASC),
+  INDEX fk_User_has_Roles_User_idx (id_User ASC),
+  CONSTRAINT fk_User_has_Roles_User1
+    FOREIGN KEY (id_User)
+    REFERENCES sduma.dbo.[User] (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_User_has_Roles_Roles1
+    FOREIGN KEY (id_Rol)
+    REFERENCES sduma.dbo.[Rol](id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
 
 CREATE TABLE  sduma.dbo.UserLevel (
   id INT NOT NULL IDENTITY(1,1),
@@ -223,27 +244,7 @@ CREATE INDEX fk_Users_Propietario_idx ON sduma.dbo.[user](id_Datos_Persona ASC);
 CREATE INDEX fk_User_Horario_idx ON  sduma.dbo.[user](id_Horario ASC);
 
 
--- CREATE TABLE sduma.dbo.User_has_Rol (
---  id_User INT NOT NULL,
---  id_Rol INT NOT NULL,
---  ver BIT NOT NULL,
---  editar BIT NOT NULL,
---  actualizar BIT NOT NULL,
---  eliminar BIT NOT NULL,
---  PRIMARY KEY (id_User, id_Rol),
---  INDEX fk_User_has_Roles_Roles_idx (id_Rol ASC),
---  INDEX fk_User_has_Roles_User_idx (id_User ASC),
---  CONSTRAINT fk_User_has_Roles_User1
---    FOREIGN KEY (id_User)
---    REFERENCES sduma.dbo.[User] (id)
---    ON DELETE NO ACTION
---    ON UPDATE NO ACTION,
---  CONSTRAINT fk_User_has_Roles_Roles1
---    FOREIGN KEY (id_Rol)
---    REFERENCES sduma.dbo.[Rol](id)
---    ON DELETE NO ACTION
---    ON UPDATE NO ACTION
---);
+
 
 CREATE TABLE  sduma.dbo.CorrSeguridadEstruc (
   id INT NOT NULL IDENTITY(1,1),
