@@ -29,16 +29,21 @@ AppAsset::register($this);
     <?= $this->render('_header')
     ?>
 </header>
-
-<main role="main" class="flex-shrink-0">
+ 
+<main role="main" class="d-flex flex-shrink-0 mt-5">
+    <?php echo $this->render('_sidebar'); ?>
     <div class="container">
         <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+            'links' => isset($this->params['breadcrumbs'])
+                ? $this->params['breadcrumbs']
+                : [],
         ]) ?>
         <?= Alert::widget() ?>
         <?= $content ?>
     </div>
 </main>
+
+
 
 <footer class="footer mt-auto py-3 text-muted">
     <div class="container">
