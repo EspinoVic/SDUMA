@@ -2,49 +2,38 @@
 
 namespace backend\controllers;
 
-use common\models\LoginForm;
-use common\models\User;
 use Yii;
-use yii\filters\VerbFilter;
+use Codeception\Step\Action;
+use common\models\LoginForm;
+use yii\base\Controller;
 use yii\filters\AccessControl;
-use yii\web\Controller;
-use yii\web\Response;
+use common\models\User;
 
-/**
- * Site controller
- */
-class SiteController extends Controller
-{
-    /**
-     * {@inheritdoc}
-     */
+class ConfiguracionController extends Controller{
+
     public function behaviors()
     {
-        return [
-            'access' => [
-
+        return[
+            'access' =>[
                 'class' => AccessControl::class,
-                /* 'only' => ['logout', 'signup'], */ /* TODOS? */
-                'rules' => [
+                 /* 'only' => ['logout', 'signup'], */ /* TODOS? */
+                'rules' =>[
                     [
                         'actions' => ['login', 'error'],
                         'allow' => true,
-                    ],
-                    [
-                        'actions' => ['logout', 'index'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ]
-                    ,
-                    [
-                        'actions' => ['config'],
-                        'allow' => true,
-                        'roles' => ['@'],
+                        'roles'=> ['?'],
                         'matchCallback' => function ($rule, $action) {
                             return User::isUserAdmin(Yii::$app->user->identity->username);
                         }
                     ],
+                    [
+                        'actions' => ['logout','index'],
+                        'allow' => true,
+                        'roles' => ['@']
+                    ],
+                    
                 ],
+
             ],
             'verbs' => [
                 'class' => VerbFilter::class,
@@ -55,16 +44,16 @@ class SiteController extends Controller
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
+
     public function actions()
     {
-        return [
+
+        return[
             'error' => [
                 'class' => \yii\web\ErrorAction::class,
             ],
         ];
+
     }
 
     /**
@@ -77,24 +66,27 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
-    /**
+
+
+     /**
      * Login action.
      *
      * @return string|Response
      */
     public function actionLogin()
     {
+        /* Solo admins pueden iniciar */
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
-/*         if(!Yii::$app->user->level) */
+ 
         $this->layout = 'blank';
 
         $model = new LoginForm();
         if (
             $model->load(Yii::$app->request->post()) 
-            && $model->loginAdmin() /* Pasará solo la validación de Admin */
+            && $model->loginAdmin() 
         ) {
             return $this->goBack();
         }
@@ -106,7 +98,8 @@ class SiteController extends Controller
         ]);
     }
 
-    /**
+
+     /**
      * Logout action.
      *
      * @return Response
@@ -117,4 +110,5 @@ class SiteController extends Controller
 
         return $this->goHome();
     }
+
 }

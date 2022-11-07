@@ -74,9 +74,24 @@ class User extends ActiveRecord implements IdentityInterface
             [['email'], 'unique'],
             [['password_reset_token'], 'unique'],
             [['id_Horario'], 'exist', 'skipOnError' => true, 'targetClass' => Horario::class, 'targetAttribute' => ['id_Horario' => 'id']],
+            
             [['id_UserLevel'], 'exist', 'skipOnError' => true, 'targetClass' => Userlevel::class, 'targetAttribute' => ['id_UserLevel' => 'id']],
+            ['id_UserLevel', 'default', 'value' => 1],
+            ['id_UserLevel', 'in', 'range' => [self::USER_LEVEL_INTERNO,self::USER_LEVEL_EXTERNO, self::USER_LEVEL_ADMIN]],
+
             [['id_Datos_Persona'], 'exist', 'skipOnError' => true, 'targetClass' => Persona::class, 'targetAttribute' => ['id_Datos_Persona' => 'id']],
         ];
+    }
+    public static function isUserAdmin($username)
+    {
+        if (static::findOne(['username' => $username, 'id_UserLevel' => self::USER_LEVEL_ADMIN])){
+                            
+                return true;
+        } else {
+                            
+                return false;
+        }
+            
     }
   /**
      * {@inheritdoc}
