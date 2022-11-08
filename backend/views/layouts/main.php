@@ -30,16 +30,19 @@ AppAsset::register($this);
     ?>
 </header>
  
-<main role="main" class="d-flex flex-shrink-0 mt-5">
-    <?php echo $this->render('_sidebar'); ?>
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs'])
-                ? $this->params['breadcrumbs']
-                : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
+<main role="main" class=" flex-shrink-0  ">
+    <div class="container d-flex">
+        <?php echo $this->render('_sidebar'); ?>
+        <div class="container">
+
+            <?= Breadcrumbs::widget([
+                'links' => isset($this->params['breadcrumbs'])
+                    ? $this->params['breadcrumbs']
+                    : [],
+            ]) ?>
+            <?= Alert::widget() ?>
+            <?= $content ?>
+        </div>
     </div>
 </main>
 

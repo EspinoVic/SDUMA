@@ -2,7 +2,7 @@
 <?php echo yii\bootstrap5\Nav::widget([
  
  'options'=>[
-    'class' => ['list-group']
+    'class' => ['list-group ']
  ],
  'params' => $_GET,
  'items'=>[
@@ -74,7 +74,7 @@
       ],
       [
         'label'=> 'Usuarios',
-        'url' => ['/usuario/index'],
+        'url' => ['/user/index'],
         'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ]
  
       ],
