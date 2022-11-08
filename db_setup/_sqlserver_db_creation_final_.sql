@@ -46,17 +46,17 @@ CREATE TABLE sduma.dbo.TipoPredio (
   );
  
  
-INSERT INTO [dbo].[GeneroConstruccion]
+INSERT INTO sduma.[dbo].[GeneroConstruccion]
            ([nombre]
            ,[isActivo])
      VALUES
-          /* 1 */ ('Habitacional unifamiliar' , 1)
-          /* 2 */ ('Muros' ,1)
-          /* 3 */ ('Hoteles, Moteles, posadas y similares' ,1)
-          /* 4 */ ('Comercial' ,1)
-          /* 5 */ ('Industrial' ,1)
-          /* 6 */ ('Educación' ,1)
-          /* 7 */ ('Hospitales' ,1)
+          /* 1 */ ('Habitacional unifamiliar' , 1),
+          /* 2 */ ('Muros' ,1),
+          /* 3 */ ('Hoteles, Moteles, posadas y similares' ,1),
+          /* 4 */ ('Comercial' ,1),
+          /* 5 */ ('Industrial' ,1),
+          /* 6 */ ('Educación' ,1),
+          /* 7 */ ('Hospitales' ,1),
           /* 8 */ ('Centros recreativos' ,1)
 
            ;
@@ -65,11 +65,11 @@ INSERT INTO [dbo].[GeneroConstruccion]
 
 CREATE TABLE  sduma.dbo.SubGeneroConstruccion (
   id INT NOT NULL IDENTITY(1,1),
-  nombre NVARCHAR(45) NOT NULL,
+  nombre NVARCHAR(255) NOT NULL,
   udm NVARCHAR(10) NOT NULL,
   tamanioLimiteInferior DECIMAL(8,4) NOT NULL,
   tamanioLimiteSuperior DECIMAL(8,4) NOT NULL,
-  nombreTarifa NVARCHAR(45) NOT NULL,
+  nombreTarifa NVARCHAR(255) NOT NULL,
   tarifa DECIMAL(8,5) NOT NULL,
   fechaCreacion DATETIME NOT NULL,
   anioVigencia NVARCHAR(45) NOT NULL,
@@ -85,7 +85,7 @@ CREATE TABLE  sduma.dbo.SubGeneroConstruccion (
 USE [sduma]
 GO
 
-INSERT INTO [dbo].[SubGeneroConstruccion]
+INSERT INTO sduma.[dbo].[SubGeneroConstruccion]
            ([nombre]
            ,[udm]
            ,[tamanioLimiteInferior]
@@ -360,7 +360,163 @@ INSERT INTO [dbo].[SubGeneroConstruccion]
            ,YEAR(GETDATE())
            ,1
            ,5 
-          )/* Otros */
+          )/* Administración */
+          ,(
+            'Educación'
+           ,'m2'
+           ,-1
+           ,-1
+           ,'Popular'
+           ,6.77
+           ,GETDATE()
+           ,YEAR(GETDATE())
+           ,1
+           ,6 
+          )/* Educacion pop */
+          ,(
+            'Educación'
+           ,'m2'
+           ,-1
+           ,-1
+           ,'Medio'
+           ,10.84
+           ,GETDATE()
+           ,YEAR(GETDATE())
+           ,1
+           ,6 
+          )/* Educacion Medio */
+          ,(
+            'Educación'
+           ,'m2'
+           ,-1
+           ,-1
+           ,'Residencial'
+           ,14.87
+           ,GETDATE()
+           ,YEAR(GETDATE())
+           ,1
+           ,6 
+          )/* Educacion Residencial */
+          ,(
+            'Educación'
+           ,'m2'
+           ,-1
+           ,-1
+           ,'Comercial'
+           ,19.01
+           ,GETDATE()
+           ,YEAR(GETDATE())
+           ,1
+           ,6 
+          )/* Educacion Comercial */
+          ,(
+            'Hospital'
+           ,'m2'
+           ,-1
+           ,-1
+           ,'Popular'
+           ,12.23
+           ,GETDATE()
+           ,YEAR(GETDATE())
+           ,1
+           ,7
+          )/* Hospital Pop */
+          ,(
+            'Hospital'
+           ,'m2'
+           ,-1
+           ,-1
+           ,'Medio'
+           ,20.37
+           ,GETDATE()
+           ,YEAR(GETDATE())
+           ,1
+           ,7
+          )/* Hospital Medio */
+          ,(
+            'Hospital'
+           ,'m2'
+           ,-1
+           ,-1
+           ,'Residencial'
+           ,27.18
+           ,GETDATE()
+           ,YEAR(GETDATE())
+           ,1
+           ,7
+          )/* Hospital Residencial */
+          ,(
+            'Hospital'
+           ,'m2'
+           ,-1
+           ,-1
+           ,'Comercial'
+           ,29.90
+           ,GETDATE()
+           ,YEAR(GETDATE())
+           ,1
+           ,7
+          )/* Hospital Comercial */
+          ,(
+            'Centros diversos: bar, discotecas, centros nocturnos, botaneros, peñar, billares, palenques y/o similares'
+           ,'m2'
+           ,-1
+           ,-1
+           ,'Centros diversos: bar, discotecas, centros nocturnos, botaneros, peñar, billares, palenques y/o similares'
+           ,36.71
+           ,GETDATE()
+           ,YEAR(GETDATE())
+           ,1
+           ,8
+          )/* Centros recreativos */
+          ,(
+            'Social/público sin lúcro: Centros deportivos, gimnasios y similares'
+           ,'m2'
+           ,-1
+           ,-1
+           ,'Centros sociales comunitarios'
+           ,2.69
+           ,GETDATE()
+           ,YEAR(GETDATE())
+           ,1
+           ,8
+          )/* Centros recreativos. */
+          ,(
+            'Social/público sin lúcro: Centros deportivos, gimnasios y similares'
+           ,'m2'
+           ,-1
+           ,-1
+           ,'Centros de meditación y religiosos'
+           ,4.04
+           ,GETDATE()
+           ,YEAR(GETDATE())
+           ,1
+           ,8
+          )/* Centros recreativos. */
+          ,(
+            'Social/público sin lúcro: Centros deportivos, gimnasios y similares'
+           ,'m2'
+           ,-1
+           ,-1
+           ,'Cooperativas comunitarias'
+           ,9.48
+           ,GETDATE()
+           ,YEAR(GETDATE())
+           ,1
+           ,8
+          )/* Centros recreativos. */
+          ,(
+            'Social/público sin lúcro: Centros deportivos, gimnasios y similares'
+           ,'m2'
+           ,-1
+           ,-1
+           ,'Centros de preparación dogmática'
+           ,20.37
+           ,GETDATE()
+           ,YEAR(GETDATE())
+           ,1
+           ,8
+          )/* Centros recreativos. */
             
 GO
 
