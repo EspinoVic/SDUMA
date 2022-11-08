@@ -747,11 +747,13 @@ CREATE TABLE sduma.dbo.Expediente (
   /* id_solicitudConstruccion INT NOT NULL, */
   id_User_CreadoPor INT NOT NULL,
   id_User_modificadoPor INT NOT NULL,
+  id_TipoTramite INT NOT NULL,
   PRIMARY KEY (id/*, idAnual, */ /* ,id_Persona_Solicita, id_solicitudConstruccion, */ /* id_User_CreadoPor, id_User_modificadoPor */),
   INDEX fk_Expediente_PersonaSolicita_idx (id_Persona_Solicita ASC)  ,
 /*   INDEX fk_Expediente_SolicitudConstruccion_idx (id_solicitudConstruccion ASC)  , */
   INDEX fk_Expediente_UserCreadoPor_idx (id_User_CreadoPor ASC)  ,
   INDEX fk_Expediente_UserModificadoPor_idx (id_User_modificadoPor ASC)  ,
+  INDEX fk_Expediente_TipoTramite_idx (id_TipoTramite ASC)  ,
   CONSTRAINT fk_Expediente_Propietario1
     FOREIGN KEY (id_Persona_Solicita)
     REFERENCES sduma.dbo.Persona (id)
@@ -765,6 +767,11 @@ CREATE TABLE sduma.dbo.Expediente (
   CONSTRAINT fk_Expediente_UserModifPor
     FOREIGN KEY (id_User_modificadoPor)
     REFERENCES sduma.dbo.[user] (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_Expediente_TipoTramite
+    FOREIGN KEY (id_TipoTramite)
+    REFERENCES sduma.dbo.[TipoTramite] (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 	);

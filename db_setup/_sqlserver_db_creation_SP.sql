@@ -72,8 +72,49 @@ CREATE PROCEDURE dbo.sp_create_user
     END CATCH
 
 
+INSERT INTO [dbo].[Persona]
+           ([nombre]
+           ,[apellidoP]
+           ,[apellidoM])
+     VALUES
+           ('Victor Alfonso'
+           ,'Pérez'
+           ,'Espino');
+           
+INSERT INTO [dbo].[user]
+           ([username]
+           ,[auth_key]
+           ,[password_hash]
+           ,[password_reset_token]
+           ,[email]
+           ,[status]
+           ,[id_Datos_Persona]
+           ,[id_Horario]
+           ,[id_UserLevel]
+           ,[createdAt]
+           ,[updatedAt]
+           ,[verification_token])
+     VALUES
+           ('Vic1'
+           ,'e1wsnPlf-eGIEhdTeeZuqvNXPtM0PrPL'
+           ,'$2y$13$vRqw/BkT1gYME0sX4tZ3MeXlKo1aBaywIjHl2yCSE3Cqf1iI3Tej.'
+           ,NULL
+           ,'ap.vicespino@gmail.com'
+           ,10
+           ,1
+           ,1
+           ,3
+           ,'2022-11-08 11:23:41.947'
+           ,'2022-11-08 11:23:41.947'
+           ,'NmUSiARLUvE-raQgNIsvh61ibRfhtk_R_1667928221'
+		   )
+GO
+
+ 		
+
+
 --TEST
 
-CREATE PROCEDURE dbo.testSP
+/* CREATE PROCEDURE dbo.testSP
  AS
- Insert into dbo.Persona ("uwu","uwu2","uwu3")   
+ Insert into dbo.Persona ("uwu","uwu2","uwu3")    */
