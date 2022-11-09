@@ -1,6 +1,7 @@
 <?php
 
 use common\models\SubGeneroConstruccion;
+use common\models\WidgetStyleVic;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -26,6 +27,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'pager' => WidgetStyleVic::PagerStyle(),
+
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
@@ -34,11 +37,11 @@ $this->params['breadcrumbs'][] = $this->title;
             'udm',
             'tamanioLimiteInferior',
             'tamanioLimiteSuperior',
-            //'nombreTarifa',
+            'nombreTarifa',
             //'tarifa',
             //'fechaCreacion',
-            //'anioVigencia',
-            //'isActivo',
+            'anioVigencia',
+            'isActivo',
             //'id_GeneroConstruccion',
             [
                 'class' => ActionColumn::className(),

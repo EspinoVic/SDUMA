@@ -2,7 +2,7 @@
 <?php echo yii\bootstrap5\Nav::widget([
  
  'options'=>[
-    'class' => ['list-group ']
+    'class' => ['list-group min-width:1000px; width:content;']
  ],
  'params' => $_GET,
  'items'=>[
