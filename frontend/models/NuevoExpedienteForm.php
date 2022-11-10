@@ -23,7 +23,7 @@ class NuevoExpedienteForm extends Model
             'nombre' => 'Nombre',
             'apellidoP' => 'Apellido Paterno',
             'apellidoM' => 'Apellido Materno',
-            'tipoTramiteId' => 'tipoTramiteId' 
+            'tipoTramiteId' => 'Tipo trámite' 
 
         );
     
@@ -35,7 +35,7 @@ class NuevoExpedienteForm extends Model
             [['nombre','apellidoP'], 'required'], 
             [['nombre','apellidoP'], 'string', 'max' => 255 /* (new Persona)->getValidators()[1]->max */],
           
-            ['apellidoM', 'string', 'max' => 255 ],
+            ['apellidoM', 'string', 'max' => 5 ],
 
             ['tipoTramiteId', 'required' ],
             ['tipoTramiteId', 'integer' ],
