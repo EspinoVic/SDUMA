@@ -48,14 +48,17 @@ class ExpedientesController extends \yii\web\Controller
             ]); */
         }
 
+       //Test forzar datos erroneos // $modelNuevoExp->nombre = "";
+        //Ya no xd //si la data del modelo no se pudo validar, renderizará index bajo URL /create
         if (!$modelNuevoExp->validate()) {
             Yii::$app->session->setFlash( 'danger',   "Error al validar los campos.." );
-            return $this->render('index', [
+            return $this->redirect(['expedientes/index'])->send();
+           /*  return $this->render('index', [
                 'modelNuevoExp' => $modelNuevoExp,
                 'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider,
             ]);
-
+ */
         
         }
  
@@ -63,15 +66,22 @@ class ExpedientesController extends \yii\web\Controller
         
         $expCreationResult = $modelNuevoExp->createExpediente();
         Yii::$app->session->setFlash(
-            $expCreationResult["success"]  ,
+            $expCreationResult["success"]  ?'success':'danger' ,
             $expCreationResult["MSG"]
         );
         
-        if( $expCreationResult["success"]){
-            //URL será la la del redirect.
-            return $this->redirect(['expedientes/index'])->send();
+        return $this->redirect(['expedientes/index'])->send();
+
+        /* if( $expCreationResult["success"]){
+        
+            
         }
 
+        return $this->render('index', [
+            'modelNuevoExp' => $modelNuevoExp,
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]); */
     }
 
 

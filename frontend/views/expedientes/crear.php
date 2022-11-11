@@ -2,8 +2,11 @@
 
 use common\models\TipoTramite;
 use yii\helpers\ArrayHelper;
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+/* use yii\helpers\Html;
+use yii\widgets\ActiveForm; */
+use yii\bootstrap5\Html;
+use yii\bootstrap5\ActiveForm;
+
 
 /** @var yii\web\View $this */
 /** @var common\models\NuevoExpedienteForm $modelNuevoExp */
@@ -31,7 +34,7 @@ use yii\widgets\ActiveForm;
             /*    ,$options = [
                 'id' => 'uwu',
                 //'onchange' => 'selecOther()',
-                'class' => 'form-select',
+                'class' => 'form-select',//no need because using Bootstrap form
             ]   */
                 
         ) ?>

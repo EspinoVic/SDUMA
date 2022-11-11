@@ -6,6 +6,7 @@
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
 use common\models\Expediente;
+use common\models\WidgetStyleVic;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -38,10 +39,10 @@ $this->params['breadcrumbs'][] = $this->title;
 </div>
 
 
-<p>
+<!-- <p>
     You may change the content of this page by modifying
     the file <code><?= __FILE__; ?></code>.
-</p>
+</p> -->
 
 <div class="expediente-index">
 
@@ -54,11 +55,13 @@ $this->params['breadcrumbs'][] = $this->title;
       Nuevo Expediente
     </button>
     <button type="button" class="btn btn-secondary">Filtrar</button>
-    <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'pager' => WidgetStyleVic::PagerStyle(),
+
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
@@ -67,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'anio',
             'fechaCreacion',
             'fechaModificacion',
-            //'estado',
+            'estado',
             //'id_Persona_Solicita',
             //'id_User_CreadoPor',
             //'id_User_modificadoPor',
