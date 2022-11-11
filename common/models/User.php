@@ -23,6 +23,7 @@ use yii\web\IdentityInterface;
  * @property integer $updated_at
  * @property string $password write-only password
  * 
+ * Tambien
  * ,[id_Datos_Persona]
  *     ,[id_Horario]
  *     ,[id_UserLevel]
@@ -34,6 +35,10 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_INACTIVE = 9;
     const STATUS_ACTIVE = 10;
 
+
+    const USER_LEVEL_ADMIN = 3;
+    const USER_LEVEL_INTERNO = 2;
+    const USER_LEVEL_EXTERNO = 1;
 
     /**
      * {@inheritdoc}
@@ -69,9 +74,24 @@ class User extends ActiveRecord implements IdentityInterface
             [['email'], 'unique'],
             [['password_reset_token'], 'unique'],
             [['id_Horario'], 'exist', 'skipOnError' => true, 'targetClass' => Horario::class, 'targetAttribute' => ['id_Horario' => 'id']],
+            
             [['id_UserLevel'], 'exist', 'skipOnError' => true, 'targetClass' => Userlevel::class, 'targetAttribute' => ['id_UserLevel' => 'id']],
+            ['id_UserLevel', 'default', 'value' => 1],
+            ['id_UserLevel', 'in', 'range' => [self::USER_LEVEL_INTERNO,self::USER_LEVEL_EXTERNO, self::USER_LEVEL_ADMIN]],
+
             [['id_Datos_Persona'], 'exist', 'skipOnError' => true, 'targetClass' => Persona::class, 'targetAttribute' => ['id_Datos_Persona' => 'id']],
         ];
+    }
+    public static function isUserAdmin($username)
+    {
+        if (static::findOne(['username' => $username, 'id_UserLevel' => self::USER_LEVEL_ADMIN])){
+                            
+                return true;
+        } else {
+                            
+                return false;
+        }
+            
     }
   /**
      * {@inheritdoc}
@@ -80,18 +100,20 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             'id' => 'ID',
-            'username' => 'Username',
+            'username' => 'Usuario',
             'auth_key' => 'Auth Key',
             'password_hash' => 'Password Hash',
             'password_reset_token' => 'Password Reset Token',
             'email' => 'Email',
             'status' => 'Status',
-            'created_at' => 'Created At',
-            'updated_at' => 'Updated At',
+            'created_at' => 'Creado en',
+            'updated_at' => 'Actualizado en',
             'id_Datos_Persona' => 'Id Datos Persona',
             'id_Horario' => 'Id Horario',
             'id_UserLevel' => 'Id User Level',
             'verification_token' => 'Verification Token',
+            'createdAt' => 'Creado en'
+
         ];
     }
 
