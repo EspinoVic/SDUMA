@@ -117,7 +117,7 @@ CREATE PROCEDURE dbo.sp_create_expediente
     @nombre nvarchar(255),
     @apellidoP nvarchar(255),
     @apellidoM nvarchar(255),
-    @tipoTrámite INT,
+    @tipoTramite INT,
     @idUserCreated INT 
     
  AS
@@ -127,7 +127,7 @@ CREATE PROCEDURE dbo.sp_create_expediente
 
         BEGIN TRANSACTION CreateExpediente;
 
-            IF NOT (EXISTS ( SELECT  TOP (1) id FROM sduma.dbo.TipoTramite WHERE id = @tipoTrámite))
+            IF NOT (EXISTS ( SELECT  TOP (1) id FROM sduma.dbo.TipoTramite WHERE id = @tipoTramite))
             BEGIN ;
                 THROW 54323, 'El tipo de trámite no existe.',1;
             END;   
@@ -187,7 +187,7 @@ CREATE PROCEDURE dbo.sp_create_expediente
                     ,@personaInsertedIndex
                     ,@idUserCreated 
                     ,@idUserCreated 
-                    , @tipoTrámite
+                    , @tipoTramite
                     )
             SET @rowsInserted = @rowsInserted + @@ROWCOUNT;
 
