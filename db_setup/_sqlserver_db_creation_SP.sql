@@ -126,7 +126,7 @@ CREATE PROCEDURE dbo.sp_create_expediente
 		DECLARE @newIdAnual INT;
 
         BEGIN TRANSACTION CreateExpediente;
-
+            SET NOCOUNT ON 
             IF NOT (EXISTS ( SELECT  TOP (1) id FROM sduma.dbo.TipoTramite WHERE id = @tipoTramite))
             BEGIN ;
                 THROW 54323, 'El tipo de trámite no existe.',1;
