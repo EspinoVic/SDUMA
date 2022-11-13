@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
       Nuevo Expediente
     </button>
     <button type="button" class="btn btn-secondary">Filtrar</button>
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+    <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
@@ -76,7 +76,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'id_User_modificadoPor',
             //'id_TipoTramite',
             [
-                'class' => ActionColumn::className(),
+                'class' => ActionColumn::class,
                 'urlCreator' => function ($action, Expediente $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }

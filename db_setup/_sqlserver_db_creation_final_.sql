@@ -5,6 +5,18 @@ CREATE TABLE sduma.dbo.MotivoConstruccion(
 	 PRIMARY KEY (id)
 );
 
+ 
+INSERT INTO [dbo].[MotivoConstruccion]
+           ([nombre]
+           ,[isActivo])
+     VALUES 
+      ('Licencia' , 1),
+      ('Registro' , 1),
+      ('Regularización' , 1),
+      ('Rectificación' , 1);
+ 
+GO
+
 
 CREATE TABLE sduma.dbo.Domicilio (
 	  id INT NOT NULL IDENTITY(1,1),
@@ -27,14 +39,24 @@ CREATE TABLE sduma.dbo.TipoPredio (
 	   PRIMARY KEY (id)
 
 );
+ 
 
- CREATE TABLE sduma.dbo.Contacto (
-	  Id INT NOT NULL IDENTITY(1,1),
-	  email NVARCHAR(45) NOT NULL,
-	  telefono NVARCHAR(45) NOT NULL,
-	   PRIMARY KEY (Id)
-  
-  );
+INSERT INTO [dbo].[TipoPredio]
+           ([nombre]
+           ,[isActivo])
+     VALUES
+           ('Urbano', 1),
+           ('Rústico', 1);
+GO
+
+
+CREATE TABLE sduma.dbo.Contacto (
+  Id INT NOT NULL IDENTITY(1,1),
+  email NVARCHAR(45) NOT NULL,
+  telefono NVARCHAR(45) NOT NULL,
+    PRIMARY KEY (Id)
+
+);
 
 
   CREATE TABLE sduma.dbo.GeneroConstruccion (
@@ -529,8 +551,14 @@ CREATE TABLE  sduma.dbo.TipoConstruccion (
   
   );
 
+INSERT INTO [dbo].[TipoConstruccion]
+           ([nombre]
+           ,[isActivo])
+     VALUES
+           ('Dos plantas',1);
+GO
 
-  
+
 CREATE TABLE sduma.dbo.TipoTramite (
 	  id INT NOT NULL IDENTITY(1,1),
 	  nombre NVARCHAR(45) NOT NULL,
@@ -540,6 +568,7 @@ CREATE TABLE sduma.dbo.TipoTramite (
 
 INSERT INTO sduma.dbo.TipoTramite ( nombre)
  VALUES ('CONSTRUCCION');
+ --Numero oficial, etc...
 
  CREATE TABLE sduma.dbo.Documento (
 	  id INT NOT NULL IDENTITY(1,1),
