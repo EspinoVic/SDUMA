@@ -20,14 +20,14 @@ GO
 
 CREATE TABLE sduma.dbo.Domicilio (
 	  id INT NOT NULL IDENTITY(1,1),
-	  coloniaFraccBarrio INT NOT NULL,
+	  coloniaFraccBarrio NVARCHAR(45)  NOT NULL,
 	  calle NVARCHAR(45) NOT NULL,
 	  numExt NVARCHAR(45) NULL,
-	  numInt NVARCHAR(45) NOT NULL,
+	  numInt NVARCHAR(45)  NULL,
 	  cp NVARCHAR(45) NOT NULL, 
-	  entreCallesH NVARCHAR(90) NOT NULL,
-	  entreCallesV NVARCHAR(90) NOT NULL,
-	   PRIMARY KEY (id)
+	  entreCallesH NVARCHAR(90) NULL,
+	  entreCallesV NVARCHAR(90) NULL,
+	  PRIMARY KEY (id)
   
   );
 
@@ -51,10 +51,10 @@ GO
 
 
 CREATE TABLE sduma.dbo.Contacto (
-  Id INT NOT NULL IDENTITY(1,1),
+  id INT NOT NULL IDENTITY(1,1),
   email NVARCHAR(45) NOT NULL,
   telefono NVARCHAR(45) NOT NULL,
-    PRIMARY KEY (Id)
+    PRIMARY KEY (id)
 
 );
 
@@ -63,7 +63,7 @@ CREATE TABLE sduma.dbo.Contacto (
 	  id INT NOT NULL IDENTITY(1,1) ,
 	  nombre NVARCHAR(45) NOT NULL,
 	  isActivo BIT NOT NULL DEFAULT 1,
-	    PRIMARY KEY (Id)
+	    PRIMARY KEY (id)
   
   );
  
@@ -626,7 +626,7 @@ VALUES ('DEFAULT');
 CREATE TABLE sduma.dbo.Rol (
   id INT NOT NULL IDENTITY(1,1),
   nombre NVARCHAR(45) NULL,
-  PRIMARY KEY (Id)
+  PRIMARY KEY (id)
   
 );
 /* 
@@ -850,7 +850,7 @@ CREATE TABLE sduma.dbo.SolicitudConstruccion (
   INDEX fk_SolicitudConstruccion_Expediente_idx (id_Expediente ASC),
   CONSTRAINT fk_SolicitudConstruccion_DomicilioNotif
     FOREIGN KEY (id_Persona_DomicilioNotificaciones)
-    REFERENCES sduma.dbo.Domicilio (Id)
+    REFERENCES sduma.dbo.Domicilio (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT fk_SolicitudConstruccion_MotivoConstruccion1
@@ -860,17 +860,17 @@ CREATE TABLE sduma.dbo.SolicitudConstruccion (
     ON UPDATE NO ACTION,
   CONSTRAINT fk_SolicitudConstruccion_DomicilioPredio
     FOREIGN KEY (id_DomicilioPredio)
-    REFERENCES sduma.dbo.Domicilio (Id)
+    REFERENCES sduma.dbo.Domicilio (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT fk_SolicitudConstruccion_Contacto1
     FOREIGN KEY (id_Contacto)
-    REFERENCES sduma.dbo.Contacto (Id)
+    REFERENCES sduma.dbo.Contacto (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT fk_SolicitudConstruccion_TipoPredio1
     FOREIGN KEY (id_TipoPredio)
-    REFERENCES sduma.dbo.TipoPredio (Id)
+    REFERENCES sduma.dbo.TipoPredio (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT fk_SolicitudConstruccion_TipoConstruccion1
@@ -927,7 +927,7 @@ CREATE TABLE sduma.dbo.SolicitudConstruccion_has_Persona (
   INDEX fk_SolicitudConstruccion_has_Persona_SolicitudConstruccion_idx (SolicitudConstruccion_Id ASC)  ,
   CONSTRAINT fk_SolicitudConstruccion_has_Persona_SolicitudConstruccion1
     FOREIGN KEY (SolicitudConstruccion_Id)
-    REFERENCES sduma.dbo.SolicitudConstruccion (Id)
+    REFERENCES sduma.dbo.SolicitudConstruccion (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT fk_SolicitudConstruccion_has_Persona_Persona1
@@ -950,7 +950,7 @@ CREATE TABLE  sduma.dbo.SolicitudConstruccion_has_Documento (
   INDEX fk_SolicitudConstruccion_has_Documento_SolicitudConstruccio_idx (id_SolicitudConstruccion ASC)  ,
   CONSTRAINT fk_SolicitudConstruccion_has_Documento_SolicitudConstruccion1
     FOREIGN KEY (id_SolicitudConstruccion)
-    REFERENCES sduma.dbo.SolicitudConstruccion (Id)
+    REFERENCES sduma.dbo.SolicitudConstruccion (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT fk_SolicitudConstruccion_has_Documento_Documento1
@@ -959,3 +959,5 @@ CREATE TABLE  sduma.dbo.SolicitudConstruccion_has_Documento (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 	);
+
+ 

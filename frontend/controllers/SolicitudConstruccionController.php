@@ -2,8 +2,10 @@
 
 namespace frontend\controllers;
 
+use common\models\Contacto;
 use common\models\SolicitudConstruccion;
 use common\models\SolicitudConstruccionSearch;
+use frontend\models\SolicitudConstruccionCreateForm;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -68,23 +70,29 @@ class SolicitudConstruccionController extends Controller
      */
     public function actionCreate()
     {
-        $model = new SolicitudConstruccion();
+        $model = new SolicitudConstruccionCreateForm/* CreateForm */();
         Yii::$app->session->setFlash( 'success',   "IsPOST:". $this->request->isPost  );
-        Yii::$app->session->setFlash( 'warning',   "LoadModel:". $model->load( $this->request->post() ) );
+        Yii::$app->session->setFlash( 'warning',   "ContactoNull? ->".is_null($model->contacto) );
   /*       Yii::$app->session->setFlash( 'danger',   "ID Genero Construc:". $model->id_GeneroConstruccion  ); */
 
-       /*  if ($this->request->isPost) {
+        if ($this->request->isPost) {
             //si la carga del modelo falla, entonces sale del if renderiza los errores, si ocupo un onChange en un DROPDOWN, podría funcionar
-            if ($model->load($this->request->post()) && $model->save()) {
+            if ($model->load($this->request->post()) /* $model->save() */) {
+                if(!$model->validate()){
+                    Yii::$app->session->setFlash( 'danger',   "Error al validar los campos.." );
+                    return $this->render('create', [
+                        'modelSolicitudConstruccionCreateForm' => $model,
+                    ]);   
+                }
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         } else {
-            $model->loadDefaultValues();
+          //  $model->loadDefaultValues();
         }
- */
+
 
         return $this->render('create', [
-            'modelSolicitudConstruccion' => $model,
+            'modelSolicitudConstruccionCreateForm' => $model,
         ]);
     }
 
@@ -99,10 +107,32 @@ class SolicitudConstruccionController extends Controller
     {
         $model = $this->findModel($id);
 
+        /* Si fue un POST, significa que envió el formulario para wardar cambios, 
+        
+        */
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        /* Si fue un get, entonces solo busca el modelo y lo renderiza */
+
+        Yii::$app->session->setFlash( 'warning',   "Contacto null:". is_null($model->contacto) );
+        if(is_null($model->contacto)){
+            
+            $model->contacto = new Contacto();
+             
+        }
+        Yii::$app->session->setFlash( 'warning',   "Contacto null2 xd:". is_null($model->contacto) );
+
+     /*    if(is_null($model->contacto)){
+            
+            $model->contacto = new Contacto();
+            $model->contacto->id = -1;
+            $model->contacto->email = "";
+            $model->contacto->telefono = "";
+        
+        } */
+        
         return $this->render('update', [
             'modelSolicitudConstruccion' => $model,
         ]);
@@ -125,8 +155,8 @@ class SolicitudConstruccionController extends Controller
     /**
      * Finds the SolicitudConstruccion model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param int $id ID
      * @return SolicitudConstruccion the loaded model
+     * @param int $id ID
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
