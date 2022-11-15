@@ -2,8 +2,14 @@
 
 use yii\helpers\Html;
 
-/** @var yii\web\View $this */
-/** @var common\models\SolicitudConstruccion $model */
+/** @var yii\web\View $this  
+ * @var common\models\SolicitudConstruccion $modelSolicitudConstruccion  
+ * @var common\models\Contacto $soliContacto  
+ * @var common\models\Persona $soliPersona  
+ * @var common\models\Domicilio $soliDomicilioNotif  
+ * @var common\models\Domicilio $soliDomicilioPredio   
+ * 
+ */
 
 $this->title = 'Create Solicitud Construccion';
 $this->params['breadcrumbs'][] = ['label' => 'Solicitud Construccions', 'url' => ['index']];
@@ -15,6 +21,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'modelSolicitudConstruccion' => $modelSolicitudConstruccion,
+        'soliPersona' => $soliPersona,
+        'soliDomicilioNotif' => $soliDomicilioNotif,
+        'soliDomicilioPredio' => $soliDomicilioPredio,
+        'soliContacto' => $soliContacto,
     ]) ?>
 
 </div>

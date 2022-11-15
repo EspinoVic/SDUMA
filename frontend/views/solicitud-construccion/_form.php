@@ -1,9 +1,13 @@
 <?php
 
+use common\models\CorrSeguridadEstruc;
 use common\models\GeneroConstruccion;
 use common\models\MotivoConstruccion;
 use common\models\SolicitudConstruccion;
 use common\models\SubGeneroConstruccion;
+use common\models\DirectorResponsableObra;
+use common\models\Expediente;
+use common\models\TipoConstruccion;
 use common\models\TipoPredio;
 use PhpParser\Node\Expr\Cast\Array_;
 use yii\bootstrap5\Html;
@@ -11,9 +15,16 @@ use yii\bootstrap5\ActiveForm;
 use yii\helpers\ArrayHelper;
 use   yii\widgets\ActiveField;
 
-/** @var yii\web\View $this */
-/** @var common\models\SolicitudConstruccion $modelSolicitudConstruccion */
-/** @var yii\widgets\ActiveForm $form */
+/** 
+* @var common\models\SolicitudConstruccion $modelSolicitudConstruccion  
+* @var common\models\Contacto $soliContacto  
+* @var common\models\Persona $soliPersona  
+* @var common\models\Domicilio $soliDomicilioNotif  
+* @var common\models\Domicilio $soliDomicilioPredio  
+*/
+     
+    $expenditenOwnerSoli =  Expediente::findOne(['id'=>$modelSolicitudConstruccion->id_Expediente]);
+     
 ?>
 
 <div class="solicitud-construccion-form">
@@ -30,6 +41,35 @@ use   yii\widgets\ActiveField;
         ]
     ); ?>
 
+    <h3><?= ("Solicitud para expediente: ".( $expenditenOwnerSoli->idAnual) . "/" .($expenditenOwnerSoli->anio)  )  ?></h5> 
+    <?= $form->field($modelSolicitudConstruccion, 'id_Expediente')->textInput() ?>
+    
+    <?= $form->field($modelSolicitudConstruccion, 'fechaCreacion')->label() ?>
+
+    <?= $form->field($modelSolicitudConstruccion, 'fechaModificacion')->label() ?>
+
+    <?= $form->field($modelSolicitudConstruccion, 'id_Persona_CreadoPor')->textInput() ?>
+
+    <?= $form->field($modelSolicitudConstruccion, 'isDeleted')->textInput() ?>
+
+
+    <?= $form->field($modelSolicitudConstruccion, 'id_Persona_ModificadoPor')->textInput() ?>
+
+
+    <h5><?= Html::encode("Contacto") ?></h5> 
+    
+    <?= $form->field($modelSolicitudConstruccion, 'id_Contacto')->textInput() ?>
+
+
+    <?= $form->field($soliContacto , 'email',['options' => ['class' => 'col-md-3']]) ->textInput( ) ;?>
+
+    <?= $form->field($soliContacto , 'telefono',['options' => ['class' => 'col-md-3']])->textInput( );  ?>
+
+
+    <h5><?= Html::encode("Domicilio para notificaciones") ?></h5>       
+    <?= $form->field($modelSolicitudConstruccion, 'id_Persona_DomicilioNotificaciones',['options' => ['class' => 'col-md-3']])->textInput() ?>
+    <?= $this->render("_domicilio_fields",['domicilio'=> $soliDomicilioNotif, 'form'=> $form, 'tipoDom'=>'1']) ?>           
+
     <?=$form->field($modelSolicitudConstruccion,"id_MotivoConstruccion")->dropDownList(
             $items = 
             ArrayHelper::map(
@@ -43,6 +83,7 @@ use   yii\widgets\ActiveField;
             
     )->label("Motivo de solicitud") ?>
 
+
     <h4>Información del predio </h4>
     <?=$form->field( $modelSolicitudConstruccion,"id_TipoPredio",['options' => ['class' => 'col-md-3']]  )
         ->dropDownList(
@@ -54,13 +95,22 @@ use   yii\widgets\ActiveField;
                    return $currentTipoTramite['nombre'];/* .'-'.$currentTipoTramite['seconde parameter']; */
                }
             ) 
-       )->label("Tipo de predio Dropdown") ?>
+       )->label("Tipo de predio Dropdown")
+    ?>
 
    <?= $form->field($model= $modelSolicitudConstruccion,$attribute = 'superficieTotal',['options' => ['class' => 'col-md-3']])  ?>
 
    <?= $form->field($modelSolicitudConstruccion, 'superficiePorConstruir',['options' => ['class' => 'col-md-3']])->textInput( ) ?>
    
+
+    <h5><?= Html::encode("Domicilio del predio") ?></h5>   
+    <?= $form->field($modelSolicitudConstruccion, 'id_DomicilioPredio',['options' => ['class' => 'col-md-3']] )->textInput() ?>
+    <?= $this->render("_domicilio_fields",['domicilio'=> $soliDomicilioPredio, 'form'=> $form, 'tipoDom'=>'2']) ?>           
+
+
+
    
+    
    <h4>Información de la construcción</h4>
    
    <?= $form->field($modelSolicitudConstruccion, 'id_GeneroConstruccion',['options' => ['class' => 'col-md-3']])
@@ -86,6 +136,28 @@ use   yii\widgets\ActiveField;
         )
     )->label('Subgenero de Construcción') 
    ?>
+    
+    <?= $form->field($modelSolicitudConstruccion, 'id_TipoConstruccion',['options' => ['class' => 'col-md-3']])
+        ->dropDownList(  
+            $items = 
+            ArrayHelper::merge(
+                ['0' => 'Seleccione Tipo Construcción'],
+                ArrayHelper::map(
+                    TipoConstruccion::findAll([
+                    'isActivo'=> 1 ]),
+                'id', 
+                'nombre'
+                ) 
+
+            )
+        )->label('Tipo Construcción')
+        
+    ?>
+    
+
+
+
+
     <div class ="row g3">
         
         <?= $form->field($modelSolicitudConstruccion, 'niveles',['options' => ['class' => 'col-md-3']])->textInput() ?>
@@ -115,36 +187,47 @@ use   yii\widgets\ActiveField;
 
     </div>
 
+    <?= $form->field($modelSolicitudConstruccion, 'id_DirectorResponsableObra',['options' => ['class' => 'col-md-6']])
+    ->dropDownList(  
+        $items = 
+        ArrayHelper::merge(
+            ['0' => 'Seleccione Director'],
+            ArrayHelper::map(
+                DirectorResponsableObra::findAll([
+                'isActivo'=> 1 ]),
+            'id', 
+            function($currentDirector) {
+                return $currentDirector['id'] ." - ".$currentDirector['abreviaicion'].". ".$currentDirector['nombre']." ".$currentDirector['apellidoP']." ".$currentDirector['apellidoM']." ".$currentDirector['cedula']; 
+            }
+            ) 
+
+        )
+    )->label('Director Responsable de Obra')
+    
+    ?>
+   <?= $form->field($modelSolicitudConstruccion, 'id_CorrSeguridadEstruc',['options' => ['class' => 'col-md-6']])
+    ->dropDownList(  
+        $items = 
+        ArrayHelper::merge(
+            ['0' => 'Seleccione Corr. Seguridad'],
+            ArrayHelper::map(
+                CorrSeguridadEstruc::findAll([
+                'isActivo'=> 1 ]),
+            'id', 
+            function($currentDirector) {
+                return $currentDirector['id'] ." - ".$currentDirector['abreviaicion'].". ".$currentDirector['nombre']." ".$currentDirector['apellidoP']." ".$currentDirector['apellidoM']." ".$currentDirector['cedula']; 
+            }
+            ) 
+
+        )
+    )->label('Corr. Seguridad Estructural')
+    
+    ?>
+ 
 
 
-    <?= $form->field($modelSolicitudConstruccion, 'fechaCreacion')->textInput() ?>
 
-    <?= $form->field($modelSolicitudConstruccion, 'fechaModificacion')->textInput() ?>
-
-    <?= $form->field($modelSolicitudConstruccion, 'isDeleted')->textInput() ?>
-
-    <?= $form->field($modelSolicitudConstruccion, 'id_Persona_CreadoPor')->textInput() ?>
-
-    <?= $form->field($modelSolicitudConstruccion, 'id_Persona_ModificadoPor')->textInput() ?>
-
-    <?= $form->field($modelSolicitudConstruccion, 'id_Persona_DomicilioNotificaciones')->textInput() ?>
-
-    <?= $form->field($modelSolicitudConstruccion, 'id_DomicilioPredio')->textInput() ?>
-
-
-
-    <?= $form->field($modelSolicitudConstruccion, 'id_Contacto')->textInput() ?>
-
-
-    <?= $form->field($modelSolicitudConstruccion, 'id_TipoConstruccion')->textInput() ?>
-
-
-    <?= $form->field($modelSolicitudConstruccion, 'id_DirectorResponsableObra')->textInput() ?>
-
-    <?= $form->field($modelSolicitudConstruccion, 'id_CorrSeguridadEstruc')->textInput() ?>
-
-    <?= $form->field($modelSolicitudConstruccion, 'id_Expediente')->textInput() ?>
-
+ 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
