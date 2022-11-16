@@ -18,7 +18,7 @@ use   yii\widgets\ActiveField;
 /** 
 * @var common\models\SolicitudConstruccion $modelSolicitudConstruccion  
 * @var common\models\Contacto $soliContacto  
-* @var common\models\Persona $soliPersona  
+* @var common\models\Persona $propietarioPersona  
 * @var common\models\Domicilio $soliDomicilioNotif  
 * @var common\models\Domicilio $soliDomicilioPredio  
 */
@@ -42,18 +42,27 @@ use   yii\widgets\ActiveField;
     ); ?>
 
     <h3><?= ("Solicitud para expediente: ".( $expenditenOwnerSoli->idAnual) . "/" .($expenditenOwnerSoli->anio)  )  ?></h5> 
-    <?= $form->field($modelSolicitudConstruccion, 'id_Expediente')->textInput() ?>
+    <?= $form->field($modelSolicitudConstruccion, 'id_Expediente',['options' => ['class' => 'col-md-1','display'=>'none']])/* ->textInput() */->hiddenInput()->label(false) ?>
     
-    <?= $form->field($modelSolicitudConstruccion, 'fechaCreacion')->label() ?>
+    <?= $form->field($modelSolicitudConstruccion, 'fechaCreacion',['options' => ['class' => 'col-md-1','display'=>'none']])->hiddenInput()->label(false)  ?>
+    <?= $form->field($modelSolicitudConstruccion, 'fechaModificacion',['options' => ['class' => 'col-md-1','display'=>'none']])->hiddenInput()->label(false)  ?>
 
-    <?= $form->field($modelSolicitudConstruccion, 'fechaModificacion')->label() ?>
+    <?= $form->field($modelSolicitudConstruccion, 'isDeleted',['options' => ['class' => 'col-md-1','display'=>'none']])->hiddenInput()->label(false) ?>
 
-    <?= $form->field($modelSolicitudConstruccion, 'id_Persona_CreadoPor')->textInput() ?>
-
-    <?= $form->field($modelSolicitudConstruccion, 'isDeleted')->textInput() ?>
+    <?= $form->field($modelSolicitudConstruccion, 'id_Persona_ModificadoPor',['options' => ['class' => 'col-md-1','display'=>'none']])->hiddenInput()->label(false)?>
 
 
-    <?= $form->field($modelSolicitudConstruccion, 'id_Persona_ModificadoPor')->textInput() ?>
+    <?= $form->field($modelSolicitudConstruccion, 'id_Persona_CreadoPor',['options' => ['class' => 'col-md-1','display'=>'none']])->/* textInput()-> */hiddenInput()->label(false) ?>
+
+    <h4>Propietario</h4>
+
+    
+    <?= $form->field($propietarioPersona, 'nombre',['options' => ['class' => 'col-md-7']])->textInput() ?>
+    <?= $form->field($propietarioPersona, 'apellidoP',['options' => ['class' => 'col-md-6']])->textInput() ?>
+    <?= $form->field($propietarioPersona, 'apellidoM',['options' => ['class' => 'col-md-6']])->textInput() ?>
+
+
+
 
 
     <h5><?= Html::encode("Contacto") ?></h5> 
@@ -68,7 +77,7 @@ use   yii\widgets\ActiveField;
 
     <h5><?= Html::encode("Domicilio para notificaciones") ?></h5>       
     <?= $form->field($modelSolicitudConstruccion, 'id_Persona_DomicilioNotificaciones',['options' => ['class' => 'col-md-3']])->textInput() ?>
-    <?= $this->render("_domicilio_fields",['domicilio'=> $soliDomicilioNotif, 'form'=> $form, 'tipoDom'=>'1']) ?>           
+    <?= $this->render("_domicilio_fields",['domicilio'=> $soliDomicilioNotif, 'form'=> $form, 'id'=>'0']) ?>           
 
     <?=$form->field($modelSolicitudConstruccion,"id_MotivoConstruccion")->dropDownList(
             $items = 
@@ -105,7 +114,7 @@ use   yii\widgets\ActiveField;
 
     <h5><?= Html::encode("Domicilio del predio") ?></h5>   
     <?= $form->field($modelSolicitudConstruccion, 'id_DomicilioPredio',['options' => ['class' => 'col-md-3']] )->textInput() ?>
-    <?= $this->render("_domicilio_fields",['domicilio'=> $soliDomicilioPredio, 'form'=> $form, 'tipoDom'=>'2']) ?>           
+    <?= $this->render("_domicilio_fields",['domicilio'=> $soliDomicilioPredio, 'form'=> $form, 'id'=>'1']) ?>           
 
 
 

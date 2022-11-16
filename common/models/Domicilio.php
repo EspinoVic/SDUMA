@@ -34,7 +34,7 @@ class Domicilio extends \yii\db\ActiveRecord
     }
 
 
-      // scenarios encapsulated
+/*       // scenarios encapsulated
     public function getCustomScenarios()
     {
       
@@ -49,7 +49,7 @@ class Domicilio extends \yii\db\ActiveRecord
         
         $scenarios = $this->getCustomScenarios();
         return $scenarios;
-    }
+    } */
     
     /**
      * {@inheritdoc}

@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this  
  * @var common\models\SolicitudConstruccion $modelSolicitudConstruccion  
  * @var common\models\Contacto $soliContacto  
- * @var common\models\Persona $soliPersona  
+ * @var common\models\Persona $propietarioPersona  
  * @var common\models\Domicilio $soliDomicilioNotif  
  * @var common\models\Domicilio $soliDomicilioPredio   
  * 
@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $this->render('_form', [
         'modelSolicitudConstruccion' => $modelSolicitudConstruccion,
-        'soliPersona' => $soliPersona,
+        'propietarioPersona' => $propietarioPersona,
         'soliDomicilioNotif' => $soliDomicilioNotif,
         'soliDomicilioPredio' => $soliDomicilioPredio,
         'soliContacto' => $soliContacto,

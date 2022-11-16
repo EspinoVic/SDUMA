@@ -88,38 +88,38 @@ class SolicitudConstruccionController extends Controller
     {
         $modelSolicitudConstruccion = new SolicitudConstruccion();        
         $modelSolicitudConstruccion->id_Expediente = 3;
+        $modelSolicitudConstruccion->id_Persona_CreadoPor = -1;
+        $modelSolicitudConstruccion->id_Persona_ModificadoPor = -1;
         $modelSolicitudConstruccion->fechaCreacion = gmdate("Y-m-d\TH:i:s\Z"); 
         $modelSolicitudConstruccion->fechaModificacion = gmdate("Y-m-d\TH:i:s\Z");
 
-        $soliPersona = new Persona();
+        $propietarioPersona = new Persona();
         $soliDomicilioNotif = new Domicilio();
         $soliDomicilioPredio = new Domicilio();
+        $multiplesDomicilio =array($soliDomicilioNotif, $soliDomicilioPredio);
 
         $soliContacto = new Contacto();
+        $soliContacto->id = -1;
         
-        Yii::$app->session->setFlash( 'warning',   "IsPOST:". $this->request->isPost  );
+       // Yii::$app->session->setFlash( 'warning',   "IsPOST:". $this->request->isPost  );
        // Yii::$app->session->setFlash( 'danger',   "LoadModel:". $modelSolicitudConstruccion->load( $this->request->post() ) );
   /*       Yii::$app->session->setFlash( 'danger',   "ID Genero Construc:". $modelSolicitudConstruccion->id_GeneroConstruccion  ); */
   
     if ($this->request->isPost) {
-      //si la carga del modelo falla, entonces sale del if renderiza los errores, si ocupo un onChange en un DROPDOWN, podría funcionar
-     
-      //Yii::debug($this-> multi_implode($this->request->post(),"\n") , __METHOD__);    
-   //   Yii::debug(array_walk_recursive($this->request->post(),"\n") , __METHOD__);    
-      if (
-                $modelSolicitudConstruccion->load($this->request->post()) &&
-                $soliContacto->load($this->request->post()) &&
-               // $soliDomicilioNotif->setAttributes($_POST['Domicilio[1]'] ),
-               // $soliDomicilioPredio->setAttributes($_POST['Domicilio[2]'] )
-                $soliDomicilioNotif->load($this->request->post(),"Domicilio",1 ) &&
-                $soliDomicilioPredio->load($this->request->post(),"Domicilio", 2)             
-                /* && $modelSolicitudConstruccion->save() */
-            ) {
-                Yii::$app->session->setFlash( 'success',   "GOOD:");
-              /*   Yii::$app->session->setFlash( 'danger',   $this->request->post()["Domicilio[1]"]); */
 
-                //return $this->redirect(['view', 'id' => $modelSolicitudConstruccion->id]);
-            }
+        if(
+            $modelSolicitudConstruccion->load($this->request->post()) &&
+            $propietarioPersona->load($this->request->post())  &&
+            $soliContacto->load($this->request->post()) &&
+            Domicilio::loadMultiple($multiplesDomicilio,$this->request->post()) &&
+            Domicilio::validateMultiple($multiplesDomicilio)     
+            /* && $modelSolicitudConstruccion->save() */
+        ) {
+            Yii::$app->session->setFlash( 'success',   "GOOD:");
+            
+
+            //return $this->redirect(['view', 'id' => $modelSolicitudConstruccion->id]);
+        }
         }
         else {
             $modelSolicitudConstruccion->loadDefaultValues();
@@ -129,9 +129,9 @@ class SolicitudConstruccionController extends Controller
 
         return $this->render('create', [
             'modelSolicitudConstruccion' => $modelSolicitudConstruccion,
-            'soliPersona' => $soliPersona,
-            'soliDomicilioNotif' => $soliDomicilioNotif,
-            'soliDomicilioPredio' => $soliDomicilioPredio,
+            'propietarioPersona' => $propietarioPersona,
+            'soliDomicilioNotif' => $multiplesDomicilio[0],
+            'soliDomicilioPredio' => $multiplesDomicilio[1],
             'soliContacto' => $soliContacto,
         ]);
     }
