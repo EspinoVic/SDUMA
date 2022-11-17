@@ -3,11 +3,12 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this  
- * @var common\models\SolicitudConstruccion $modelSolicitudConstruccion  
- * @var common\models\Contacto $soliContacto  
- * @var common\models\Persona $propietarioPersona  
- * @var common\models\Domicilio $soliDomicilioNotif  
- * @var common\models\Domicilio $soliDomicilioPredio   
+* @var common\models\SolicitudConstruccion $modelSolicitudConstruccion  
+* @var common\models\Contacto $soliContacto  
+* @var common\models\Persona $propietarioPersona  
+* @var common\models\Domicilio $soliDomicilioNotif  
+* @var common\models\Domicilio $soliDomicilioPredio  
+* @var common\models\SolicitudConstruccionHasDocumento $soliHasDocuments    
  * 
  */
 
@@ -25,6 +26,8 @@ $this->params['breadcrumbs'][] = $this->title;
         'soliDomicilioNotif' => $soliDomicilioNotif,
         'soliDomicilioPredio' => $soliDomicilioPredio,
         'soliContacto' => $soliContacto,
+        'soliHasDocuments' => $soliHasDocuments,
+
     ]) ?>
 
 </div>

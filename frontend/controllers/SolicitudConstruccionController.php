@@ -3,10 +3,15 @@
 namespace frontend\controllers;
 
 use common\models\Contacto;
+use common\models\Documento;
 use common\models\Domicilio;
+use common\models\Expediente;
 use common\models\Persona;
 use common\models\SolicitudConstruccion;
+use common\models\SolicitudConstruccionHasDocumento;
 use common\models\SolicitudConstruccionSearch;
+use common\models\TipoTramiteHasDocumento;
+use common\models\TipoTramite;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -22,17 +27,14 @@ class SolicitudConstruccionController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::class,
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
+        return array_merge(parent::behaviors(), [
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
                 ],
-            ]
-        );
+            ],
+        ]);
     }
 
     /**
@@ -63,9 +65,10 @@ class SolicitudConstruccionController extends Controller
             'model' => $this->findModel($id),
         ]);
     }
-    function multi_implode($array, $glue) {
+    function multi_implode($array, $glue)
+    {
         $ret = '';
-    
+
         foreach ($array as $item) {
             if (is_array($item)) {
                 $ret .= $this->multi_implode($item, $glue) . $glue;
@@ -73,9 +76,9 @@ class SolicitudConstruccionController extends Controller
                 $ret .= $item . $glue;
             }
         }
-    
-        $ret = substr($ret, 0, 0-strlen($glue));
-    
+
+        $ret = substr($ret, 0, 0 - strlen($glue));
+
         return $ret;
     }
     /**
@@ -86,46 +89,68 @@ class SolicitudConstruccionController extends Controller
     //Debe traer el id de expediente
     public function actionCreate()
     {
-        $modelSolicitudConstruccion = new SolicitudConstruccion();        
-        $modelSolicitudConstruccion->id_Expediente = 3;
+        $CREATE_SOLI_EXPEDIENTE_NUMBER = 3;
+        $modelSolicitudConstruccion = new SolicitudConstruccion();
+        $modelSolicitudConstruccion->id_Expediente = $CREATE_SOLI_EXPEDIENTE_NUMBER;
         $modelSolicitudConstruccion->id_Persona_CreadoPor = -1;
         $modelSolicitudConstruccion->id_Persona_ModificadoPor = -1;
-        $modelSolicitudConstruccion->fechaCreacion = gmdate("Y-m-d\TH:i:s\Z"); 
-        $modelSolicitudConstruccion->fechaModificacion = gmdate("Y-m-d\TH:i:s\Z");
+        $modelSolicitudConstruccion->fechaCreacion = gmdate('Y-m-d\TH:i:s\Z');
+        $modelSolicitudConstruccion->fechaModificacion = gmdate(
+            'Y-m-d\TH:i:s\Z'
+        );
 
-        $propietarioPersona = new Persona();
+        $propietarioPersona = new Persona(); //debería ser un array, por ahora lo dejo así
         $soliDomicilioNotif = new Domicilio();
         $soliDomicilioPredio = new Domicilio();
-        $multiplesDomicilio =array($soliDomicilioNotif, $soliDomicilioPredio);
+        $multiplesDomicilio = [$soliDomicilioNotif, $soliDomicilioPredio];
 
         $soliContacto = new Contacto();
         $soliContacto->id = -1;
-        
-       // Yii::$app->session->setFlash( 'warning',   "IsPOST:". $this->request->isPost  );
-       // Yii::$app->session->setFlash( 'danger',   "LoadModel:". $modelSolicitudConstruccion->load( $this->request->post() ) );
-  /*       Yii::$app->session->setFlash( 'danger',   "ID Genero Construc:". $modelSolicitudConstruccion->id_GeneroConstruccion  ); */
-  
-    if ($this->request->isPost) {
 
-        if(
-            $modelSolicitudConstruccion->load($this->request->post()) &&
-            $propietarioPersona->load($this->request->post())  &&
-            $soliContacto->load($this->request->post()) &&
-            Domicilio::loadMultiple($multiplesDomicilio,$this->request->post()) &&
-            Domicilio::validateMultiple($multiplesDomicilio)     
-            /* && $modelSolicitudConstruccion->save() */
-        ) {
-            Yii::$app->session->setFlash( 'success',   "GOOD:");
-            
+        //$documentos[] = new Documento();
+        $soliHasDocuments = array();//[] = new SolicitudConstruccionHasDocumento();
 
-            //return $this->redirect(['view', 'id' => $modelSolicitudConstruccion->id]);
+        $docsAvailableForCurrTraMite = TipoTramiteHasDocumento::findAll([
+            'id_TipoTramite' => Expediente::findOne([
+                'id' => $CREATE_SOLI_EXPEDIENTE_NUMBER,
+            ])->id_TipoTramite,
+        ]);
+
+        foreach ($docsAvailableForCurrTraMite as $index => $currAvailable) {
+            # code...
+            $currSoliHasDocument = new SolicitudConstruccionHasDocumento();
+            $currSoliHasDocument->id_Documento = $currAvailable ->id_Documento;
+           // $currSoliHasDocument->documento = $currAvailable ->documento;
+            $currSoliHasDocument->isEntregado = true; 
+            $currSoliHasDocument->nombreArchivo = "Sin nombre $index"; 
+            $currSoliHasDocument->path = "Sin path";
+            $currSoliHasDocument->realNombreArchivo = "Sin nombre real";
+            $soliHasDocuments[] =  $currSoliHasDocument;
         }
-        }
-        else {
+
+        // Yii::$app->session->setFlash( 'warning',   "IsPOST:". $this->request->isPost  );
+        // Yii::$app->session->setFlash( 'danger',   "LoadModel:". $modelSolicitudConstruccion->load( $this->request->post() ) );
+        /*       Yii::$app->session->setFlash( 'danger',   "ID Genero Construc:". $modelSolicitudConstruccion->id_GeneroConstruccion  ); */
+
+        if ($this->request->isPost) {
+            if (
+                $modelSolicitudConstruccion->load($this->request->post()) &&
+                $propietarioPersona->load($this->request->post()) &&
+                $soliContacto->load($this->request->post()) &&
+                Domicilio::loadMultiple(
+                    $multiplesDomicilio,
+                    $this->request->post()
+                ) &&
+                Domicilio::validateMultiple($multiplesDomicilio)
+                /* && $modelSolicitudConstruccion->save() */
+            ) {
+                Yii::$app->session->setFlash('success', 'GOOD:');
+
+                //return $this->redirect(['view', 'id' => $modelSolicitudConstruccion->id]);
+            }
+        } else {
             $modelSolicitudConstruccion->loadDefaultValues();
         }
-
-        
 
         return $this->render('create', [
             'modelSolicitudConstruccion' => $modelSolicitudConstruccion,
@@ -133,6 +158,7 @@ class SolicitudConstruccionController extends Controller
             'soliDomicilioNotif' => $multiplesDomicilio[0],
             'soliDomicilioPredio' => $multiplesDomicilio[1],
             'soliContacto' => $soliContacto,
+            'soliHasDocuments' => $soliHasDocuments,
         ]);
     }
 
@@ -147,7 +173,11 @@ class SolicitudConstruccionController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+        if (
+            $this->request->isPost &&
+            $model->load($this->request->post()) &&
+            $model->save()
+        ) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

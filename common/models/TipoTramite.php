@@ -16,6 +16,9 @@ use Yii;
  */
 class TipoTramite extends \yii\db\ActiveRecord
 {
+
+    const TIPO_TRAMITE_CONSTRUCCION = 1;
+
     /**
      * {@inheritdoc}
      */

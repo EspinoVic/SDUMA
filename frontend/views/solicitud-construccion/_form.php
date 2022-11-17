@@ -21,6 +21,7 @@ use   yii\widgets\ActiveField;
 * @var common\models\Persona $propietarioPersona  
 * @var common\models\Domicilio $soliDomicilioNotif  
 * @var common\models\Domicilio $soliDomicilioPredio  
+* @var common\models\SolicitudConstruccionHasDocumento $soliHasDocuments  
 */
      
     $expenditenOwnerSoli =  Expediente::findOne(['id'=>$modelSolicitudConstruccion->id_Expediente]);
@@ -60,11 +61,8 @@ use   yii\widgets\ActiveField;
     <?= $form->field($propietarioPersona, 'nombre',['options' => ['class' => 'col-md-7']])->textInput() ?>
     <?= $form->field($propietarioPersona, 'apellidoP',['options' => ['class' => 'col-md-6']])->textInput() ?>
     <?= $form->field($propietarioPersona, 'apellidoM',['options' => ['class' => 'col-md-6']])->textInput() ?>
-
-
-
-
-
+ 
+ 
     <h5><?= Html::encode("Contacto") ?></h5> 
     
     <?= $form->field($modelSolicitudConstruccion, 'id_Contacto')->textInput() ?>
@@ -233,8 +231,18 @@ use   yii\widgets\ActiveField;
     
     ?>
  
+    <h4>Entregables</h4>
+    <?php 
+               
+        foreach ($soliHasDocuments as $id => $soliHasDocument) {
 
+            echo $form->field($soliHasDocument, "[$id]nombreArchivo")
+            ->checkbox([$soliHasDocument->isEntregado?"checked":""=>""])  
+            -> label($soliHasDocument->documento->nombre);
+        }
+    ?>
 
+  
 
  
     <div class="form-group">
