@@ -33,7 +33,7 @@ class SolicitudConstruccionHasDocumento extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['id_SolicitudConstruccion', 'id_Documento', 'isEntregado', 'nombreArchivo', 'path', 'realNombreArchivo'], 'required'],
+            [['id_SolicitudConstruccion', 'id_Documento', 'isEntregado'], 'required'],
             [['id_SolicitudConstruccion', 'id_Documento', 'isEntregado'], 'integer'],
             [['nombreArchivo', 'path'], 'string', 'max' => 128],
             [['realNombreArchivo'], 'string', 'max' => 90],

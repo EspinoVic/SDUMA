@@ -9,6 +9,7 @@ use common\models\Expediente;
 use common\models\Persona;
 use common\models\SolicitudConstruccion;
 use common\models\SolicitudConstruccionHasDocumento;
+use common\models\SolicitudConstruccionHasPersona;
 use common\models\SolicitudConstruccionSearch;
 use common\models\TipoTramiteHasDocumento;
 use common\models\TipoTramite;
@@ -90,14 +91,8 @@ class SolicitudConstruccionController extends Controller
     public function actionCreate()
     {
         $CREATE_SOLI_EXPEDIENTE_NUMBER = 3;
+
         $modelSolicitudConstruccion = new SolicitudConstruccion();
-        $modelSolicitudConstruccion->id_Expediente = $CREATE_SOLI_EXPEDIENTE_NUMBER;
-        $modelSolicitudConstruccion->id_Persona_CreadoPor = -1;
-        $modelSolicitudConstruccion->id_Persona_ModificadoPor = -1;
-        $modelSolicitudConstruccion->fechaCreacion = gmdate('Y-m-d\TH:i:s\Z');
-        $modelSolicitudConstruccion->fechaModificacion = gmdate(
-            'Y-m-d\TH:i:s\Z'
-        );
 
         $propietarioPersona = new Persona(); //debería ser un array, por ahora lo dejo así
         $soliDomicilioNotif = new Domicilio();
@@ -105,35 +100,20 @@ class SolicitudConstruccionController extends Controller
         $multiplesDomicilio = [$soliDomicilioNotif, $soliDomicilioPredio];
 
         $soliContacto = new Contacto();
-        $soliContacto->id = -1;
 
-        //$documentos[] = new Documento();
-        $soliHasDocuments = array();//[] = new SolicitudConstruccionHasDocumento();
-
-        $docsAvailableForCurrTraMite = TipoTramiteHasDocumento::findAll([
-            'id_TipoTramite' => Expediente::findOne([
-                'id' => $CREATE_SOLI_EXPEDIENTE_NUMBER,
-            ])->id_TipoTramite,
-        ]);
-
-        foreach ($docsAvailableForCurrTraMite as $index => $currAvailable) {
-            # code...
-            $currSoliHasDocument = new SolicitudConstruccionHasDocumento();
-            $currSoliHasDocument->id_Documento = $currAvailable ->id_Documento;
-           // $currSoliHasDocument->documento = $currAvailable ->documento;
-            $currSoliHasDocument->isEntregado = true; 
-            $currSoliHasDocument->nombreArchivo = "Sin nombre $index"; 
-            $currSoliHasDocument->path = "Sin path";
-            $currSoliHasDocument->realNombreArchivo = "Sin nombre real";
-            $soliHasDocuments[] =  $currSoliHasDocument;
-        }
-
-        // Yii::$app->session->setFlash( 'warning',   "IsPOST:". $this->request->isPost  );
-        // Yii::$app->session->setFlash( 'danger',   "LoadModel:". $modelSolicitudConstruccion->load( $this->request->post() ) );
-        /*       Yii::$app->session->setFlash( 'danger',   "ID Genero Construc:". $modelSolicitudConstruccion->id_GeneroConstruccion  ); */
-
+        $soliHasDocuments = []; //[] = new SolicitudConstruccionHasDocumento();
+       /*  Yii::$app->request -> post() */
         if ($this->request->isPost) {
-            if (
+            $countSoliHasDocument = count(
+                $this->request->post('SolicitudConstruccionHasDocumento') //no funciona con el nombre de la tabla, ya que los "_" se quitan y se usa CamelCase, y cuando esos campos se devuelven del form al POST, vienen en CamelCase, por lo tanto no hacen match con el table name
+            );
+ 
+            for ($i = 0; $i < $countSoliHasDocument; $i++) {
+                $soliHasDocuments[$i] = new SolicitudConstruccionHasDocumento();
+                $soliHasDocuments[$i]->id_SolicitudConstruccion = $CREATE_SOLI_EXPEDIENTE_NUMBER;
+                $soliHasDocuments[$i]->id_Documento = $i;
+            }
+             if (
                 $modelSolicitudConstruccion->load($this->request->post()) &&
                 $propietarioPersona->load($this->request->post()) &&
                 $soliContacto->load($this->request->post()) &&
@@ -141,15 +121,47 @@ class SolicitudConstruccionController extends Controller
                     $multiplesDomicilio,
                     $this->request->post()
                 ) &&
-                Domicilio::validateMultiple($multiplesDomicilio)
-                /* && $modelSolicitudConstruccion->save() */
-            ) {
+                Domicilio::validateMultiple($multiplesDomicilio) &&
+                SolicitudConstruccionHasPersona::loadMultiple(
+                    $soliHasDocuments,
+                    $this->request->post()
+                )
+             ) {
                 Yii::$app->session->setFlash('success', 'GOOD:');
+                Yii::$app->session->setFlash('warning', "nombreArchivo1:".$soliHasDocuments[0] -> nombreArchivo);
 
                 //return $this->redirect(['view', 'id' => $modelSolicitudConstruccion->id]);
             }
         } else {
+            //cuando no es post
             $modelSolicitudConstruccion->loadDefaultValues();
+            $modelSolicitudConstruccion->id_Expediente = $CREATE_SOLI_EXPEDIENTE_NUMBER;
+            $modelSolicitudConstruccion->id_Persona_CreadoPor = -1;
+            $modelSolicitudConstruccion->id_Persona_ModificadoPor = -1;
+            $modelSolicitudConstruccion->fechaCreacion = gmdate(
+                'Y-m-d\TH:i:s\Z'
+            );
+            $modelSolicitudConstruccion->fechaModificacion = gmdate(
+                'Y-m-d\TH:i:s\Z'
+            );
+            $soliContacto->id = -1;
+            //los docs availables solo la primera vez (cuando se hace un GET), luego el usuario podrá descartar los que no ocupe☺
+            $docsAvailableForCurrTraMite = TipoTramiteHasDocumento::findAll([
+                'id_TipoTramite' => Expediente::findOne([
+                    'id' => $CREATE_SOLI_EXPEDIENTE_NUMBER,
+                ])->id_TipoTramite,
+            ]);
+
+            foreach ($docsAvailableForCurrTraMite as $index => $currAvailable) {
+                $currSoliHasDocument = new SolicitudConstruccionHasDocumento();
+                $currSoliHasDocument->id_Documento =  $currAvailable->id_Documento;
+                // $currSoliHasDocument->documento = $currAvailable ->documento;
+                $currSoliHasDocument->isEntregado = true;
+                $currSoliHasDocument->nombreArchivo = "Sin nombre $index";
+                $currSoliHasDocument->path = 'Sin path';
+                $currSoliHasDocument->realNombreArchivo = 'Sin nombre real';
+                $soliHasDocuments[] = $currSoliHasDocument; //crea nuevo en la ultima posicion
+            }
         }
 
         return $this->render('create', [

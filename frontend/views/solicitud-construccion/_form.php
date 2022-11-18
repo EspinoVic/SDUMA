@@ -6,7 +6,9 @@ use common\models\MotivoConstruccion;
 use common\models\SolicitudConstruccion;
 use common\models\SubGeneroConstruccion;
 use common\models\DirectorResponsableObra;
+use common\models\Documento;
 use common\models\Expediente;
+use common\models\SolicitudConstruccionHasPersona;
 use common\models\TipoConstruccion;
 use common\models\TipoPredio;
 use PhpParser\Node\Expr\Cast\Array_;
@@ -399,27 +401,42 @@ $expenditenOwnerSoli = Expediente::findOne([
         <tbody>
 
             <?php foreach ($soliHasDocuments as $id => $soliHasDocument) { ?>
-            <tr onclick="">
-                <td>
-                    <?php echo $form
-                        ->field($soliHasDocument, "[$id]nombreArchivo")
-                        ->checkbox([
-                            $soliHasDocument->isEntregado ? 'checked' : '' => '',
-                        ])
-                        ->label($soliHasDocument->documento->nombre); ?>
-                </td>
-                <td>
-                    <span >Archivo cargado.jpeg</span>
-                </td>
-                <td>
-                    <button type="button" class="btn btn-outline-danger">Borrar</button>
-                </td>
-                <td>
-                    <input class="form-control form-control-sm  " id="formFileSm" type="file">
+                <tr onclick="">
+                    <td>
+                        <?= $form
+                            ->field($soliHasDocument, "[$id]id_Documento", [
+                                'options' => ['class' => 'col-md-1', 'display' => 'none'],
+                            ])
+                            ->hiddenInput()
+                            ->label(false) 
+                        ?>
+                        <?php echo $form
+                            ->field($soliHasDocument, "[$id]isEntregado")
+                            ->checkbox()
+                            ->label($soliHasDocument -> documento ->nombre /* Documento::findOne( ["id"=>$soliHasDocument->id_Documento]) -> nombre  */); ?>
+                    </td>
+                    <td><!-- border-0 -->
+                        <span >
+                            <?= $form->field(
+                                $soliHasDocument,
+                                "[$id]nombreArchivo",
+                                
+                            ) ->textInput(
+                                     ['class' => 'border-0 disabled',
+                                      ' readonly' => ""
+                                     ]
+                                ) -> label(false) ?> 
+                       </span>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-outline-danger">Borrar</button>
+                    </td>
+                    <td>
+                        <input class="form-control form-control-sm  " id="formFileSm" type="file">
 
-                </td>
-            </tr>
-        <?php } ?>
+                    </td>
+                </tr>
+            <?php } ?>
 
 
         
