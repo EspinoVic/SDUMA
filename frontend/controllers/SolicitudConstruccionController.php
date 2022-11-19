@@ -101,19 +101,31 @@ class SolicitudConstruccionController extends Controller
 
         $soliContacto = new Contacto();
 
-        $soliHasDocuments = []; //[] = new SolicitudConstruccionHasDocumento();
-       /*  Yii::$app->request -> post() */
-        if ($this->request->isPost) {
-            $countSoliHasDocument = count(
+        $soliHasDocuments = [];  
+         if ($this->request->isPost) {
+            /* Si el array de modelos fuera estatico, se podría hacer con el count comentado */
+           /*  $countSoliHasDocument = count(
                 $this->request->post('SolicitudConstruccionHasDocumento') //no funciona con el nombre de la tabla, ya que los "_" se quitan y se usa CamelCase, y cuando esos campos se devuelven del form al POST, vienen en CamelCase, por lo tanto no hacen match con el table name
             );
- 
-            for ($i = 0; $i < $countSoliHasDocument; $i++) {
+            Yii::$app->session->setFlash('danger', 'CountSoliDoc:'.$countSoliHasDocument); */
+           // var_dump($this->request->post('SolicitudConstruccionHasDocumento'));
+            foreach ($this->request->post('SolicitudConstruccionHasDocumento') as $key => $value/* modelo de soliHasDoc */) {
+
+                $soliHasDocuments[$key] = new SolicitudConstruccionHasDocumento();
+                $soliHasDocuments[$key]->id_SolicitudConstruccion = $CREATE_SOLI_EXPEDIENTE_NUMBER;
+                
+               
+            }
+           /*  for ($i = 1; $i < $countSoliHasDocument; $i++) {
                 $soliHasDocuments[$i] = new SolicitudConstruccionHasDocumento();
                 $soliHasDocuments[$i]->id_SolicitudConstruccion = $CREATE_SOLI_EXPEDIENTE_NUMBER;
-                $soliHasDocuments[$i]->id_Documento = $i;
-            }
-             if (
+                
+            } */
+            ob_start();
+            var_dump( $this->request->post('SolicitudConstruccionHasDocumento') );
+            Yii::debug(ob_get_clean() , __METHOD__);
+
+            if (
                 $modelSolicitudConstruccion->load($this->request->post()) &&
                 $propietarioPersona->load($this->request->post()) &&
                 $soliContacto->load($this->request->post()) &&
@@ -126,10 +138,25 @@ class SolicitudConstruccionController extends Controller
                     $soliHasDocuments,
                     $this->request->post()
                 )
-             ) {
-                Yii::$app->session->setFlash('success', 'GOOD:');
+            ) {
+              /*   Yii::$app->session->setFlash('success', 'GOOD:');
                 Yii::$app->session->setFlash('warning', "nombreArchivo1:".$soliHasDocuments[0] -> nombreArchivo);
+               */  
+                foreach ($soliHasDocuments as $keyNam => $soliHasDocument) {
+                    ob_start();
+                    //var_dump($data[$formName][$i],"UWU");
+                    var_dump(
+                        [   "keyname"=> $keyNam,
+                            "idDoc" => $soliHasDocument->id_Documento,
+                            "entregado" => $soliHasDocument->isEntregado?"TRUE":"FALSE",
+                            "nameArchivo" => $soliHasDocument->nombreArchivo,      
+                        ]
+                    );
+                  
 
+                   Yii::debug(ob_get_clean() , __METHOD__);
+                }
+                
                 //return $this->redirect(['view', 'id' => $modelSolicitudConstruccion->id]);
             }
         } else {
@@ -154,13 +181,13 @@ class SolicitudConstruccionController extends Controller
 
             foreach ($docsAvailableForCurrTraMite as $index => $currAvailable) {
                 $currSoliHasDocument = new SolicitudConstruccionHasDocumento();
-                $currSoliHasDocument->id_Documento =  $currAvailable->id_Documento;
+                $currSoliHasDocument->id_Documento =  $currAvailable->id_Documento/* *84 */;
                 // $currSoliHasDocument->documento = $currAvailable ->documento;
                 $currSoliHasDocument->isEntregado = true;
-                $currSoliHasDocument->nombreArchivo = "Sin nombre $index";
+                $currSoliHasDocument->nombreArchivo = "Sin nombre $currAvailable->id_Documento";
                 $currSoliHasDocument->path = 'Sin path';
                 $currSoliHasDocument->realNombreArchivo = 'Sin nombre real';
-                $soliHasDocuments[] = $currSoliHasDocument; //crea nuevo en la ultima posicion
+                $soliHasDocuments[$index] = $currSoliHasDocument; //crea nuevo en posición index
             }
         }
 

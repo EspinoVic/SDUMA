@@ -413,7 +413,8 @@ $expenditenOwnerSoli = Expediente::findOne([
                         <?php echo $form
                             ->field($soliHasDocument, "[$id]isEntregado")
                             ->checkbox()
-                            ->label($soliHasDocument -> documento ->nombre /* Documento::findOne( ["id"=>$soliHasDocument->id_Documento]) -> nombre  */); ?>
+                            ->label(/* $soliHasDocument -> documento ->nombre */ Documento::findOne( ["id"=>$soliHasDocument->id_Documento/* /84 */]) -> nombre );
+                             ?>
                     </td>
                     <td><!-- border-0 -->
                         <span >
