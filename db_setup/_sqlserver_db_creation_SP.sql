@@ -203,8 +203,272 @@ CREATE PROCEDURE dbo.sp_create_expediente
     END CATCH       
 
 GO
---TEST
 
-/* CREATE PROCEDURE dbo.testSP
+
+/* 
+(<superficieTotal, int,>
+,<superficiePorConstruir, int,>
+,<superficiePreexistente, int,>
+,<niveles, int,>
+,<cajones, int,>
+,<COS, nvarchar(45),>
+,<CUS, nvarchar(45),>
+,<RPP, nvarchar(45),>
+,<tomo, nvarchar(45),>
+,<folioElec, nvarchar(45),>
+,<cuentaCatastral, nvarchar(45),>
+,<fechaCreacion, datetime,>
+,<fechaModificacion, datetime,>
+,<isDeleted, bit,>
+,<id_Persona_CreadoPor, int,>
+,<id_Persona_ModificadoPor, int,>
+,<id_Persona_DomicilioNotificaciones, int,>
+,<id_DomicilioPredio, int,>
+,<id_MotivoConstruccion, int,>
+,<id_Contacto, int,>
+,<id_TipoPredio, int,>
+,<id_TipoConstruccion, int,>
+,<id_GeneroConstruccion, int,>
+,<id_SubGeneroConstruccion, int,>
+,<id_DirectorResponsableObra, int,>
+,<id_CorrSeguridadEstruc, int,>
+,<id_Expediente, int,>)
+ */
+ 	
+CREATE PROCEDURE dbo.sp_create_soliconstruccion
+    /* Propietario datos */
+    @propietarioNombre nvarchar(255),
+    @propietarioApellidoP nvarchar(255),
+    @propietarioApellidoM nvarchar(255),
+    
+    /* Contacto */
+    @email nvarchar(45),
+    @telefono nvarchar(45), 
+    
+
+    /* Domicilio Notificaciones */
+    @notificacionesColoniaFraccBarrio nvarchar(90),
+    @notificacionesCalle nvarchar(45),
+    @notificacionesNumExt nvarchar(45),
+    @notificacionesNumInt nvarchar(45),
+    @notificacionesCP nvarchar(10),
+    @notificacionesEntreCalleV nvarchar(90),
+    @notificacionesEntreCalleH nvarchar(90),
+    
+
+
+    @idMotivoConstruccion INT,
+    @idTipoPredio INT,
+    @superficieTotal INT,
+    @superficiePorConstruir INT,
+
+    /* Domicilio Predio */
+    @predioColoniaFraccBarrio nvarchar(90),
+    @predioCalle nvarchar(45),
+    @predioNumExt nvarchar(45),
+    @predioNumInt nvarchar(45),
+    @predioCP nvarchar(10),
+    @predioEntreCalleV nvarchar(90),
+    @predioEntreCalleH nvarchar(90),
+
+    /* Info de la construcción */
+    @idGeneroConstruccion INT,
+    @idSubGeneroConstruccion INT,
+    @idTipoConstruccion INT,
+
+    @niveles INT,
+    @cajones INT,
+    @cos nvarchar(45),
+    @cus nvarchar(45),
+    @superficiePreexistente INT,
+    @rpp nvarchar(45),
+    @tomo nvarchar(45),
+    @folioElec nvarchar(45),
+    @cuentaCatastral nvarchar(45),
+
+    @idDirectorResponsableObra INT,
+    @idCorrSeguridadEstruc INT,
+
+    @idUserCreadoPor INT,
+    @idExpediente INT,
+    @documentos SoliHasDocParam READONLY --tipo custom
+
  AS
- Insert into dbo.Persona ("uwu","uwu2","uwu3")    */
+    BEGIN TRY
+        DECLARE @rowsInserted INT = 0;
+        DECLARE @contactoInsertedIndex int ;
+        DECLARE @notificacionesDomicilioInsertedIndex int ;
+        DECLARE @predioDomicilioInsertedIndex int ;
+        DECLARE @soliConstrucInsertedIndex int ;
+        DECLARE @propietarioInsertedIndex int ;
+        
+
+        BEGIN TRANSACTION CreateExpediente;
+            SET NOCOUNT ON 
+
+            IF NOT (EXISTS ( SELECT  TOP (1) id FROM sduma.dbo.Expediente WHERE id = @idExpediente))
+            BEGIN ;
+                THROW 54324, 'El expediente no existe.',1;
+            END;   
+
+            INSERT INTO [dbo].[Contacto] ([email] ,[telefono])  VALUES (@email , @telefono );
+ 
+            SET @contactoInsertedIndex = (SELECT SCOPE_IDENTITY() );
+            SET @rowsInserted = @@ROWCOUNT;
+ 
+            INSERT INTO [dbo].[Domicilio]
+                    ([coloniaFraccBarrio]
+                    ,[calle]
+                    ,[numExt]
+                    ,[numInt]
+                    ,[cp]
+                    ,[entreCallesH]
+                    ,[entreCallesV])
+                VALUES
+                    (@notificacionesColoniaFraccBarrio
+                    ,@notificacionesCalle
+                    ,@notificacionesNumExt
+                    ,@notificacionesNumExt
+                    ,@notificacionesCP
+                    ,@notificacionesEntreCalleH
+                    ,@notificacionesEntreCalleV
+                    );
+            SET @notificacionesDomicilioInsertedIndex = (SELECT SCOPE_IDENTITY() );
+            SET @rowsInserted = @rowsInserted + @@ROWCOUNT;
+
+            INSERT INTO [dbo].[Domicilio]
+                    ([coloniaFraccBarrio]
+                    ,[calle]
+                    ,[numExt]
+                    ,[numInt]
+                    ,[cp]
+                    ,[entreCallesH]
+                    ,[entreCallesV])
+                VALUES
+                    (@predioColoniaFraccBarrio
+                    ,@predioCalle
+                    ,@predioNumExt
+                    ,@predioNumExt
+                    ,@predioCP
+                    ,@predioEntreCalleH
+                    ,@predioEntreCalleV
+                    );
+            SET @predioDomicilioInsertedIndex = (SELECT SCOPE_IDENTITY() );
+            SET @rowsInserted = @rowsInserted + @@ROWCOUNT;
+
+            
+            INSERT INTO [dbo].[SolicitudConstruccion]
+                    ([superficieTotal]
+                    ,[superficiePorConstruir]
+                    ,[superficiePreexistente]
+                    ,[niveles]
+                    ,[cajones]
+                    ,[COS]
+                    ,[CUS]
+                    ,[RPP]
+                    ,[tomo]
+                    ,[folioElec]
+                    ,[cuentaCatastral]
+                    ,[fechaCreacion]
+                    ,[fechaModificacion]
+                    ,[isDeleted]
+                    ,[id_User_CreadoPor]
+                    ,[id_User_ModificadoPor]
+                    ,[id_DomicilioNotificaciones]
+                    ,[id_DomicilioPredio]
+                    ,[id_MotivoConstruccion]
+                    ,[id_Contacto]
+                    ,[id_TipoPredio]
+                    ,[id_TipoConstruccion]
+                    ,[id_GeneroConstruccion]
+                    ,[id_SubGeneroConstruccion]
+                    ,[id_DirectorResponsableObra]
+                    ,[id_CorrSeguridadEstruc]
+                    ,[id_Expediente])
+            VALUES
+                (@superficieTotal
+                ,@superficiePorConstruir
+                ,@superficiePreexistente 
+                ,@niveles 
+                ,@cajones 
+                ,@cos 
+                ,@cus 
+                ,@rpp
+                ,@tomo
+                ,@folioElec
+                ,@cuentaCatastral 
+                ,GETDATE()--fechaCreacion 
+                ,GETDATE()--fechaModificacion 
+                ,0--<isDeleted, bit,>
+                ,@idUserCreadoPor--<id_User_CreadoPor, int,>
+                ,@idUserCreadoPor--<id_User_ModificadoPor, int,>
+                ,@notificacionesDomicilioInsertedIndex--<id_DomicilioNotificaciones, int,>
+                ,@predioDomicilioInsertedIndex--<id_DomicilioPredio, int,>
+                ,@idMotivoConstruccion--<id_MotivoConstruccion, int,>
+                ,@contactoInsertedIndex--<id_Contacto, int,>
+                ,@idTipoPredio--<id_TipoPredio, int,>
+                ,@idTipoConstruccion--<id_TipoConstruccion, int,>
+                ,@idGeneroConstruccion--<id_GeneroConstruccion, int,>
+                ,@idSubGeneroConstruccion--<id_SubGeneroConstruccion, int,>
+                ,@idDirectorResponsableObra--<id_DirectorResponsableObra, int,>
+                ,@idCorrSeguridadEstruc--<id_CorrSeguridadEstruc, int,>
+                ,@idExpediente--<id_Expediente, int,>
+                );
+
+            SET @soliConstrucInsertedIndex = (SELECT SCOPE_IDENTITY() );
+            SET @rowsInserted = @rowsInserted + @@ROWCOUNT;
+
+            INSERT INTO [dbo].[Persona]
+                ([nombre]
+                ,[apellidoP]
+                ,[apellidoM])
+            VALUES
+                (@propietarioNombre
+                ,@propietarioApellidoP
+                ,@propietarioApellidoM
+                );
+            SET @propietarioInsertedIndex = (SELECT SCOPE_IDENTITY() );
+            SET @rowsInserted = @rowsInserted + @@ROWCOUNT;
+
+            INSERT INTO [dbo].[SolicitudConstruccion_has_Persona]
+                ([SolicitudConstruccion_Id] ,[Persona_id])
+            VALUES
+                (   @soliConstrucInsertedIndex ,
+                    @propietarioInsertedIndex
+                );
+            SET @rowsInserted = @rowsInserted + @@ROWCOUNT;
+
+
+            INSERT INTO [dbo].[SolicitudConstruccion_has_Documento]
+                ([id_SolicitudConstruccion]
+                ,[id_Documento]
+                ,[isEntregado]
+                ,[nombreArchivo]
+                ,[path]
+                ,[realNombreArchivo])
+            
+            SELECT  @soliConstrucInsertedIndex,id_Documento,
+                    isEntregado,nombreArchivo,
+                    [path],realNombreArchivo
+            FROM @documentos;          
+               /*   (<id_SolicitudConstruccion, int,>
+                ,<id_Documento, int,>
+                ,<isEntregado, bit,>
+                ,<nombreArchivo, nvarchar(128),>
+                ,<path, nvarchar(128),>
+                ,<realNombreArchivo, nvarchar(90),>
+                ); */
+           SET @rowsInserted = @rowsInserted + @@ROWCOUNT;
+
+        COMMIT TRANSACTION CreateExpediente;
+                SELECT  @rowsInserted AS ROWS_INSERTED;
+    END TRY    
+    BEGIN CATCH
+        
+        --RAISE  EXCEPTION 
+        ROLLBACK TRANSACTION CreateExpediente;
+        THROW; --@ERROR_NUM, @ERROR_MSG, @ERROR_STATE;
+
+    END CATCH       
+
+GO        
