@@ -74,7 +74,7 @@ $expenditenOwnerSoli = Expediente::findOne([
         ->label(false) ?>
 
     <?= $form
-        ->field($modelSolicitudConstruccion, 'id_Persona_ModificadoPor', [
+        ->field($modelSolicitudConstruccion, 'id_User_ModificadoPor', [
             'options' => ['class' => 'col-md-1', 'display' => 'none'],
         ])
         ->hiddenInput()
@@ -82,7 +82,7 @@ $expenditenOwnerSoli = Expediente::findOne([
 
 
     <?= $form
-        ->field($modelSolicitudConstruccion, 'id_Persona_CreadoPor', [
+        ->field($modelSolicitudConstruccion, 'id_User_CreadoPor', [
             'options' => ['class' => 'col-md-1', 'display' => 'none'],
         ])
         ->/* textInput()-> */ hiddenInput()
@@ -128,7 +128,7 @@ $expenditenOwnerSoli = Expediente::findOne([
     <?= $form
         ->field(
             $modelSolicitudConstruccion,
-            'id_Persona_DomicilioNotificaciones',
+            'id_DomicilioNotificaciones',
             ['options' => ['class' => 'col-md-3']]
         )
         ->textInput() ?>
@@ -388,9 +388,10 @@ $expenditenOwnerSoli = Expediente::findOne([
  
     <h4>Entregables</h4>
 
-    <table class="table   table-hover">
+    <table id="tableEntregables" class="table   table-hover">
         <thead>
             <tr>
+                <th scope="col">ActionRow</th>
                 <th scope="col">Entregable</th>
                 <th scope="col">Nombre Archivo</th>
                 <th scope="col">Acciones</th>
@@ -401,13 +402,22 @@ $expenditenOwnerSoli = Expediente::findOne([
         <tbody>
 
             <?php foreach ($soliHasDocuments as $id => $soliHasDocument) { ?>
-                <tr onclick="">
+                <tr <?php echo "id = 'docRow$id' "  ?> >
+                    <td>
+                        <button type="button" class="btn btn-outline-danger" onclick=" SomeDeleteRowFunction(event)  ">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16" data-darkreader-inline-fill="" style="--darkreader-inline-fill:currentColor;">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+                            </svg> 
+                            Borrar
+                        </button>
+                    </td>
                     <td>
                         <?= $form
                             ->field($soliHasDocument, "[$id]id_Documento", [
                                 'options' => ['class' => 'col-md-1', 'display' => 'none'],
                             ])
-                            ->hiddenInput()
+                            ->/* hiddenInput() */textInput()
                             ->label(false) 
                         ?>
                         <?php echo $form
@@ -415,6 +425,8 @@ $expenditenOwnerSoli = Expediente::findOne([
                             ->checkbox()
                             ->label(/* $soliHasDocument -> documento ->nombre */ Documento::findOne( ["id"=>$soliHasDocument->id_Documento/* /84 */]) -> nombre );
                              ?>
+                     <!--    <input type="button" value="Delete Row" onclick="SomeDeleteRowFunction()"> -->
+                        
                     </td>
                     <td><!-- border-0 -->
                         <span >
@@ -452,5 +464,22 @@ $expenditenOwnerSoli = Expediente::findOne([
     </div>
 
     <?php ActiveForm::end(); ?>
+
+<script>
+
+    function SomeDeleteRowFunction(event) {
+        // event.target will be the input element.
+        let button = event.target;
+        if(button.type != "button") return;
+        let td = button.parentNode; 
+        let  tr = td.parentNode; // the row to be removed
+        let tbody = tr.parentNode;
+        tbody.removeChild(tr);
+    }
+
+   /*  $('#tableEntregables').on('click', 'input[type="button"]', function(e){
+        $(this).closest('tr').remove()
+    }) */
+</script>
 
 </div>

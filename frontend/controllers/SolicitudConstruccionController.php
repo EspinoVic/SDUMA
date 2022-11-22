@@ -13,6 +13,8 @@ use common\models\SolicitudConstruccionHasPersona;
 use common\models\SolicitudConstruccionSearch;
 use common\models\TipoTramiteHasDocumento;
 use common\models\TipoTramite;
+use PDO;
+use PDOException;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -88,20 +90,19 @@ class SolicitudConstruccionController extends Controller
      * @return string|\yii\web\Response
      */
     //Debe traer el id de expediente
-    public function actionCreate()
+    public function actionCreate($exp=1)
     {
-        $CREATE_SOLI_EXPEDIENTE_NUMBER = 3;
+        $CREATE_SOLI_EXPEDIENTE_NUMBER = $exp;
 
         $modelSolicitudConstruccion = new SolicitudConstruccion();
 
-        $propietarioPersona = new Persona(); //debería ser un array, por ahora lo dejo así
-        $soliDomicilioNotif = new Domicilio();
-        $soliDomicilioPredio = new Domicilio();
-        $multiplesDomicilio = [$soliDomicilioNotif, $soliDomicilioPredio];
+        $propietarioPersona     = new Persona(); //debería ser un array, por ahora lo dejo así
+        $soliDomicilioNotif     = new Domicilio();
+        $soliDomicilioPredio    = new Domicilio();
+        $multiplesDomicilio     = [$soliDomicilioNotif, $soliDomicilioPredio];
+        $soliContacto           = new Contacto();
+        $soliHasDocuments       = [];  
 
-        $soliContacto = new Contacto();
-
-        $soliHasDocuments = [];  
          if ($this->request->isPost) {
             /* Si el array de modelos fuera estatico, se podría hacer con el count comentado */
            /*  $countSoliHasDocument = count(
@@ -112,7 +113,9 @@ class SolicitudConstruccionController extends Controller
             foreach ($this->request->post('SolicitudConstruccionHasDocumento') as $key => $value/* modelo de soliHasDoc */) {
 
                 $soliHasDocuments[$key] = new SolicitudConstruccionHasDocumento();
-                $soliHasDocuments[$key]->id_SolicitudConstruccion = $CREATE_SOLI_EXPEDIENTE_NUMBER;
+                $soliHasDocuments[$key]->id_SolicitudConstruccion =
+                 /*PROBAR CON -1, YA QUE ESTE VALOR DEBERÁ SERR MANEJADO POR EL sp, CUANDO LA SOLICITUD SEA CREAdA. -1 */
+                 $CREATE_SOLI_EXPEDIENTE_NUMBER;
                 
                
             }
@@ -121,9 +124,10 @@ class SolicitudConstruccionController extends Controller
                 $soliHasDocuments[$i]->id_SolicitudConstruccion = $CREATE_SOLI_EXPEDIENTE_NUMBER;
                 
             } */
-            ob_start();
+            /* ob_start();
             var_dump( $this->request->post('SolicitudConstruccionHasDocumento') );
-            Yii::debug(ob_get_clean() , __METHOD__);
+            Yii::debug(ob_get_clean() , __METHOD__); */
+            $modelSolicitudConstruccion->id_Expediente = $CREATE_SOLI_EXPEDIENTE_NUMBER;
 
             if (
                 $modelSolicitudConstruccion->load($this->request->post()) &&
@@ -134,18 +138,40 @@ class SolicitudConstruccionController extends Controller
                     $this->request->post()
                 ) &&
                 Domicilio::validateMultiple($multiplesDomicilio) &&
-                SolicitudConstruccionHasPersona::loadMultiple(
+                SolicitudConstruccionHasDocumento::loadMultiple(
                     $soliHasDocuments,
                     $this->request->post()
                 )
+                && SolicitudConstruccionHasDocumento::validateMultiple($soliHasDocuments)
             ) {
-              /*   Yii::$app->session->setFlash('success', 'GOOD:');
-                Yii::$app->session->setFlash('warning', "nombreArchivo1:".$soliHasDocuments[0] -> nombreArchivo);
-               */  
+                Yii::$app->session->setFlash('success', 'GOOD:');
+                
+                if($modelSolicitudConstruccion -> id_DirectorResponsableObra == 0){
+                    
+                    $modelSolicitudConstruccion -> id_DirectorResponsableObra = null;
+                }
+                if($modelSolicitudConstruccion -> id_CorrSeguridadEstruc == 0){
+                    $modelSolicitudConstruccion -> id_CorrSeguridadEstruc = null;
+                }
+                if($modelSolicitudConstruccion -> id_SubGeneroConstruccion == 0){
+                    $modelSolicitudConstruccion -> id_SubGeneroConstruccion = null;
+                }
+
+
+                //Yii::$app->session->setFlash('warning', "nombreArchivo1:".$soliHasDocuments[0] -> nombreArchivo);
+                $modelSolicitudConstruccion ->createSolicitudExpediente (
+                                $propietarioPersona,  
+                                $soliDomicilioNotif ,
+                                $soliDomicilioPredio,
+                                $soliContacto,  
+                                $soliHasDocuments,
+                                Yii::$app->user->identity->id   
+                );
+                
                 foreach ($soliHasDocuments as $keyNam => $soliHasDocument) {
-                    ob_start();
+                    /* ob_start(); */
                     //var_dump($data[$formName][$i],"UWU");
-                    var_dump(
+                   /*  var_dump(
                         [   "keyname"=> $keyNam,
                             "idDoc" => $soliHasDocument->id_Documento,
                             "entregado" => $soliHasDocument->isEntregado?"TRUE":"FALSE",
@@ -154,7 +180,7 @@ class SolicitudConstruccionController extends Controller
                     );
                   
 
-                   Yii::debug(ob_get_clean() , __METHOD__);
+                   Yii::debug(ob_get_clean() , __METHOD__); */
                 }
                 
                 //return $this->redirect(['view', 'id' => $modelSolicitudConstruccion->id]);
@@ -163,15 +189,20 @@ class SolicitudConstruccionController extends Controller
             //cuando no es post
             $modelSolicitudConstruccion->loadDefaultValues();
             $modelSolicitudConstruccion->id_Expediente = $CREATE_SOLI_EXPEDIENTE_NUMBER;
-            $modelSolicitudConstruccion->id_Persona_CreadoPor = -1;
-            $modelSolicitudConstruccion->id_Persona_ModificadoPor = -1;
+            $modelSolicitudConstruccion->id_User_ModificadoPor = -1;
+            $modelSolicitudConstruccion->id_User_ModificadoPor = -1;
             $modelSolicitudConstruccion->fechaCreacion = gmdate(
                 'Y-m-d\TH:i:s\Z'
             );
             $modelSolicitudConstruccion->fechaModificacion = gmdate(
                 'Y-m-d\TH:i:s\Z'
             );
+            $modelSolicitudConstruccion->id_Contacto = -1; 
+            $modelSolicitudConstruccion->id_DomicilioNotificaciones = -1; 
+            $modelSolicitudConstruccion->id_DomicilioPredio = -1; 
             $soliContacto->id = -1;
+            $soliDomicilioNotif -> id = -1;
+            $soliDomicilioPredio -> id = -1;
             //los docs availables solo la primera vez (cuando se hace un GET), luego el usuario podrá descartar los que no ocupe☺
             $docsAvailableForCurrTraMite = TipoTramiteHasDocumento::findAll([
                 'id_TipoTramite' => Expediente::findOne([
@@ -223,6 +254,58 @@ class SolicitudConstruccionController extends Controller
         return $this->render('update', [
             'modelSolicitudConstruccion' => $model,
         ]);
+    }
+
+
+    public function actionTvp(){
+
+
+        $image1 = "asdasd";
+        $image2 = "asdasd";
+        $image3 = "asdasd";
+
+        $items = [
+            ['0062836700', 367, "2009-03-12", 'AWC Tee Male Shirt', '20.75', $image1],
+            ['1250153272', 256, "2017-11-07", 'Superlight Black Bicycle', '998.45', $image2],
+            ['1328781505', 260, "2010-03-03", 'Silver Chain for Bikes', '88.98', $image3],
+        ];
+
+        // Create a TVP input array
+        $tvpType = 'TVPParam';
+        $tvpInput = array($tvpType => $items);
+
+        // To execute the stored procedure, either execute a direct query or prepare this query:
+        $callTVPOrderEntry = "{call TVPOrderEntry(:CustID, :Items, :OrdNo, :OrdDate)}";
+        $custCode = 'SRV_123';
+        $ordNo = 0;
+        $ordDate = null;
+        try {
+            ob_start();
+            
+            $c = new PDO("sqlsrv:Server=localhost\\SDUMA_DB;Database=sduma", "sa", "vic");
+            var_dump($c);
+            var_dump("UWU");
+            var_dump(Yii::$app->db);
+            Yii::debug(ob_get_clean(),__METHOD__);
+ 
+
+            $stmt = $c->prepare($callTVPOrderEntry);
+            $stmt->bindParam(":CustID", $custCode);
+            $stmt->bindParam(":Items", $tvpInput, PDO::PARAM_LOB);
+            // 3 - OrdNo output
+            $stmt->bindParam(":OrdNo", $ordNo, PDO::PARAM_INT, 10);
+            // 4 - OrdDate output
+            $stmt->bindParam(":OrdDate", $ordDate, PDO::PARAM_STR, 20);
+            $stmt->execute();
+        } catch (PDOException $ex) {
+            Yii::info($ex, $category = 'ERROR Execute command.');
+
+        }
+                        /*  $stmt = sqlsrv_query($conn, $callTVPOrderEntry, $params);
+        if (!$stmt) {
+            print_r(sqlsrv_errors());
+        }
+        sqlsrv_next_result($stmt); */
     }
 
     /**

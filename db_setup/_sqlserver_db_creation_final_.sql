@@ -854,9 +854,9 @@ CREATE TABLE sduma.dbo.SolicitudConstruccion (
   fechaCreacion DATETIME NOT NULL,
   fechaModificacion DATETIME NOT NULL,
   isDeleted BIT NOT NULL DEFAULT 0,
-  id_Persona_CreadoPor INT NOT NULL,
-  id_Persona_ModificadoPor INT NOT NULL,
-  id_Persona_DomicilioNotificaciones INT NOT NULL,
+  id_User_CreadoPor INT NOT NULL,
+  id_User_ModificadoPor INT NOT NULL,
+  id_DomicilioNotificaciones INT NOT NULL,
   id_DomicilioPredio INT NOT NULL,
   id_MotivoConstruccion INT NOT NULL,
   id_Contacto INT NULL,
@@ -868,21 +868,21 @@ CREATE TABLE sduma.dbo.SolicitudConstruccion (
   id_CorrSeguridadEstruc INT NULL,
   id_Expediente INT NOT NULL,
   PRIMARY KEY (id),
-  INDEX fk_SolicitudConstruccion_DomicilioNotif_idx (id_Persona_DomicilioNotificaciones ASC) ,
+  INDEX fk_SolicitudConstruccion_DomicilioNotif_idx (id_DomicilioNotificaciones ASC) ,
   INDEX fk_SolicitudConstruccion_MotivoConstruccion1_idx (id_MotivoConstruccion ASC) ,
   INDEX fk_SolicitudConstruccion_DomicilioPredio_idx (id_DomicilioPredio ASC) ,
   INDEX fk_SolicitudConstruccion_Contacto_idx (id_Contacto ASC) ,
   INDEX fk_SolicitudConstruccion_TipoPredio_idx (id_TipoPredio ASC) ,
   INDEX fk_SolicitudConstruccion_TipoConstruccion_idx (id_TipoConstruccion ASC) ,
-  INDEX fk_SolicitudConstruccion_UserCreadoPor_idx (id_Persona_CreadoPor ASC) ,
-  INDEX fk_SolicitudConstruccion_UserModificadoPor_idx (id_Persona_ModificadoPor ASC) ,
+  INDEX fk_SolicitudConstruccion_UserCreadoPor_idx (id_User_CreadoPor ASC) ,
+  INDEX fk_SolicitudConstruccion_UserModificadoPor_idx (id_User_ModificadoPor ASC) ,
   INDEX fk_SolicitudConstruccion_GeneroConstruccion_idx (id_GeneroConstruccion ASC) ,
   INDEX fk_SolicitudConstruccion_SubGeneroConstruccion_idx (id_SubGeneroConstruccion ASC) ,
   INDEX fk_SolicitudConstruccion_DirectorResponsableObra_idx (id_DirectorResponsableObra ASC) ,
   INDEX fk_SolicitudConstruccion_CorrSeguridadEstruc_idx (id_CorrSeguridadEstruc ASC) ,
   INDEX fk_SolicitudConstruccion_Expediente_idx (id_Expediente ASC),
   CONSTRAINT fk_SolicitudConstruccion_DomicilioNotif
-    FOREIGN KEY (id_Persona_DomicilioNotificaciones)
+    FOREIGN KEY (id_DomicilioNotificaciones)
     REFERENCES sduma.dbo.Domicilio (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
@@ -912,12 +912,12 @@ CREATE TABLE sduma.dbo.SolicitudConstruccion (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT fk_SolicitudConstruccion_UserCreadoPor
-    FOREIGN KEY (id_Persona_CreadoPor)
+    FOREIGN KEY (id_User_CreadoPor)
     REFERENCES sduma.dbo.[user] (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT fk_SolicitudConstruccion_UserModificadoPor
-    FOREIGN KEY (id_Persona_ModificadoPor)
+    FOREIGN KEY (id_User_ModificadoPor)
     REFERENCES sduma.dbo.[user] (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
@@ -992,3 +992,14 @@ CREATE TABLE  sduma.dbo.SolicitudConstruccion_has_Documento (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 	);
+
+
+CREATE TYPE SoliHasDocParam AS TABLE(
+     /*  id_SolicitudConstruccion INT NOT NULL, */ /* El SP le da el valor */
+      id_Documento INT NOT NULL,
+      isEntregado BIT NOT NULL,
+      nombreArchivo NVARCHAR(128) NULL,
+      [path] NVARCHAR(128) NULL,
+      realNombreArchivo NVARCHAR(90) NULL
+    );
+ 
