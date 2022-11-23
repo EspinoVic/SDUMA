@@ -120,8 +120,15 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 'class' => ActionColumn::class,
                 'urlCreator' => function ($action, Expediente $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                }
+                    //return Url::toRoute([$action, 'id' => $model->id]);
+                    if ($action == "update") {
+
+                      return Url::to(['solicitud-construccion/create', 'id' => $key]);
+
+                    }
+                    return Url::to([$action, 'id' => $key]);
+
+                 }
             ],
         ],
     ]); ?>
