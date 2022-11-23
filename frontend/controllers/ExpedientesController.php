@@ -15,8 +15,14 @@ class ExpedientesController extends \yii\web\Controller
     public function actionIndex()
     {
         $searchModel = new ExpedienteSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
-
+        $dataProvider = $searchModel 
+            ->search($this->request->queryParams)/* ->sort
+            ->defaultOrder = [
+                     'id' => SORT_DESC,
+                     'anio' => SORT_DESC,
+                     'idAnual' => SORT_DESC,
+                 ] */;
+ 
         /* Yii::$app->session->setFlash(
             'success', 
         "Flash Action Index "); */
@@ -26,6 +32,10 @@ class ExpedientesController extends \yii\web\Controller
             'modelNuevoExp' =>  $modelNuevoExp,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'nombre' => $searchModel->nombre,
+            'apellidoP' => $searchModel->apellidoP,
+            'apellidoM' => $searchModel->apellidoM,
+
         ]);
     }
 

@@ -17,7 +17,7 @@ class SolicitudConstruccionSearch extends SolicitudConstruccion
     public function rules()
     {
         return [
-            [['id', 'superficieTotal', 'superficiePorConstruir', 'superficiePreexistente', 'niveles', 'cajones', 'isDeleted', 'id_Persona_CreadoPor', 'id_Persona_ModificadoPor', 'id_Persona_DomicilioNotificaciones', 'id_DomicilioPredio', 'id_MotivoConstruccion', 'id_Contacto', 'id_TipoPredio', 'id_TipoConstruccion', 'id_GeneroConstruccion', 'id_SubGeneroConstruccion', 'id_DirectorResponsableObra', 'id_CorrSeguridadEstruc', 'id_Expediente'], 'integer'],
+            [['id', 'superficieTotal', 'superficiePorConstruir', 'superficiePreexistente', 'niveles', 'cajones', 'isDeleted', 'id_User_CreadoPor', 'id_User_ModificadoPor', 'id_DomicilioNotificaciones', 'id_DomicilioPredio', 'id_MotivoConstruccion', 'id_Contacto', 'id_TipoPredio', 'id_TipoConstruccion', 'id_GeneroConstruccion', 'id_SubGeneroConstruccion', 'id_DirectorResponsableObra', 'id_CorrSeguridadEstruc', 'id_Expediente'], 'integer'],
             [['COS', 'CUS', 'RPP', 'tomo', 'folioElec', 'cuentaCatastral', 'fechaCreacion', 'fechaModificacion'], 'safe'],
         ];
     }
@@ -67,9 +67,9 @@ class SolicitudConstruccionSearch extends SolicitudConstruccion
             'fechaCreacion' => $this->fechaCreacion,
             'fechaModificacion' => $this->fechaModificacion,
             'isDeleted' => $this->isDeleted,
-            'id_Persona_CreadoPor' => $this->id_Persona_CreadoPor,
-            'id_Persona_ModificadoPor' => $this->id_Persona_ModificadoPor,
-            'id_Persona_DomicilioNotificaciones' => $this->id_Persona_DomicilioNotificaciones,
+            'id_User_CreadoPor' => $this->id_User_CreadoPor,
+            'id_User_ModificadoPor' => $this->id_User_ModificadoPor,
+            'id_DomicilioNotificaciones' => $this->id_DomicilioNotificaciones,
             'id_DomicilioPredio' => $this->id_DomicilioPredio,
             'id_MotivoConstruccion' => $this->id_MotivoConstruccion,
             'id_Contacto' => $this->id_Contacto,
