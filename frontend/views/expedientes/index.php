@@ -123,7 +123,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     //return Url::toRoute([$action, 'id' => $model->id]);
                     if ($action == "update") {
 
-                      return Url::to(['solicitud-construccion/create', 'id' => $key]);
+                      return Url::to(['solicitud-construccion/create', 'exp' => $key]);
 
                     }
                     return Url::to([$action, 'id' => $key]);
