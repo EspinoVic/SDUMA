@@ -90,7 +90,7 @@ class SolicitudConstruccionController extends Controller
      * @return string|\yii\web\Response
      */
     //Debe traer el id de expediente
-    public function actionCreate($exp=1)
+    public function actionCreate($exp)
     {
         $CREATE_SOLI_EXPEDIENTE_NUMBER = $exp;
 
