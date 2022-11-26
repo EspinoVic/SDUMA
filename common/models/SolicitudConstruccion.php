@@ -42,19 +42,19 @@ use Yii;
  * @property CorrSeguridadEstruc $corrSeguridadEstruc
  * @property DirectorResponsableObra $directorResponsableObra
  * @property Documento[] $documentos
+ * @property Domicilio $domicilioNotificaciones
  * @property Domicilio $domicilioPredio
  * @property Expediente $expediente
  * @property GeneroConstruccion $generoConstruccion
  * @property MotivoConstruccion $motivoConstruccion
- * @property User $personaCreadoPor
- * @property Domicilio $personaDomicilioNotificaciones
- * @property User $personaModificadoPor
  * @property Persona[] $personas
  * @property SolicitudConstruccionHasDocumento[] $solicitudConstruccionHasDocumentos
  * @property SolicitudConstruccionHasPersona[] $solicitudConstruccionHasPersonas
  * @property SubGeneroConstruccion $subGeneroConstruccion
  * @property TipoConstruccion $tipoConstruccion
  * @property TipoPredio $tipoPredio
+ * @property User $userCreadoPor
+ * @property User $userModificadoPor
  */
 class SolicitudConstruccion extends \yii\db\ActiveRecord
 {
@@ -72,14 +72,20 @@ class SolicitudConstruccion extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['superficieTotal', 'superficiePorConstruir', 'superficiePreexistente', 'niveles', 'cajones', 'isDeleted', 'id_Persona_CreadoPor', 'id_Persona_ModificadoPor', 'id_Persona_DomicilioNotificaciones', 'id_DomicilioPredio', 'id_MotivoConstruccion', 'id_Contacto', 'id_TipoPredio', 'id_TipoConstruccion', 'id_GeneroConstruccion', 'id_SubGeneroConstruccion', 'id_DirectorResponsableObra', 'id_CorrSeguridadEstruc', 'id_Expediente'], 'integer'],
-            [['fechaCreacion', 'fechaModificacion', 'id_Persona_CreadoPor', 'id_Persona_ModificadoPor', 'id_Persona_DomicilioNotificaciones', 'id_DomicilioPredio', 'id_MotivoConstruccion', 'id_TipoConstruccion', 'id_GeneroConstruccion', 'id_Expediente'], 'required'],
+            //[['superficieTotal', 'superficiePorConstruir', 'superficiePreexistente', 'niveles', 'cajones', 'isDeleted', 'id_Persona_CreadoPor', 'id_Persona_ModificadoPor', 'id_Persona_DomicilioNotificaciones', 'id_DomicilioPredio', 'id_MotivoConstruccion', 'id_Contacto', 'id_TipoPredio', 'id_TipoConstruccion', 'id_GeneroConstruccion', 'id_SubGeneroConstruccion', 'id_DirectorResponsableObra', 'id_CorrSeguridadEstruc', 'id_Expediente'], 'integer'],
+            [['superficieTotal', 'superficiePorConstruir', 'superficiePreexistente', 'niveles', 'cajones', 'isDeleted', 'id_User_CreadoPor', 'id_User_ModificadoPor', 'id_DomicilioNotificaciones', 'id_DomicilioPredio', 'id_MotivoConstruccion', 'id_Contacto', 'id_TipoPredio', 'id_TipoConstruccion', 'id_GeneroConstruccion', 'id_SubGeneroConstruccion', 'id_DirectorResponsableObra', 'id_CorrSeguridadEstruc', 'id_Expediente'], 'integer'],
+
+            //[['fechaCreacion', 'fechaModificacion', 'id_User_CreadoPor', 'id_User_ModificadoPor', 'id_DomicilioNotificaciones', 'id_DomicilioPredio', 'id_MotivoConstruccion', 'id_TipoConstruccion', 'id_GeneroConstruccion', 'id_Expediente'], 'required'],
+            [['superficieTotal', 'superficiePorConstruir', 'superficiePreexistente', 'niveles', 'cajones', 'isDeleted', 'id_User_CreadoPor', 'id_User_ModificadoPor', 'id_DomicilioNotificaciones', 'id_DomicilioPredio', 'id_MotivoConstruccion', 'id_Contacto', 'id_TipoPredio', 'id_TipoConstruccion', 'id_GeneroConstruccion', 'id_SubGeneroConstruccion', 'id_DirectorResponsableObra', 'id_CorrSeguridadEstruc', 'id_Expediente'], 'integer'],
+
             [['fechaCreacion', 'fechaModificacion'], 'safe'],
             [['COS', 'CUS', 'RPP', 'tomo', 'folioElec', 'cuentaCatastral'], 'string', 'max' => 45],
-            [['id_Persona_CreadoPor'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['id_Persona_CreadoPor' => 'id']],
-            [['id_Persona_ModificadoPor'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['id_Persona_ModificadoPor' => 'id']],
+
+            [['id_User_CreadoPor'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['id_User_CreadoPor' => 'id']],
+            [['id_User_ModificadoPor'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['id_User_ModificadoPor' => 'id']],
+
             [['id_MotivoConstruccion'], 'exist', 'skipOnError' => true, 'targetClass' => MotivoConstruccion::class, 'targetAttribute' => ['id_MotivoConstruccion' => 'id']],
-            [['id_Persona_DomicilioNotificaciones'], 'exist', 'skipOnError' => true, 'targetClass' => Domicilio::class, 'targetAttribute' => ['id_Persona_DomicilioNotificaciones' => 'id']],
+            [['id_DomicilioNotificaciones'], 'exist', 'skipOnError' => true, 'targetClass' => Domicilio::class, 'targetAttribute' => ['id_DomicilioNotificaciones' => 'id']],
             [['id_DomicilioPredio'], 'exist', 'skipOnError' => true, 'targetClass' => Domicilio::class, 'targetAttribute' => ['id_DomicilioPredio' => 'id']],
             [['id_TipoPredio'], 'exist', 'skipOnError' => true, 'targetClass' => TipoPredio::class, 'targetAttribute' => ['id_TipoPredio' => 'id']],
             [['id_Contacto'], 'exist', 'skipOnError' => true, 'targetClass' => Contacto::class, 'targetAttribute' => ['id_Contacto' => 'Id']],
@@ -117,9 +123,9 @@ class SolicitudConstruccion extends \yii\db\ActiveRecord
             'fechaCreacion' => 'Fecha Creación',
             'fechaModificacion' => 'Fecha Modificación',
             'isDeleted' => 'Is Deleted',
-            'id_Persona_CreadoPor' => 'Creado Por',
-            'id_Persona_ModificadoPor' => 'Modificado Por',
-            'id_Persona_DomicilioNotificaciones' => 'Id Persona Domicilio Notificaciones',
+            'id_User_CreadoPor' => 'Creado Por',
+            'id_User_ModificadoPor' => 'Modificado Por',
+            'id_DomicilioNotificaciones' => 'Id Persona Domicilio Notificaciones',
             'id_DomicilioPredio' => 'Id Domicilio Predio',
             'id_MotivoConstruccion' => 'Id Motivo Construccion',
             'id_Contacto' => 'Id Contacto',

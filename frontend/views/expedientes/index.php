@@ -122,8 +122,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'urlCreator' => function ($action, Expediente $model, $key, $index, $column) {
                     //return Url::toRoute([$action, 'id' => $model->id]);
                     if ($action == "update") {
-
-                      return Url::to(['solicitud-construccion/create', 'exp' => $key]);
+                        /* index decidirá si debe redireccionar a create o update */
+                      return Url::to(['solicitud-construccion/index', 'exp' => $key]);
 
                     }
                     return Url::to([$action, 'id' => $key]);

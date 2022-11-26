@@ -40,12 +40,29 @@ class SolicitudConstruccionController extends Controller
         ]);
     }
 
+    /* 
+    Este action deberá ser llamado desde ExpedientesController.
+    Aqui decidirá si la solicitud del expediente irá a edición o creación.
+    */
+    public function actionIndex($exp){
+
+        $soliExp = SolicitudConstruccion::findOne(["id_Expediente" => $exp]);
+
+        if($soliExp){
+                return $this->redirect(['update', 'exp' => $soliExp->id]);
+
+        }else{
+            return $this->redirect(['create', 'exp' => $exp]);
+        }
+
+    }
     /**
      * Lists all SolicitudConstruccion models.
      *
      * @return string
+     * @deprecated
      */
-    public function actionIndex()
+    public function actionIndexDeprecated()
     {
         $searchModel = new SolicitudConstruccionSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
@@ -119,14 +136,6 @@ class SolicitudConstruccionController extends Controller
                 
                
             }
-           /*  for ($i = 1; $i < $countSoliHasDocument; $i++) {
-                $soliHasDocuments[$i] = new SolicitudConstruccionHasDocumento();
-                $soliHasDocuments[$i]->id_SolicitudConstruccion = $CREATE_SOLI_EXPEDIENTE_NUMBER;
-                
-            } */
-            /* ob_start();
-            var_dump( $this->request->post('SolicitudConstruccionHasDocumento') );
-            Yii::debug(ob_get_clean() , __METHOD__); */
             $modelSolicitudConstruccion->id_Expediente = $CREATE_SOLI_EXPEDIENTE_NUMBER;
 
             if (
@@ -168,20 +177,7 @@ class SolicitudConstruccionController extends Controller
                                 Yii::$app->user->identity->id   
                 );
                 
-                foreach ($soliHasDocuments as $keyNam => $soliHasDocument) {
-                    /* ob_start(); */
-                    //var_dump($data[$formName][$i],"UWU");
-                   /*  var_dump(
-                        [   "keyname"=> $keyNam,
-                            "idDoc" => $soliHasDocument->id_Documento,
-                            "entregado" => $soliHasDocument->isEntregado?"TRUE":"FALSE",
-                            "nameArchivo" => $soliHasDocument->nombreArchivo,      
-                        ]
-                    );
-                  
 
-                   Yii::debug(ob_get_clean() , __METHOD__); */
-                }
                 
                 //return $this->redirect(['view', 'id' => $modelSolicitudConstruccion->id]);
             }
@@ -239,11 +235,21 @@ class SolicitudConstruccionController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate($exp)
     {
-        $model = $this->findModel($id);
+        //solicitudConstruccionTable, Desde el modelo se pueden cargar todos los datos relacionados.
+        $model = $this->findModel($exp);
 
-        if (
+
+        return $this->render('create', [
+            'modelSolicitudConstruccion' => $model->modelSolicitudConstruccion,
+            'propietarioPersona' => $model->propietarioPersona,
+            'soliDomicilioNotif' => $model->multiplesDomicilio[0],
+            'soliDomicilioPredio' => $model->multiplesDomicilio[1],
+            'soliContacto' => $model->soliContacto,
+            'soliHasDocuments' => $model->soliHasDocuments,
+        ]);
+        /* if (
             $this->request->isPost &&
             $model->load($this->request->post()) &&
             $model->save()
@@ -253,7 +259,7 @@ class SolicitudConstruccionController extends Controller
 
         return $this->render('update', [
             'modelSolicitudConstruccion' => $model,
-        ]);
+        ]); */
     }
 
 

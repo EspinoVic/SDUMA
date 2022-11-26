@@ -12,8 +12,8 @@ use yii\helpers\Html;
  * 
  */
 
-$this->title = 'Create Solicitud Construccion';
-$this->params['breadcrumbs'][] = ['label' => 'Solicitud Construccions', 'url' => ['index']];
+$this->title = 'Crear Solicitud  de Construcción';
+$this->params['breadcrumbs'][] = ['label' => 'Solicitud  de Construcción', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="solicitud-construccion-create">

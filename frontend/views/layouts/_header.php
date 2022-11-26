@@ -12,12 +12,12 @@ NavBar::begin([
     ],
 ]);
 $menuItems = [
-    ['label' => 'Hosme', 'url' => ['/site/index']],
-    ['label' => 'About', 'url' => ['/site/about']],
-    ['label' => 'Contact', 'url' => ['/site/contact']],
+    ['label' => 'Expedientes', 'url' => ['/expedientes/index']],
+ /*    ['label' => 'About', 'url' => ['/site/about']],
+    ['label' => 'Contact', 'url' => ['/site/contact']], */
 ];
 if (Yii::$app->user->isGuest) {
-    $menuItems[] = ['label' => 'Signup', 'url' => ['/site/signup']];
+    $menuItems[] = ['label' => 'Registrarse', 'url' => ['/site/signup']];
 }
 
 echo Nav::widget([
