@@ -24,6 +24,7 @@ use yii\widgets\ActiveField;
  * @var common\models\Domicilio $soliDomicilioNotif
  * @var common\models\Domicilio $soliDomicilioPredio
  * @var common\models\SolicitudConstruccionHasDocumento $soliHasDocuments
+ * @var string $formAction    
  */
 
 $expenditenOwnerSoli = Expediente::findOne([
@@ -34,7 +35,7 @@ $expenditenOwnerSoli = Expediente::findOne([
 <div class="solicitud-construccion-form">
 
     <?php $form = ActiveForm::begin([
-        'action' => ['solicitud-construccion/create'],
+        'action' => [$formAction/* 'solicitud-construccion/create' */],
         'id' => 'solicitudConstruccionForm',
         'method' => 'post',
         'options' => [

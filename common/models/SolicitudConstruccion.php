@@ -169,6 +169,11 @@ class SolicitudConstruccion extends \yii\db\ActiveRecord
         return $docsParam;
         
     }
+
+    public function updateSolicitudExpediente(){
+        
+    }
+
     public function createSolicitudExpediente($propietarioPersona, $soliDomicilioNotif, $soliDomicilioPredio,  $soliContacto,  $soliHasDocuments,$currentUserId ){
         $sql ="EXEC sp_create_soliconstruccion ".
         ":propietarioNombre,:propietarioApellidoP,:propietarioApellidoM,:email,:telefono,".
@@ -369,7 +374,7 @@ class SolicitudConstruccion extends \yii\db\ActiveRecord
      */
     public function getContacto()
     {
-        return $this->hasOne(Contacto::class, ['Id' => 'id_Contacto']);
+        return $this->hasOne(Contacto::class, ['id' => 'id_Contacto']);
     }
 
     /**
@@ -400,6 +405,16 @@ class SolicitudConstruccion extends \yii\db\ActiveRecord
     public function getDocumentos()
     {
         return $this->hasMany(Documento::class, ['id' => 'id_Documento'])->viaTable('SolicitudConstruccion_has_Documento', ['id_SolicitudConstruccion' => 'id']);
+    }
+
+    /**
+     * Gets query for [[DomicilioNotificaciones]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDomicilioNotificaciones()
+    {
+        return $this->hasOne(Domicilio::class, ['id' => 'id_DomicilioNotificaciones']);
     }
 
     /**
@@ -440,36 +455,6 @@ class SolicitudConstruccion extends \yii\db\ActiveRecord
     public function getMotivoConstruccion()
     {
         return $this->hasOne(MotivoConstruccion::class, ['id' => 'id_MotivoConstruccion']);
-    }
-
-    /**
-     * Gets query for [[PersonaCreadoPor]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPersonaCreadoPor()
-    {
-        return $this->hasOne(User::class, ['id' => 'id_Persona_CreadoPor']);
-    }
-
-    /**
-     * Gets query for [[PersonaDomicilioNotificaciones]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPersonaDomicilioNotificaciones()
-    {
-        return $this->hasOne(Domicilio::class, ['id' => 'id_Persona_DomicilioNotificaciones']);
-    }
-
-    /**
-     * Gets query for [[PersonaModificadoPor]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getPersonaModificadoPor()
-    {
-        return $this->hasOne(User::class, ['id' => 'id_Persona_ModificadoPor']);
     }
 
     /**
@@ -530,5 +515,25 @@ class SolicitudConstruccion extends \yii\db\ActiveRecord
     public function getTipoPredio()
     {
         return $this->hasOne(TipoPredio::class, ['id' => 'id_TipoPredio']);
+    }
+
+    /**
+     * Gets query for [[UserCreadoPor]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserCreadoPor()
+    {
+        return $this->hasOne(User::class, ['id' => 'id_User_CreadoPor']);
+    }
+
+    /**
+     * Gets query for [[UserModificadoPor]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserModificadoPor()
+    {
+        return $this->hasOne(User::class, ['id' => 'id_User_ModificadoPor']);
     }
 }

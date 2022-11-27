@@ -46,12 +46,12 @@ class SolicitudConstruccionController extends Controller
     */
     public function actionIndex($exp){
 
-        $soliExp = SolicitudConstruccion::findOne(["id_Expediente" => $exp]);
+        $soliConstruccion = SolicitudConstruccion::findOne(["id_Expediente" => $exp]);
 
-        if($soliExp){
-                return $this->redirect(['update', 'exp' => $soliExp->id]);
+        if($soliConstruccion){
+                return $this->redirect(['update', 'exp' => $soliConstruccion->id_Expediente]);//id_Expediente en teoria siempre será el mismo que -> $exp
 
-        }else{
+        }else{//no existe solicitud, entonces redirige a crear una.
             return $this->redirect(['create', 'exp' => $exp]);
         }
 
@@ -120,19 +120,21 @@ class SolicitudConstruccionController extends Controller
         $soliContacto           = new Contacto();
         $soliHasDocuments       = [];  
 
-         if ($this->request->isPost) {
+        if ($this->request->isPost) {
             /* Si el array de modelos fuera estatico, se podría hacer con el count comentado */
            /*  $countSoliHasDocument = count(
                 $this->request->post('SolicitudConstruccionHasDocumento') //no funciona con el nombre de la tabla, ya que los "_" se quitan y se usa CamelCase, y cuando esos campos se devuelven del form al POST, vienen en CamelCase, por lo tanto no hacen match con el table name
             );
             Yii::$app->session->setFlash('danger', 'CountSoliDoc:'.$countSoliHasDocument); */
            // var_dump($this->request->post('SolicitudConstruccionHasDocumento'));
+           
+           //crea modelos vacios, para luego cargarlos
             foreach ($this->request->post('SolicitudConstruccionHasDocumento') as $key => $value/* modelo de soliHasDoc */) {
 
                 $soliHasDocuments[$key] = new SolicitudConstruccionHasDocumento();
-                $soliHasDocuments[$key]->id_SolicitudConstruccion =
-                 /*PROBAR CON -1, YA QUE ESTE VALOR DEBERÁ SERR MANEJADO POR EL sp, CUANDO LA SOLICITUD SEA CREAdA. -1 */
-                 $CREATE_SOLI_EXPEDIENTE_NUMBER;
+                /*Los documentos están ligados a una solicitud de construcción, en este accion, esa solicitud se crea, y este id asignado es ignorado, solamente se coloca para validacion */
+                $soliHasDocuments[$key]->id_SolicitudConstruccion = -1;
+                 
                 
                
             }
@@ -179,7 +181,7 @@ class SolicitudConstruccionController extends Controller
                 
 
                 
-                //return $this->redirect(['view', 'id' => $modelSolicitudConstruccion->id]);
+                //return $this->redirect(['expedientes/index'/* , 'id' => $modelSolicitudConstruccion->id */]);
             }
         } else {
             //cuando no es post
@@ -187,12 +189,8 @@ class SolicitudConstruccionController extends Controller
             $modelSolicitudConstruccion->id_Expediente = $CREATE_SOLI_EXPEDIENTE_NUMBER;
             $modelSolicitudConstruccion->id_User_ModificadoPor = -1;
             $modelSolicitudConstruccion->id_User_ModificadoPor = -1;
-            $modelSolicitudConstruccion->fechaCreacion = gmdate(
-                'Y-m-d\TH:i:s\Z'
-            );
-            $modelSolicitudConstruccion->fechaModificacion = gmdate(
-                'Y-m-d\TH:i:s\Z'
-            );
+            $modelSolicitudConstruccion->fechaCreacion = gmdate( 'Y-m-d\TH:i:s\Z' );
+            $modelSolicitudConstruccion->fechaModificacion = gmdate( 'Y-m-d\TH:i:s\Z');
             $modelSolicitudConstruccion->id_Contacto = -1; 
             $modelSolicitudConstruccion->id_DomicilioNotificaciones = -1; 
             $modelSolicitudConstruccion->id_DomicilioPredio = -1; 
@@ -228,6 +226,13 @@ class SolicitudConstruccionController extends Controller
         ]);
     }
 
+    /* cuando es un post, hará un intento de obtencion de datos del form para crear o actualizar una solicidutd
+    
+    */
+    private function postCreateUpdate(){
+
+    }
+
     /**
      * Updates an existing SolicitudConstruccion model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -237,29 +242,107 @@ class SolicitudConstruccionController extends Controller
      */
     public function actionUpdate($exp)
     {
-        //solicitudConstruccionTable, Desde el modelo se pueden cargar todos los datos relacionados.
-        $model = $this->findModel($exp);
+        $CREATE_SOLI_EXPEDIENTE_NUMBER = $exp;
+
+        $modelSolicitudConstruccion = new SolicitudConstruccion();
+
+        $propietarioPersona     = new Persona(); //debería ser un array, por ahora lo dejo así
+        $soliDomicilioNotif     = new Domicilio();
+        $soliDomicilioPredio    = new Domicilio();
+        $multiplesDomicilio     = [$soliDomicilioNotif, $soliDomicilioPredio];
+        $soliContacto           = new Contacto();
+        $soliHasDocuments       = [];  
+
+        if ($this->request->isPost) {
+
+            //crea modelos vacios, para luego cargarlos
+
+            foreach ($this->request->post('SolicitudConstruccionHasDocumento') as $key => $value/* modelo de soliHasDoc */) {
+
+                $soliHasDocuments[$key] = new SolicitudConstruccionHasDocumento();
+                /*Los documentos están ligados a una solicitud de construcción, en este accion, esa solicitud se crea, y este id asignado es ignorado, solamente se coloca para validacion */
+               // $soliHasDocuments[$key]->id_SolicitudConstruccion = -1;
+                
+               
+            }
+            $modelSolicitudConstruccion->id_Expediente = $CREATE_SOLI_EXPEDIENTE_NUMBER;
+
+            if (
+                $modelSolicitudConstruccion->load($this->request->post()) &&
+                $propietarioPersona->load($this->request->post()) &&
+                $soliContacto->load($this->request->post()) &&
+                Domicilio::loadMultiple(
+                    $multiplesDomicilio,
+                    $this->request->post()
+                ) &&
+                Domicilio::validateMultiple($multiplesDomicilio) &&
+                SolicitudConstruccionHasDocumento::loadMultiple(
+                    $soliHasDocuments,
+                    $this->request->post()
+                )
+                && SolicitudConstruccionHasDocumento::validateMultiple($soliHasDocuments)
+            ) {
+                Yii::$app->session->setFlash('success', 'GOOD:');
+                
+                if($modelSolicitudConstruccion -> id_DirectorResponsableObra == 0){
+                    
+                    $modelSolicitudConstruccion -> id_DirectorResponsableObra = null;
+                }
+                if($modelSolicitudConstruccion -> id_CorrSeguridadEstruc == 0){
+                    $modelSolicitudConstruccion -> id_CorrSeguridadEstruc = null;
+                }
+                if($modelSolicitudConstruccion -> id_SubGeneroConstruccion == 0){
+                    $modelSolicitudConstruccion -> id_SubGeneroConstruccion = null;
+                }
 
 
-        return $this->render('create', [
-            'modelSolicitudConstruccion' => $model->modelSolicitudConstruccion,
-            'propietarioPersona' => $model->propietarioPersona,
-            'soliDomicilioNotif' => $model->multiplesDomicilio[0],
-            'soliDomicilioPredio' => $model->multiplesDomicilio[1],
-            'soliContacto' => $model->soliContacto,
-            'soliHasDocuments' => $model->soliHasDocuments,
-        ]);
-        /* if (
-            $this->request->isPost &&
-            $model->load($this->request->post()) &&
-            $model->save()
-        ) {
-            return $this->redirect(['view', 'id' => $model->id]);
+                //Yii::$app->session->setFlash('warning', "nombreArchivo1:".$soliHasDocuments[0] -> nombreArchivo);
+                $modelSolicitudConstruccion ->updateSolicitudExpediente (
+                                $propietarioPersona,  
+                                $soliDomicilioNotif ,
+                                $soliDomicilioPredio,
+                                $soliContacto,  
+                                $soliHasDocuments,
+                                Yii::$app->user->identity->id   
+                );
+                
+
+                
+                //return $this->redirect(['expedientes/index'/* , 'id' => $modelSolicitudConstruccion->id */]);
+            }
+        } else {
+            //cuando no es post significa renderizar los datos actuales del modelo. para su edición
+            $modelSolicitudConstruccion = SolicitudConstruccion::findOne(["id_Expediente" => $CREATE_SOLI_EXPEDIENTE_NUMBER]);
+            
+            ob_start();
+            var_dump($modelSolicitudConstruccion );
+            Yii::debug(ob_get_clean(),__METHOD__);
+            if(!$modelSolicitudConstruccion){
+                /* return $this->redirect(['error']); */
+
+            }
+            //SI NO EXISTE, HACER ALGO
+            
+            //por ahora solo soporta 1 propietario.
+            $propietarioPersona = $modelSolicitudConstruccion->solicitudConstruccionHasPersonas[0]->persona;             
+            $soliDomicilioNotif  =  $modelSolicitudConstruccion->domicilioNotificaciones;
+            $soliDomicilioPredio =  $modelSolicitudConstruccion->domicilioPredio;
+            $multiplesDomicilio  = [$soliDomicilioNotif, $soliDomicilioPredio];
+            $soliContacto        = $modelSolicitudConstruccion->contacto;
+            $soliHasDocuments    =  $modelSolicitudConstruccion->solicitudConstruccionHasDocumentos;
+
+
         }
 
         return $this->render('update', [
-            'modelSolicitudConstruccion' => $model,
-        ]); */
+            'modelSolicitudConstruccion' => $modelSolicitudConstruccion,
+            'propietarioPersona' => $propietarioPersona,
+            'soliDomicilioNotif' => $multiplesDomicilio[0],
+            'soliDomicilioPredio' => $multiplesDomicilio[1],
+            'soliContacto' => $soliContacto,
+            'soliHasDocuments' => $soliHasDocuments,
+        ]);
+         
     }
 
 
