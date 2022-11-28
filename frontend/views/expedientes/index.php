@@ -4,7 +4,9 @@
  
 /** @var common\models\ExpedienteSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
-
+/** @var string $nombre */
+/** @var string $apellidoP */
+/** @var string $apellidoM */
 use common\models\Expediente;
 use common\models\WidgetStyleVic;
 use yii\helpers\Html;
@@ -38,6 +40,19 @@ $this->params['breadcrumbs'][] = $this->title;
   </div>
 </div>
 
+<div class="modal fade  " id="exampleModal2" tabindex="-1" aria-labelledby="exampleModal2Label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModal2Label">Filtrar</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+            <?php  echo $this->render('_search', ['model' => $searchModel,'nombre'=> $nombre, 'apellidoP'=>$apellidoP,'apellidoM'=>$apellidoM]); ?>
+      </div>       
+    </div>
+  </div>
+</div>
 
 <!-- <p>
     You may change the content of this page by modifying
@@ -54,31 +69,65 @@ $this->params['breadcrumbs'][] = $this->title;
     <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
       Nuevo Expediente
     </button>
-    <button type="button" class="btn btn-secondary">Filtrar</button>
-    <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
+    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal2">Filtrar</button>
+    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+       /*  'filterModel' => $searchModel, */
         'pager' => WidgetStyleVic::PagerStyle(),
 
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             //'id',
-            'idAnual',
-            'anio',
-            'fechaCreacion',
-            'fechaModificacion',
-            'estado',
+            [
+              'label' => "Expediente #",
+              'attribute' => 'tipoTramite.nombre',
+              'value' => function($currExpediente){
+                return $currExpediente->idAnual . "/".$currExpediente->anio;
+              }
+            ],
+           // 'idAnual',
+            //'anio',
+            'fechaCreacion:datetime',
+            'fechaModificacion:datetime',
             //'id_Persona_Solicita',
             //'id_User_CreadoPor',
-            //'id_User_modificadoPor',
-            //'id_TipoTramite',
+            //'id_User_modificadoPor',Expediente
+           // 'id_TipoTramite',
             [
+              'label' => "Nombre",
+              'attribute' => 'personaSolicita.nombre',
+            ],
+            [
+              'label' => "Apellido Paterno",
+              'attribute' => 'personaSolicita.apellidoP',
+            ],
+            [
+              'label' => "Apellido Paterno",
+              'attribute' => 'personaSolicita.apellidoM',
+            ],
+            'estado',
+            [
+              'label' => "Tipo Trámite",
+              'attribute' => 'tipoTramite.nombre',
+              'value' => function($currExpediente){
+                return $currExpediente->tipoTramite->nombre;
+              }
+            ],
+            [
+
                 'class' => ActionColumn::class,
                 'urlCreator' => function ($action, Expediente $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
+                    //return Url::toRoute([$action, 'id' => $model->id]);
+                    if ($action == "update") {
+                        /* index decidirá si debe redireccionar a create o update */
+                      return Url::to(['solicitud-construccion/index', 'exp' => $key]);
+
+                    }
+                    return Url::to([$action, 'id' => $key]);
+
                  }
             ],
         ],

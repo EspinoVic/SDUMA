@@ -24,17 +24,15 @@ use yii\widgets\ActiveField;
  * @var common\models\Domicilio $soliDomicilioNotif
  * @var common\models\Domicilio $soliDomicilioPredio
  * @var common\models\SolicitudConstruccionHasDocumento $soliHasDocuments
+ * @var string $formAction    
+ * @var common\models\Expediente $expenditenOwnerSoli
  */
-
-$expenditenOwnerSoli = Expediente::findOne([
-    'id' => $modelSolicitudConstruccion->id_Expediente,
-]);
 ?>
 
 <div class="solicitud-construccion-form">
 
     <?php $form = ActiveForm::begin([
-        'action' => ['solicitud-construccion/create'],
+        'action' => [$formAction/* 'solicitud-construccion/create' */],
         'id' => 'solicitudConstruccionForm',
         'method' => 'post',
         'options' => [
@@ -110,7 +108,17 @@ $expenditenOwnerSoli = Expediente::findOne([
  
     <h5><?= Html::encode('Contacto') ?></h5> 
     
-    <?= $form->field($modelSolicitudConstruccion, 'id_Contacto')->textInput() ?>
+    <?= 
+    $form->field($modelSolicitudConstruccion, 'id_Contacto',
+    
+    ['options' => ['class' => 'col-md-0', 'display' => 'none'],]
+
+    )
+    ->hiddenInput()
+    ->label(false)
+    ?>
+
+
 
 
     <?= $form
@@ -129,9 +137,11 @@ $expenditenOwnerSoli = Expediente::findOne([
         ->field(
             $modelSolicitudConstruccion,
             'id_DomicilioNotificaciones',
-            ['options' => ['class' => 'col-md-3']]
+            ['options' => ['class' => 'col-md-1', 'display' => 'none'],]
         )
-        ->textInput() ?>
+        ->hiddenInput()
+        ->label(false) ?>
+ 
     <?= $this->render('_domicilio_fields', [
         'domicilio' => $soliDomicilioNotif,
         'form' => $form,
@@ -188,9 +198,12 @@ $expenditenOwnerSoli = Expediente::findOne([
     <h5><?= Html::encode('Domicilio del predio') ?></h5>   
     <?= $form
         ->field($modelSolicitudConstruccion, 'id_DomicilioPredio', [
-            'options' => ['class' => 'col-md-3'],
+            'options' => ['class' => 'col-md-1', 'display' => 'none'],
         ])
-        ->textInput() ?>
+        ->hiddenInput()
+        ->label(false) ?>
+
+        
     <?= $this->render('_domicilio_fields', [
         'domicilio' => $soliDomicilioPredio,
         'form' => $form,
@@ -391,10 +404,10 @@ $expenditenOwnerSoli = Expediente::findOne([
     <table id="tableEntregables" class="table   table-hover">
         <thead>
             <tr>
-                <th scope="col">ActionRow</th>
+                <th scope="col">Accion Entregable</th>
                 <th scope="col">Entregable</th>
                 <th scope="col">Nombre Archivo</th>
-                <th scope="col">Acciones</th>
+                <th scope="col">Acciones Archivo</th>
                 <th scope="col"></th>
  
             </tr>
@@ -417,7 +430,7 @@ $expenditenOwnerSoli = Expediente::findOne([
                             ->field($soliHasDocument, "[$id]id_Documento", [
                                 'options' => ['class' => 'col-md-1', 'display' => 'none'],
                             ])
-                            ->/* hiddenInput() */textInput()
+                            ->hiddenInput()/* textInput() */
                             ->label(false) 
                         ?>
                         <?php echo $form
@@ -460,7 +473,7 @@ $expenditenOwnerSoli = Expediente::findOne([
 
  
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

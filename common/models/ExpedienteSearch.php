@@ -1,6 +1,7 @@
 <?php
 
 namespace common\models;
+use Yii;
 
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -38,17 +39,34 @@ class ExpedienteSearch extends Expediente
      *
      * @return ActiveDataProvider
      */
+    public $nombre = "";
+    public $apellidoP = "";
+    public $apellidoM = "";
     public function search($params)
     {
-        $query = Expediente::find();
+        $query = Expediente::find()
+            ->join("LEFT JOIN","Persona",'Expediente.id_Persona_Solicita = Persona.id')
+           // ->select("Persona.*","Persona.*") //delegar 
+            ;
+        ob_start();
+        var_dump($params);
+        Yii::debug(ob_get_clean(), __METHOD__);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'pagination' => [
+                'pageSize' => 5,
+            ],
         ]);
 
+        //el actual modelo se carga en THIS, pero si el formulario de busqueda incluye parametros que no son propiedades
+        //del modelo, entonces no se pasan, para accederlo seria desde params., esto lo puedo aplicar al filtro final        
         $this->load($params);
+        $this->nombre = isset( $params["nombre"]) ? $params["nombre"]:"" ;
+        $this->apellidoP = isset( $params["apellidoP"]) ? $params["apellidoP"]:"" ;
+        $this->apellidoM = isset( $params["apellidoM"]) ? $params["apellidoM"]:"" ;
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -57,7 +75,9 @@ class ExpedienteSearch extends Expediente
         }
 
         // grid filtering conditions
-        $query->andFilterWhere([
+        $query
+        ->orderBy(['id'=>SORT_DESC, 'anio'=>SORT_DESC, 'idAnual'=>SORT_DESC, ])
+        ->andFilterWhere([
             'id' => $this->id,
             'idAnual' => $this->idAnual,
             'anio' => $this->anio,
@@ -68,7 +88,14 @@ class ExpedienteSearch extends Expediente
             'id_User_CreadoPor' => $this->id_User_CreadoPor,
             'id_User_modificadoPor' => $this->id_User_modificadoPor,
             'id_TipoTramite' => $this->id_TipoTramite,
-        ]);
+            'nombre' => $this->nombre ,
+            'apellidoP' => $this->apellidoP ,
+            'apellidoM' => $this->apellidoM ,
+           /*  'apellidoP' => $params["apellidoP"],
+            'apellidoM' => $params["apellidoM"], */
+ 
+        ]) 
+         ;
 
         return $dataProvider;
     }

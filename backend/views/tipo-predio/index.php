@@ -10,7 +10,7 @@ use yii\grid\GridView;
 /** @var common\models\TipoPredioSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Tipo Predios';
+$this->title = 'Tipo Predio';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tipo-predio-index">
@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Tipo Predio', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Crear '.$this->title, ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

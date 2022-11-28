@@ -59,13 +59,13 @@ class Expediente extends \yii\db\ActiveRecord
             'id' => 'ID',
             'idAnual' => 'Id Anual',
             'anio' => 'Anio',
-            'fechaCreacion' => 'Fecha Creacion',
-            'fechaModificacion' => 'Fecha Modificacion',
+            'fechaCreacion' => 'Fecha Creación',
+            'fechaModificacion' => 'Fecha Modificación',
             'estado' => 'Estado',
             'id_Persona_Solicita' => 'Id Persona Solicita',
             'id_User_CreadoPor' => 'Id User Creado Por',
             'id_User_modificadoPor' => 'Id User Modificado Por',
-            'id_TipoTramite' => 'Id Tipo Tramite',
+            'id_TipoTramite' => 'Id Tipo Trámite',
         ];
     }
 

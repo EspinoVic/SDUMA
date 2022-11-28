@@ -10,7 +10,7 @@ use yii\grid\GridView;
 /** @var common\models\MotivoConstruccionSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Motivo Construccions';
+$this->title = 'Motivo de Construccion';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="motivo-construccion-index">
@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Motivo Construccion', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Crear motivo de construccion', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
