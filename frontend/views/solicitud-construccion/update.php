@@ -1,5 +1,6 @@
 <?php
 
+use common\models\Expediente;
 use yii\helpers\Html;
 
 /** @var yii\web\View $this  
@@ -11,7 +12,9 @@ use yii\helpers\Html;
 * @var common\models\SolicitudConstruccionHasDocumento $soliHasDocuments    
  * 
  */
-
+$expenditenOwnerSoli = Expediente::findOne([
+    'id' => $modelSolicitudConstruccion->id_Expediente,
+]);
 $this->title = 'Actualizar Solicitud  de Construcción '/*  . $model->id */;
 $this->params['breadcrumbs'][] = ['label' => 'Solicitud  de Construcción', 'url' => ['index']];
 //$this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
@@ -29,6 +32,7 @@ $this->params['breadcrumbs'][] = 'Update';
         'soliDomicilioPredio' => $soliDomicilioPredio,
         'soliContacto' => $soliContacto,
         'soliHasDocuments' => $soliHasDocuments,
-        'formAction' => 'solicitud-construccion/update'
+        'formAction' => "solicitud-construccion/update?exp=$expenditenOwnerSoli->id",
+        'expenditenOwnerSoli' => $expenditenOwnerSoli
     ]) ?>
 </div>

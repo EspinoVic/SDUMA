@@ -25,11 +25,8 @@ use yii\widgets\ActiveField;
  * @var common\models\Domicilio $soliDomicilioPredio
  * @var common\models\SolicitudConstruccionHasDocumento $soliHasDocuments
  * @var string $formAction    
+ * @var common\models\Expediente $expenditenOwnerSoli
  */
-
-$expenditenOwnerSoli = Expediente::findOne([
-    'id' => $modelSolicitudConstruccion->id_Expediente,
-]);
 ?>
 
 <div class="solicitud-construccion-form">

@@ -311,6 +311,12 @@ CREATE PROCEDURE dbo.sp_create_soliconstruccion
                     THROW 54324, 'El expediente no existe.',1;
                 END;   
 
+                IF (EXISTS ( SELECT  TOP (1) id FROM sduma.dbo.SolicitudConstruccion WHERE id_Expediente = @idExpediente))
+                BEGIN ;
+                    THROW 54325, 'Ya hay una solicitud para este expediente.',1;
+                END;   
+
+/* Checar que el expediente no tenga solicitud */
                 INSERT INTO [dbo].[Contacto] ([email] ,[telefono])  VALUES (@email , @telefono );
     
                 SET @contactoInsertedIndex = (SELECT SCOPE_IDENTITY() );
@@ -506,7 +512,7 @@ CREATE PROCEDURE dbo.sp_update_soliconstruccion
     @predioNumInt nvarchar(45),
     @predioCP nvarchar(10),
     @predioEntreCalleV nvarchar(90),
-    @predioEntreCalleH nvarchar(90),
+    @predioEntreCalleH nvarchar(90),--23
 
     /* Info de la construcción */
     @idGeneroConstruccion INT,
@@ -521,22 +527,22 @@ CREATE PROCEDURE dbo.sp_update_soliconstruccion
     @rpp nvarchar(45),
     @tomo nvarchar(45),
     @folioElec nvarchar(45),
-    @cuentaCatastral nvarchar(45),
+    @cuentaCatastral nvarchar(45),--35
 
     @idDirectorResponsableObra INT,
     @idCorrSeguridadEstruc INT,
 
-    @idUserModificadoPor INT,
+    @idUserModificadoPor INT,   
     @idExpediente INT,
-    /* Todos los updates se realizan por medio del siguiente id
-        De esta manera, se evita traer los IDs directos de cada unade las relaciones de la solicitud
-        y así evitar cambios inesperados por algun sql injection o no intencional.
-     */
-    @idSolicitudConstrucEdit INT,
-    @documentos SoliHasDocParam READONLY --tipo custom
+    @documentos SoliHasDocParam READONLY --tipo custom --40
     
     AS
         BEGIN TRY
+         /* Todos los PK de las tablas relacionadas, se obtienen por medio el expediente ID.
+            De esta manera, se evita traer los IDs directos de cada unade las relaciones de la solicitud
+            y así evitar cambios inesperados por algun sql injection o no intencional (error al pasar el id o un id equivocado).
+        */
+            DECLARE @idSolicitudConstrucEdit INT;
             DECLARE @rowsInserted INT = 0;
             DECLARE @contactoIndex INT ;
             DECLARE @notificacionesDomicilioIndex INT ;
@@ -547,14 +553,14 @@ CREATE PROCEDURE dbo.sp_update_soliconstruccion
             BEGIN TRANSACTION UpdateSolicitudConstruccion;
                 SET NOCOUNT ON 
 
-                IF NOT (EXISTS ( SELECT  TOP (1) id FROM sduma.dbo.SolicitudConstruccion WHERE id = @idSolicitudConstrucEdit))
-                BEGIN ;
-                    THROW 54325, 'La solicitud solicitud no existe.',1;
-                END;   
-
                 IF NOT (EXISTS ( SELECT  TOP (1) id FROM sduma.dbo.Expediente WHERE id = @idExpediente))
                 BEGIN ;
                     THROW 54326, 'El expediente no existe.',1;
+                END;   
+
+                IF NOT (EXISTS ( SELECT  TOP (1) id FROM sduma.dbo.SolicitudConstruccion WHERE id_Expediente = @idExpediente))
+                BEGIN ;
+                    THROW 54327, 'La solicitud solicitud no existe.',1;
                 END;   
 /*  
     Se obtienen los ID de las entidades relacionadas. 
@@ -562,12 +568,14 @@ CREATE PROCEDURE dbo.sp_update_soliconstruccion
  */
  --Los demás IDs si deben existir, ya que son obligatorios, y no se pueden borrar por el constraint de las tablas
  --asi que no se revisa que existtan
+ 
                 SELECT 
+                    @idSolicitudConstrucEdit = id,
                     @contactoIndex = id_Contacto,
                     @notificacionesDomicilioIndex = id_DomicilioNotificaciones,
                     @predioDomicilioIndex = id_DomicilioPredio
                 FROM sduma.dbo.SolicitudConstruccion 
-                WHERE id = @idSolicitudConstrucEdit;
+                WHERE id_Expediente = @idExpediente;
 
                 /* Actualizar contacto */
                 UPDATE [dbo].[Contacto]
@@ -647,7 +655,18 @@ CREATE PROCEDURE dbo.sp_update_soliconstruccion
 
                 --ELIMINAR LOS QUE NO HAGAN INNER JOIN, 
                 --porque fueron deslinkeados en UI. 7u7 
-
+                
+                 /* Actualiza los propietarios */                
+                UPDATE P 
+                    SET  nombre =@propietarioNombre,
+                        apellidoP = @propietarioApellidoP,
+                        apellidoM = @propietarioApellidoM                        
+                    FROM SolicitudConstruccion_has_Persona SCP 
+                    INNER JOIN Persona P ON SCP.Persona_id = P.id                       
+                WHERE SCP.SolicitudConstruccion_Id = @idSolicitudConstrucEdit;--Unicamente para el id solicitud que llega en el SP.
+                
+                
+                SET @rowsInserted = @rowsInserted + @@ROWCOUNT;
 
             COMMIT TRANSACTION UpdateSolicitudConstruccion;
                     SELECT  @rowsInserted AS ROWS_INSERTED;

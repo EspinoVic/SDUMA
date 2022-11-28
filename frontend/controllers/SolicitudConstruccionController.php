@@ -226,13 +226,6 @@ class SolicitudConstruccionController extends Controller
         ]);
     }
 
-    /* cuando es un post, hará un intento de obtencion de datos del form para crear o actualizar una solicidutd
-    
-    */
-    private function postCreateUpdate(){
-
-    }
-
     /**
      * Updates an existing SolicitudConstruccion model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -242,7 +235,7 @@ class SolicitudConstruccionController extends Controller
      */
     public function actionUpdate($exp)
     {
-        $CREATE_SOLI_EXPEDIENTE_NUMBER = $exp;
+        $UPDATE_SOLI_EXPEDIENTE_NUMBER = $exp;
 
         $modelSolicitudConstruccion = new SolicitudConstruccion();
 
@@ -254,7 +247,7 @@ class SolicitudConstruccionController extends Controller
         $soliHasDocuments       = [];  
 
         if ($this->request->isPost) {
-
+           // Yii::debug("ispost alv", $category = __METHOD__);
             //crea modelos vacios, para luego cargarlos
 
             foreach ($this->request->post('SolicitudConstruccionHasDocumento') as $key => $value/* modelo de soliHasDoc */) {
@@ -265,8 +258,10 @@ class SolicitudConstruccionController extends Controller
                 
                
             }
-            $modelSolicitudConstruccion->id_Expediente = $CREATE_SOLI_EXPEDIENTE_NUMBER;
-
+           // Yii::debug("BEF SET EXPED number FORICH", $category = __METHOD__);
+            $modelSolicitudConstruccion->id_Expediente = $UPDATE_SOLI_EXPEDIENTE_NUMBER;
+            Yii::debug("AFTEr SET EXPED number FORICH", $category = __METHOD__);
+            
             if (
                 $modelSolicitudConstruccion->load($this->request->post()) &&
                 $propietarioPersona->load($this->request->post()) &&
@@ -280,10 +275,11 @@ class SolicitudConstruccionController extends Controller
                     $soliHasDocuments,
                     $this->request->post()
                 )
-                && SolicitudConstruccionHasDocumento::validateMultiple($soliHasDocuments)
+               // && SolicitudConstruccionHasDocumento::validateMultiple($soliHasDocuments)
             ) {
-                Yii::$app->session->setFlash('success', 'GOOD:');
+                //Yii::$app->session->setFlash('success', 'GOOD:');
                 
+                //al llamar el sp, los id son ignorados
                 if($modelSolicitudConstruccion -> id_DirectorResponsableObra == 0){
                     
                     $modelSolicitudConstruccion -> id_DirectorResponsableObra = null;
@@ -297,7 +293,7 @@ class SolicitudConstruccionController extends Controller
 
 
                 //Yii::$app->session->setFlash('warning', "nombreArchivo1:".$soliHasDocuments[0] -> nombreArchivo);
-                $modelSolicitudConstruccion ->updateSolicitudExpediente (
+                $resUpdate = $modelSolicitudConstruccion ->updateSolicitudExpediente (
                                 $propietarioPersona,  
                                 $soliDomicilioNotif ,
                                 $soliDomicilioPredio,
@@ -306,13 +302,23 @@ class SolicitudConstruccionController extends Controller
                                 Yii::$app->user->identity->id   
                 );
                 
-
+                if($resUpdate["success"] ==true){
+                    
+                    Yii::$app->session->setFlash('success', "Solicitud Actualizada.");
+                    //return $this->redirect(['https://www.google.com.mx'/* , 'id' => $modelSolicitudConstruccion->id */]);
+                  /*   return $this->goHome(); */
+                }else{
+                    Yii::$app->session->setFlash('danger',   $resUpdate["MSG"]  );
+                   
+                }
                 
                 //return $this->redirect(['expedientes/index'/* , 'id' => $modelSolicitudConstruccion->id */]);
             }
+
+
         } else {
             //cuando no es post significa renderizar los datos actuales del modelo. para su edición
-            $modelSolicitudConstruccion = SolicitudConstruccion::findOne(["id_Expediente" => $CREATE_SOLI_EXPEDIENTE_NUMBER]);
+            $modelSolicitudConstruccion = SolicitudConstruccion::findOne(["id_Expediente" => $UPDATE_SOLI_EXPEDIENTE_NUMBER]);
             
             ob_start();
             var_dump($modelSolicitudConstruccion );
