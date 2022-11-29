@@ -1,6 +1,7 @@
 <?php
 
 use common\models\User;
+use common\models\UserLevel;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -35,10 +36,38 @@ $this->params['breadcrumbs'][] = $this->title;
             //'password_hash',
             //'password_reset_token',
             'email:email',
-            'status',
+            /* 'status', */
+            [
+                'label' => "Estado",
+                 
+                'value' => function($currUser){
+                    switch($currUser->status){
+                        case  User::STATUS_DELETED:     return "ELIMINADO"; break;
+                        case  User::STATUS_INACTIVE:    return "INACTIVO";  break;
+                        case  User::STATUS_ACTIVE:      return "ACTIVO";    break;
+                        default: return "DESCONOCIDO";//peligro xd
+                    }
+                      
+                }
+            ],
             'id_Datos_Persona',
             'id_Horario',
-            'id_UserLevel',
+            /* 'id_UserLevel', */
+            [
+                'label' => "Nivel acceso",
+                 
+                'value' => function($currUser){
+
+                    return UserLevel::findOne(["id"=>$currUser->id_UserLevel])->Nombre;
+                    /* switch($currUser->id_UserLevel){
+                        case  User::USER_LEVEL_ADMIN:     return "ADMINISTRADOR"; break;
+                        case  User::USER_LEVEL_INTERNO:    return "INTERNO";  break;
+                        case  User::USER_LEVEL_EXTERNO:      return "EXTERNO";    break;
+                        default: return "DESCONOCIDO";//peligro xd
+                    } */
+                      
+                }
+            ],
             'createdAt',
             //'updatedAt',
             //'verification_token',

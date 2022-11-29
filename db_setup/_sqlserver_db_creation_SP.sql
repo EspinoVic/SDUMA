@@ -658,7 +658,7 @@ CREATE PROCEDURE dbo.sp_update_soliconstruccion
                 
                  /* Actualiza los propietarios */                
                 UPDATE P 
-                    SET  nombre =@propietarioNombre,
+                    SET  nombre =@propietarioNombre, --usar TVP para soportar N propietarios
                         apellidoP = @propietarioApellidoP,
                         apellidoM = @propietarioApellidoM                        
                     FROM SolicitudConstruccion_has_Persona SCP 

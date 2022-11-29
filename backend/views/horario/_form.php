@@ -1,7 +1,9 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap5\Html;
+use yii\bootstrap5\ActiveForm;
+/* use kartik\datetime\DateTimePicker; */
+/* use kartik\time\TimePicker; */
 
 /** @var yii\web\View $this */
 /** @var common\models\Horario $model */
@@ -13,10 +15,17 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'nombre')->textInput(['maxlength' => true]) ?>
+<!-- https://demos.krajee.com/widget-details/datetimepicker -->
+    <?= $form->field($model, 'inicioActividad') /* cambiar por textboxes alv */
+         ->textInput()
+         ->label("Inicio Actividad")
+    ?>
 
-    <?= $form->field($model, 'inicioActividad')->textInput() ?>
+    <?= $form->field($model, 'finActividad',)
 
-    <?= $form->field($model, 'finActividad')->textInput() ?>
+        ->textInput()
+        ->label("Fin Actividad")
+    ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

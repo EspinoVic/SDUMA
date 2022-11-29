@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\TipoTramite $model */
 
-$this->title = 'Create Tipo Tramite';
+$this->title = 'Crear Tipo Tramite';
 $this->params['breadcrumbs'][] = ['label' => 'Tipo Tramites', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

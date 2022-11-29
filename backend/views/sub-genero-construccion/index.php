@@ -41,7 +41,13 @@ $this->params['breadcrumbs'][] = $this->title;
             //'tarifa',
             //'fechaCreacion',
             'anioVigencia',
-            'isActivo',
+            /*  'isActivo', */
+            [
+            'label' => "Activo",                
+            'value' => function($currExpediente){
+                    return $currExpediente->isActivo?"Sí":"No";
+                }
+            ],
             //'id_GeneroConstruccion',
             [
                 'class' => ActionColumn::className(),

@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Documento', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Crear Documento', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -31,7 +31,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'nombre',
-            'isActivo',
+            /* 'isActivo', */
+            [
+                'label' => "Activo",                
+                'value' => function($currExpediente){
+                  return $currExpediente->isActivo?"Sí":"No";
+                }
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Documento $model, $key, $index, $column) {

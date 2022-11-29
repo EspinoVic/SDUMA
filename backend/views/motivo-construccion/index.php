@@ -31,7 +31,13 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'nombre',
-            'isActivo',
+            /*  'isActivo', */
+            [
+            'label' => "Activo",                
+            'value' => function($currExpediente){
+                return $currExpediente->isActivo?"Sí":"No";
+            }
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, MotivoConstruccion $model, $key, $index, $column) {
