@@ -351,6 +351,31 @@ class SolicitudConstruccionController extends Controller
          
     }
 
+    public function actionFormrecibodoc($exp){
+
+        $expediente = Expediente::findOne(["id" => $exp]);
+
+    /*     if(!$expediente){
+
+            return $this->redirect(["site/error",
+                    [
+                    "name"=> "Error al buscar expediente.",
+                    "message"=>"No fue posible encontrar el expediente solicitdado."
+                    ]
+                ]
+            );
+        }
+ */
+        $modelSolicitudConstruccion = SolicitudConstruccion::findOne(["id_Expediente" =>  $expediente->id]);
+
+        $soliHasDocuments  =  $modelSolicitudConstruccion->solicitudConstruccionHasDocumentos;
+
+        return $this->render("formrecibodoc",
+            ["expediente" => $expediente,
+            "soliHasDocuments"=> $soliHasDocuments]
+        );
+
+    }
 
     public function actionTvp(){
 
