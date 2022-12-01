@@ -366,12 +366,13 @@ class SolicitudConstruccionController extends Controller
             );
         }
  */
-        $modelSolicitudConstruccion = SolicitudConstruccion::findOne(["id_Expediente" =>  $expediente->id]);
+        $solicitudConstruccion = SolicitudConstruccion::findOne(["id_Expediente" =>  $expediente->id]);
 
-        $soliHasDocuments  =  $modelSolicitudConstruccion->solicitudConstruccionHasDocumentos;
+        $soliHasDocuments  =  $solicitudConstruccion->solicitudConstruccionHasDocumentos;
 
         return $this->render("formrecibodoc",
             ["expediente" => $expediente,
+            "solicitudConstruccion"=> $solicitudConstruccion,
             "soliHasDocuments"=> $soliHasDocuments]
         );
 

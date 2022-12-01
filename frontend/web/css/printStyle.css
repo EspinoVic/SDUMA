@@ -28,3 +28,14 @@ body{
   flex-direction: column;
   flex-wrap: nowrap;
 }
+
+.recibo-doc > .recibo-doc__title{
+
+}
+
+.recibo-doc > .entregables{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}

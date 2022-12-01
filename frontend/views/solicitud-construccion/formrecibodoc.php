@@ -4,9 +4,9 @@
 use common\models\Documento;
 use common\models\Expediente;
 use yii\bootstrap5\Html;
-/* @var common\models\SolicitudConstruccionHasDocumento $soliHasDocuments
-
 /* @var common\models\Expediente  $expediente */
+/* @var common\models\SolicitudConstruccion $solicitudConstruccion*/
+/* @var common\models\SolicitudConstruccionHasDocumento $soliHasDocuments
 ?>
 <?php  
   /* $baseUrl = Yii::$app ->baseUrl; 
@@ -44,17 +44,25 @@ use yii\bootstrap5\Html;
         visibility: none; */
       }
       
-     /*  body{
-          background-color: red;
-      } */
-      
-      .recibo-doc{
-      
+    
+    .recibo-doc{
+
         outline: solid 1px black;
         display: flex;
         flex-direction: column;
         flex-wrap: nowrap;
-      }
+    }
+    
+    .recibo-doc > .recibo-doc__title{
+    
+    }
+    
+    .recibo-doc > .entregables{
+        display: flex;
+        flex-direction: column;
+        flex-wrap: nowrap;
+        /* justify-content: space-evenly; */
+    }
 
 /* } */
     ");
@@ -70,42 +78,57 @@ use yii\bootstrap5\Html;
         <div>RECIBO DE DOCUMENTACIÓN</div>
     </div>
 
+    <div>
+        <?= 'EXPEDIENTE: ' . $expediente->idAnual . '/' . $expediente->anio ?>
+    </div> 
+
+    <div>
+        <?= "Fecha de respuesta: "."_______"." / "."________" ?>
+    </div>
+
+    <div>
+        <?= 
+            "RECIBÍ DEL (LA) C. "
+            .$expediente->personaSolicita->nombre." "
+            .$expediente->personaSolicita->apellidoP." "
+            .$expediente->personaSolicita->apellidoM
+        ?>
+    </div>
+
     <button id="print-btn" onclick="window.print();return false; ">
     Imprimir
     </button>
 
-    <table id="tableEntregables" class="table   table-hover">
-        <thead>
-            <tr>
-                <th scope="col"> </th>
-                <th scope="col">nombre</th>
-                
-            
+    <div>
+        DOCUMENTOS ENTREGADOS
+    </div>
+    <div class="entregables">
+        <?php foreach ($soliHasDocuments as $id => $soliHasDocument) { ?>
+            <div <?="id = 'entregableElement$id' "  ?> >
+                <span>
+                    <?= Html::checkbox("[$id]id_Documento",$soliHasDocument->isEntregado,
+                        [
+                            'options' => ['class' => 'col-md-1', 'display' => 'none'],
+                        ]);
+                    ?>
+                </span>
 
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($soliHasDocuments as $id => $soliHasDocument) { ?>
-                    <tr <?php echo "id = 'docRow$id' "  ?> >
-            <td>
-                            <?= Html::checkbox("[$id]id_Documento",$soliHasDocument->isEntregado,
-                                [
-                                    'options' => ['class' => 'col-md-1', 'display' => 'none'],
-                                ]);
-                            ?>
-                        </td>
-                    <td>
-                        
-                        <?= Html::label(Documento::findOne( ["id"=>$soliHasDocument->id_Documento/* /84 */]) -> nombre ,"[$id]id_Documento")  ?>            
-                    </td>
+                <span>                    
+                    <?= Html::label(Documento::findOne( ["id"=>$soliHasDocument->id_Documento/* /84 */]) -> nombre ,"[$id]id_Documento")  ?>            
+                </span>
 
-                    </tr>
-                <?php } ?>
-        </tbody>
-    </table>
+            </div>
+        <?php } ?>
+    </div>
+
+<div>
+    URUAPAN, MICH. A <?= date('d');  ?> DE <?= date('F');  ?> DEL <?= date('Y');  ?>
+</div>
+<div>
+    RECIBIÓ: <?= Yii::$app->user->identity->username  ?>
+</div>
+ 
+ 
     
 </div>
-
-<script>
-   
-</script>
+ 
