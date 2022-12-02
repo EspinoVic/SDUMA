@@ -28,6 +28,7 @@ use yii\web\IdentityInterface;
  *     ,[id_Horario]
  *     ,[id_UserLevel]
  *   ,[verification_token]
+ * @property common\modedls\Persona $datosPersona
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -93,6 +94,20 @@ class User extends ActiveRecord implements IdentityInterface
         }
             
     }
+
+    /**
+     * Gets query for [[TipoTramites]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDatosPersona()
+    {
+     
+        return $this->hasOne(Contacto::class, ['id' => 'id_Contacto']);
+
+    }
+
+
   /**
      * {@inheritdoc}
      */
