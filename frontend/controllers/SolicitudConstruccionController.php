@@ -19,7 +19,7 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use kartik\mpdf\Pdf;
 /**
  * SolicitudConstruccionController implements the CRUD actions for SolicitudConstruccion model.
  */
@@ -355,17 +355,17 @@ class SolicitudConstruccionController extends Controller
 
         $expediente = Expediente::findOne(["id" => $exp]);
 
-    /*     if(!$expediente){
+        /*     if(!$expediente){
 
-            return $this->redirect(["site/error",
-                    [
-                    "name"=> "Error al buscar expediente.",
-                    "message"=>"No fue posible encontrar el expediente solicitdado."
-                    ]
-                ]
-            );
-        }
- */
+                    return $this->redirect(["site/error",
+                            [
+                            "name"=> "Error al buscar expediente.",
+                            "message"=>"No fue posible encontrar el expediente solicitdado."
+                            ]
+                        ]
+                    );
+                }
+        */
         $solicitudConstruccion = SolicitudConstruccion::findOne(["id_Expediente" =>  $expediente->id]);
 
         $soliHasDocuments  =  $solicitudConstruccion->solicitudConstruccionHasDocumentos;
@@ -377,6 +377,86 @@ class SolicitudConstruccionController extends Controller
         );
 
     }
+
+
+    public function actionPrintsolicitud($exp){
+        $expediente = Expediente::findOne(["id" => $exp]);
+        $solicitudConstruccion = SolicitudConstruccion::findOne(["id_Expediente" =>  $expediente->id]);
+
+        $soliHasDocuments  =  $solicitudConstruccion->solicitudConstruccionHasDocumentos;
+
+
+        return $this->render("printsolicitud",
+            ["expediente" => $expediente,
+            "solicitudConstruccion"=> $solicitudConstruccion,
+            "soliHasDocuments"=> $soliHasDocuments]
+        );
+
+    }
+
+    public function actionImprimible($exp){
+        $expediente = Expediente::findOne(["id" => $exp]);
+        $solicitudConstruccion = SolicitudConstruccion::findOne(["id_Expediente" =>  $expediente->id]);
+
+        $soliHasDocuments  =  $solicitudConstruccion->solicitudConstruccionHasDocumentos;
+
+        return $this->render("imprimible",
+            ["expediente" => $expediente,
+            "solicitudConstruccion"=> $solicitudConstruccion,
+            "soliHasDocuments"=> $soliHasDocuments]
+        );
+    }
+
+    public function actionReport() {
+        // get your HTML raw content without any layouts or scripts
+        $expediente = Expediente::findOne(["id" => 1]);
+        $solicitudConstruccion = SolicitudConstruccion::findOne(["id_Expediente" =>  $expediente->id]);
+
+        $soliHasDocuments  =  $solicitudConstruccion->solicitudConstruccionHasDocumentos;
+
+        $content = $this->renderPartial('_reportView', 
+            ["expediente" => $expediente,
+            "solicitudConstruccion"=> $solicitudConstruccion,
+            "soliHasDocuments"=> $soliHasDocuments]
+        );
+        
+        // setup kartik\mpdf\Pdf component
+        $pdf = new Pdf([
+            // set to use core fonts only
+            'mode' => Pdf::MODE_CORE, 
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4, 
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT, 
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER, 
+            // your html content input
+            'content' => $content,  
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting 
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+            //'cssFile' => '@frontend/views/solicitud-construccion/style.css',
+            // any css to be embedded if required
+/*             'cssInline' => "
+                .recibo-doc{
+
+                    outline: solid 1px black;
+                    font-size: 12px;
+                    background-red: red;
+                } ",  */
+             // set mPDF properties on the fly
+            'options' => ['title' => 'Krajee Report Title'],
+             // call mPDF methods on the fly
+            'methods' => [ 
+                'SetHeader'=>['Krajee Report Header'], 
+                'SetFooter'=>['{PAGENO}'],
+            ]
+        ]);
+        
+        // return the pdf output as per the destination setting
+        return $pdf->render(); 
+    }
+
 
     public function actionTvp(){
 
