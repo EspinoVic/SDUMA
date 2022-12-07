@@ -3,6 +3,15 @@ use yii\bootstrap5\Html;
 use common\models\Documento;
 use yii\helpers\Url;
 
+/* 
+* $expediente common\models\Expediente
+* $solicitudConstruccion common\models\SolicitudConstruccion
+* $soliHasDocuments common\models\SolicitudConstruccionHasDocumento
+*
+*
+
+*/
+
 $this->registerCss("
     
 /* @media print{ */
@@ -88,38 +97,51 @@ $this->registerCss("
     </div>
 
     <div class="container-xl p-1 m-1 d-flex justify-content-center inverted-colors">
-        <b>  SOLICITUD DE <?= "MOTIVO CONSTRUC"?>  DE CONSTRUCCIÓN </b>
+        <b>  SOLICITUD DE <?= strtoupper($solicitudConstruccion->motivoConstruccion->nombre)?>  DE CONSTRUCCIÓN </b>
     </div>
     
 
     <div class="container-xl outlined-box p-1 m-1 ">
         <div class="row  ">
-            <div class="col" ><b>Nombre del propietario:</b>  Javier Morales Montez   </div>   
+            <div class="col" ><b>Nombre del propietario:</b>
+             <?=
+               $solicitudConstruccion->solicitudConstruccionHasPersonas[0]->persona->nombre." ".
+               $solicitudConstruccion->solicitudConstruccionHasPersonas[0]->persona->apellidoP." ".
+               $solicitudConstruccion->solicitudConstruccionHasPersonas[0]->persona->apellidoM;
+            
+            ?> </div>   
         </div>
     </div>
 
     <div class="container-xl outlined-box p-1 m-1 ">
         <div class="row  ">
-            <div class="col-8" ><b>Domicilio para notificaciones:</b> <?= "calle 1 etc..."  ?> </div>  <div class="col-3" ><b> Email:</b> <?= "correo@gmail.com"  ?> </div>   
+            <div class="col-8" ><b>Domicilio para notificaciones:</b> 
+                <?=
+                    $solicitudConstruccion->domicilioNotificaciones->calle." #Ext".  
+                    $solicitudConstruccion->domicilioNotificaciones->numExt ." #Int:".  
+                    $solicitudConstruccion->domicilioNotificaciones->numInt." "  
+                ?> 
+            </div>  
+            <div class="col-4" ><b> Email:</b> <?= $solicitudConstruccion->contacto->email  ?> </div>   
         </div>
         <div class="row  ">
-            <div class="col-8" ><b> Colonia/Fracc/Barrio:</b> <?= "Esta es la coloonias"  ?> </div>  <div class="col-3" > <b>Telefono:</b> <?= "1234567789"  ?> </div>   
+            <div class="col-8" ><b> Colonia/Fracc/Barrio:</b> <?= $solicitudConstruccion->domicilioNotificaciones->coloniaFraccBarrio." CP: ". $solicitudConstruccion->domicilioNotificaciones->cp  ?> </div>  <div class="col-3" > <b>Telefono:</b> <?= "1234567789"  ?> </div>   
         </div>
     </div>
 
 
     <div class="container-xl outlined-box p-1 m-1 ">
         <div class="row  ">
-            <div class="col" ><b>Motivo de la solicitud:</b> <?= "LICENCIA"  ?>   </div>   
+            <div class="col" ><b>Motivo de la solicitud:</b> <?= $solicitudConstruccion->motivoConstruccion->nombre  ?>   </div>   
         </div>
     </div>
 
 
     <div class="container-xl outlined-box p-1 m-1 ">
         <div class="row  ">
-            <div class="col" ><b>Tipo de predio:</b>  <?= "RURAL/URBANO"  ?>   </div>  
-            <div class="col" ><b>Superficie total:</b>  <?= "10m2"  ?>   </div>  
-            <div class="col" ><b>Superficie:</b>  <?= "15m2"  ?>   </div>   
+            <div class="col" ><b>Tipo de predio:</b>  <?= $solicitudConstruccion->tipoPredio->nombre  ?>    </div>  
+            <div class="col" ><b>Superficie total:</b>  <?= $solicitudConstruccion->superficieTotal  ?>   </div>  
+            <div class="col" ><b>Superficie por construir:</b>    <?= $solicitudConstruccion->superficiePorConstruir  ?>  </div>   
         </div>
     </div>
 
@@ -127,41 +149,55 @@ $this->registerCss("
     <!-- Domicilio del predio -->
     <div class="container-xl outlined-box p-1 m-1 ">
         <div class="row  ">
-            <div class="col " ><b>Ubicación del predio:</b> <?= "calle 1 etc..."  ?> </div>  
+            <div class="col " ><b>Ubicación del predio:</b> 
+                <?=
+                 $solicitudConstruccion->domicilioPredio->calle.
+                 " #Ext: ".$solicitudConstruccion->domicilioPredio->numExt .
+                 " #Int: ".$solicitudConstruccion->domicilioPredio->numInt." "  
+                ?> 
+            </div>  
         </div>
         <div class="row  ">
-            <div class="col " > <b>Entre calles:</b> <?= "entre calle X"  ?> </div> <div class="col " ><b> Colonia/Fracc/Barrio:</b> <?= "Esta es la colosssssssssssssssssssssssssssssssssssssssssonias"  ?> </div>             
+            <div class="col " > <b>Entre calles:</b> 
+                <?=
+                  $solicitudConstruccion->domicilioPredio->entreCallesH." Y ".
+                  $solicitudConstruccion->domicilioPredio->entreCallesV
+                ?> 
+            </div> 
+            <div class="col " ><b> Colonia/Fracc/Barrio:</b>
+                <?= $solicitudConstruccion->domicilioPredio->coloniaFraccBarrio  ?> 
+            </div>             
         </div>
 
         <div class="row">
-            <div class="col " ><b> CP:</b> <?= "60000"  ?> </div>  
+            <div class="col " ><b> CP:</b> <?= $solicitudConstruccion->domicilioPredio->cp  ?> </div>  
         </div>
     </div>
 
     <div class="container-xl outlined-box p-1 m-1 ">
         <div class="row  ">
-            <div class="col" ><b>Genero: </b>  <?= "GENERO X"  ?>   </div>  
-            <div class="col" ><b>TIPO: </b>  <?= "TIPO Y"  ?>   </div>           
+            <div class="col" ><b>Genero: </b>  <?= $solicitudConstruccion->generoConstruccion->nombre ?>   </div>  
+            <div class="col" ><b>TIPO: </b>  <?= $solicitudConstruccion->tipoConstruccion->nombre.";;;Popular/Residencial//Comercial..etc???"  ?>   </div>           
         </div>
     </div>
 
     <div class="container-xl outlined-box p-1 m-1 ">
         <div class="row  ">
-            <div class="col" ><b>Niveles: </b>  <?= "2 Niveles"  ?>   </div>  
-            <div class="col" ><b>Cajones: </b>  <?= "Cajones"  ?>   </div>           
-            <div class="col" ><b>COS: </b>  <?= "valor COS"  ?>   </div>  
-            <div class="col" ><b>CUS: </b>  <?= "valor CUS"  ?>   </div>           
-            <div class="col" ><b>M2 Preexistentes: </b>  <?= "m2 Pre"  ?>   </div>          
+            <div class="col" ><b>Niveles: </b>  <?= $solicitudConstruccion->niveles  ?>   </div>  
+            <div class="col" ><b>Cajones: </b>  <?= $solicitudConstruccion->cajones  ?>   </div>           
+            <div class="col" ><b>COS: </b>  <?= $solicitudConstruccion->COS  ?>   </div>  
+            <div class="col" ><b>CUS: </b>  <?= $solicitudConstruccion->CUS ?>   </div>           
+            <div class="col" ><b>M2 Preexistentes: </b>  <?= $solicitudConstruccion->superficiePreexistente ?>   </div>          
         </div>
     </div>
 
     <div class="container-xl outlined-box p-1 m-1 ">
         <div class="row  ">
-            <div class="col" ><b>Titulo de propiedad: </b>  <?= "Titulo PX"  ?>   </div>  
-            <div class="col" ><b>RPP: </b>  <?= "RPP val"  ?>   </div>           
-            <div class="col" ><b>Tomo: </b>  <?= "Tomo X"  ?>   </div>  
-            <div class="col" ><b>Folio electrónico: </b>  <?= "Folio Elec"  ?>   </div>           
-            <div class="col" ><b>Clave/Cuenta catastral: </b>  <?= "cuenta cat"  ?>   </div>  
+            <div class="col" ><b>Titulo de propiedad: </b>  <?="Pendiente de agregar a DB" /* $solicitudConstruccion->tituloPropiedad */  ?>   </div>  
+            <div class="col" ><b>RPP: </b>  <?= $solicitudConstruccion->RPP  ?>   </div>           
+            <div class="col" ><b>Tomo: </b>  <?= $solicitudConstruccion->tomo  ?>   </div>  
+            <div class="col" ><b>Folio electrónico: </b>  <?= $solicitudConstruccion->folioElec ?>   </div>           
+            <div class="col" ><b>Clave/Cuenta catastral: </b>  <?= $solicitudConstruccion->cuentaCatastral  ?>   </div>  
          </div>
     </div>
     <div class="container-xl outlined-box p-1 m-1">
@@ -221,11 +257,11 @@ $this->registerCss("
 
     <div class="container-xl outlined-box p-1 m-1">
         <div class="row  ">
-            <div class="col " ><b>Expediente: </b>  <?= "Expediente num "  ?>   </div>  
-            <div class="col" ><b> Fecha Ingreso: </b>    </div>           
+            <div class="col " ><b>Expediente: </b>  <?= $expediente->idAnual."/".$expediente->anio ?>   </div>  
+            <div class="col" ><b> Fecha Ingreso: </b> <?= date("d/m/Y - h:i a", strtotime($expediente->fechaCreacion) ) ?>   </div>           
             <div class="col" ><b> Fecha Notificación: </b>    </div>           
             <div class="col" ><b> Fecha Reingreso: </b>    </div>           
-            <div class="col" ><b> Fecha Entrega: </b>    </div>           
+            <div class="col" ><b> Fecha Entrega: </b> <?=  date("d/m/Y - h:i a") ?>   </div>           
            
          </div>
     </div>
