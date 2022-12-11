@@ -49,6 +49,11 @@
        /* 'active' => true */
      ],
      [
+       'label'=> 'Documento por trámite',
+       'url' => ['/tipo-tramite-has-documento/index'],
+       'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ]
+     ],
+     [
        'label'=> 'Directores Responsables de Obra',
        'url' => ['/director-responsable-obra/index'],
        'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ],
