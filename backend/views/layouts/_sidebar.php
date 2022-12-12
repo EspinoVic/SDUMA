@@ -6,6 +6,13 @@
  ],
  'params' => $_GET,
  'items'=>[
+   
+      [
+        'label'=> 'Usuarios',
+        'url' => ['/user/index'],
+        'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ]
+ 
+      ],
      [
        'label'=> 'Motivo Construccion',
        'url' => ['/motivo-construccion/index'],
@@ -19,17 +26,18 @@
        /* 'active' => true */
      ],
      [
+      'label'=> 'Genero Construccion',
+      'url' => ['/genero-construccion/index'],
+      'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ],
+      /* 'active' => true */
+      ],
+     [
        'label'=> 'Sub-Genero Construccion',
        'url' => ['/sub-genero-construccion/index'],
        'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ],
        /* 'active' => true */
      ],
-     [
-       'label'=> 'Genero Construccion',
-       'url' => ['/genero-construccion/index'],
-       'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ],
-       /* 'active' => true */
-     ],
+
      [
        'label'=> 'Tipo Construccion',
        'url' => ['/tipo-construccion/index'],
@@ -70,25 +78,7 @@
         'url' => ['/horario/index'],
         'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ]
  
-      ],
-      [
-        'label'=> 'Rol',
-        'url' => ['/rol/index'],
-        'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ]
- 
-      ],
-      [
-        'label'=> 'Usuarios',
-        'url' => ['/user/index'],
-        'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ]
- 
-      ],
-     [
-       'label'=> 'Contacto',
-       'url' => ['/contacto/index'],
-       'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ]
-
-     ]
+      ] 
  ]
 ])
 ?>

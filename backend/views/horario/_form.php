@@ -11,22 +11,24 @@ use yii\bootstrap5\ActiveForm;
 ?>
 
 <div class="horario-form">
-
+ 
     <?php $form = ActiveForm::begin(); ?>
-
+ 
     <?= $form->field($model, 'nombre')->textInput(['maxlength' => true]) ?>
-<!-- https://demos.krajee.com/widget-details/datetimepicker -->
-    <?= $form->field($model, 'inicioActividad') /* cambiar por textboxes alv */
-         ->textInput()
-         ->label("Inicio Actividad")
-    ?>
 
-    <?= $form->field($model, 'finActividad',)
+    <div class="row">
+        <?= $form->field($model, 'inicioActividad',["options"=>["class"=>"col-5" ]] ) /* cambiar por textboxes alv */
+            ->textInput(["type"=>"time","value"=>date("H:i" ,  strtotime( $model->inicioActividad)) ])/* No usar segundos, da un error de validación xd, minutos es suficiente */
+            ->label("Inicio Actividad")
+        ?>
+        <?= $form->field($model, 'finActividad',["options"=>["class"=>"col-5"]]) /* cambiar por textboxes alv */
+            ->textInput(["type"=>"time","value"=>date("H:i" ,  strtotime( $model->finActividad)) ])
+            ->label("Fin Actividad")
+        ?>
 
-        ->textInput()
-        ->label("Fin Actividad")
-    ?>
-
+    </div>
+  
+ 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>

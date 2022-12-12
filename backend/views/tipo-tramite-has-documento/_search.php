@@ -40,14 +40,14 @@ use yii\bootstrap5\ActiveForm;
                 TipoTramite::findAll(["isActivo"=>1])
             , 'id','nombre'
             )
-        )
-
+        ),
+        ['value'=>$model?$model->id_TipoTramite:0]
     )  
     ->label("Tipo de trámite") 
     ?>
 
 
-
+ 
     <?= $form->field($model, 'id_Documento')
     ->dropDownList(
         $items= 
@@ -57,7 +57,8 @@ use yii\bootstrap5\ActiveForm;
                 'id',
                 'nombre'
             )
-        )
+            ),
+            ['value'=>$model?$model->id_Documento:0]
     )
     ->label("Documento") ?>
 

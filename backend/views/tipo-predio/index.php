@@ -42,7 +42,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, TipoPredio $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                },
+                'visibleButtons'=>[                    
+                    'view' => false
+                ]
             ],
         ],
     ]); ?>

@@ -11,24 +11,20 @@ use yii\grid\GridView;
 /** @var common\models\UserSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Users';
+$this->title = 'Usuarios';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="user-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
-    <p>
-        <?= Html::a('Create User', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
+ 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+    //    'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            //['class' => 'yii\grid\SerialColumn'],
 
             'id',
             'username',
@@ -50,8 +46,18 @@ $this->params['breadcrumbs'][] = $this->title;
                       
                 }
             ],
-            'id_Datos_Persona',
-            'id_Horario',
+            /* 'id_Datos_Persona', */
+            [
+                'label' => "Nombre",
+                'value' => function($currUser){return $currUser->datosPersona->nombre." ".$currUser->datosPersona->apellidoP;}
+
+            ],
+            [
+                'label' => "Horario",
+                'value' => function($currUser){return $currUser->horario->nombre;}
+
+            ],
+            /* 'id_Horario', */
             /* 'id_UserLevel', */
             [
                 'label' => "Nivel acceso",
@@ -68,11 +74,16 @@ $this->params['breadcrumbs'][] = $this->title;
                       
                 }
             ],
-            'createdAt',
+           /*  'createdAt', */
+            ['label'=>'Creado en',
+                'value' => function($currUser){                    
+                   return date("d/m/y h:i a",  strtotime( $currUser->createdAt)   );  
+                }  
+            ],
             //'updatedAt',
             //'verification_token',
             [
-                'class' => ActionColumn::className(),
+                'class' => ActionColumn::class,
                 'urlCreator' => function ($action, User $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }

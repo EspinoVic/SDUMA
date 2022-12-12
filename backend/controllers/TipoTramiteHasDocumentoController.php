@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use Yii;
 use common\models\TipoTramiteHasDocumento;
 use common\models\TipoTramiteHasDocumentoSearch;
 use yii\web\Controller;
@@ -54,12 +55,12 @@ class TipoTramiteHasDocumentoController extends Controller
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id_Documento, $id_TipoTramite)
+/*     public function actionView($id_Documento, $id_TipoTramite)
     {
         return $this->render('view', [
             'model' => $this->findModel($id_Documento, $id_TipoTramite),
         ]);
-    }
+    } */
 
     /**
      * Creates a new TipoTramiteHasDocumento model.
@@ -96,7 +97,9 @@ class TipoTramiteHasDocumentoController extends Controller
         $model = $this->findModel($id_Documento, $id_TipoTramite);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id_Documento' => $model->id_Documento, 'id_TipoTramite' => $model->id_TipoTramite]);
+            ///return $this->redirect(['view', 'id_Documento' => $model->id_Documento, 'id_TipoTramite' => $model->id_TipoTramite]);
+            Yii::$app->session->setFlash('success', "Registro actualizado correctamente.");
+
         }
 
         return $this->render('update', [

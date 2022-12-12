@@ -25,19 +25,35 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+     //   'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            //['class' => 'yii\grid\SerialColumn'],
 
             'id',
             'nombre',
-            'inicioActividad:time',
-            'finActividad:time',
+           /*  'inicioActividad:time',
+            'finActividad:time', */
+            ['label'=>'Inicio Actividad',
+                'value' => function($currHorario){                    
+                   return date("h:i a",  strtotime( $currHorario->inicioActividad)   );  
+                }  
+            ],
+            ['label'=>'Fin Actividad',
+                'value' => function($currHorario){                    
+                   return date("h:i a",  strtotime( $currHorario->finActividad)   );  
+                }  
+            ],
+          
             [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Horario $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+            'class' => ActionColumn::class,
+            'urlCreator' => function ($action, Horario $model, $key, $index, $column) {
+                
+                return Url::toRoute([$action, 'id' => $model->id]);
+                }
+                ,
+            'visibleButtons'=>[                    
+                'view' => false
+            ]
             ],
         ],
     ]); ?>

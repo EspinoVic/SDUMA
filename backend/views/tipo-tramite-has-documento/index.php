@@ -28,6 +28,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         /* 'filterModel' => $searchModel, */
         'pager' => WidgetStyleVic::PagerStyle(),
+        
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
@@ -46,10 +47,20 @@ $this->params['breadcrumbs'][] = $this->title;
             /* 'id_TipoTramite',
             'id_Documento', */
             [
-                'class' => ActionColumn::class,
-                'urlCreator' => function ($action, TipoTramiteHasDocumento $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id_Documento' => $model->id_Documento, 'id_TipoTramite' => $model->id_TipoTramite]);
-                 }
+            'class' => ActionColumn::class,
+            'urlCreator' => function ($action, TipoTramiteHasDocumento $model, $key, $index, $column) {
+                
+                if($action == 'view') return ;
+
+                return Url::toRoute([$action, 'id_Documento' => $model->id_Documento, 'id_TipoTramite' => $model->id_TipoTramite]);
+                }
+                ,
+                'visibleButtons'=>[
+                    /* 'view'=> function($model){
+                          return $model->status!=1; //puede aparecer o no, segun el estado del modelo :0 awesome xd
+                     }, */
+                     'view' => false
+                ]
             ],
         ],
     ]); ?>
