@@ -21,7 +21,8 @@
         "yiisoft/yii2-jui": "^2.0",
         "kartik-v/yii2-widget-datetimepicker": "*",
         "kartik-v/yii2-widget-timepicker": "^1.0",
-        "kartik-v/yii2-mpdf": "dev-master"
+        "kartik-v/yii2-mpdf": "dev-master",
+        "symfony/google-mailer": "^6.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
