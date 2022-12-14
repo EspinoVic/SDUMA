@@ -120,9 +120,9 @@ class SignupForm extends Model
         */
         $resSignup = [];
         
-       // $userCreationResult = $this->createUser($newUser) ;
+        $userCreationResult = $this->createUser($newUser) ;
 
-        if(/* $userCreationResult["ROWS_INSERTED"] */2 == 2){//true
+        if($userCreationResult["ROWS_INSERTED"]  == 2){//true
 
             if($this->sendEmail($newUser)){
                 return [
