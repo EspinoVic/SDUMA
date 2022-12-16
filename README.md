@@ -58,3 +58,21 @@ frontend
 vendor/                  contains dependent 3rd-party packages
 environments/            contains environment-based overrides
 ```
+
+
+Instrucciones de instalación
+-------------------
+
+0. Descargue el proyecto, en este caso se instalará en XAMPP, si se usa otro tipo de servidor (como IIS o Ngnx), deberá adaptar los pasos a el.
+
+1. Es necesario instalar el Driver de SQLServer en el servidor PHP.
+    1. Copiar el DLL, **/sduma/db_setup/php_pdo_sqlsrv_80_ts_x64.dll)** en la ruta **/php/ext del servidor PHP**.
+    El sevidor PHP debe coincidir con este DLL, PHP 64 bits Thread Save o Z Thread Safe, con PHP 8. Si se desea otra versión de PHP se debera conseguir la DLL apropiada, teniendo en cuenta si es TS o NTS.
+
+2. Activar ext-gd en el servidor PHP
+    1. En la raíz de la carpeta PHP, reemplazar la entrada **;extension=gd** con   **extension=gd**. Esto es necesario para la libreria que genera PDFs.
+
+
+3. Run  ```composer install```
+
+

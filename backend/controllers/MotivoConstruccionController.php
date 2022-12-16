@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use common\models\MotivoConstruccion;
 use common\models\MotivoConstruccionSearch;
+use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -53,13 +54,13 @@ class MotivoConstruccionController extends Controller
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+/*     public function actionView($id)
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
-
+ */
     /**
      * Creates a new MotivoConstruccion model.
      * If creation is successful, the browser will be redirected to the 'view' page.
@@ -94,7 +95,7 @@ class MotivoConstruccionController extends Controller
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            Yii::$app->session->setFlash('success', "Cambios guardados.");
         }
 
         return $this->render('update', [

@@ -122,7 +122,7 @@ class SignupForm extends Model
         
         $userCreationResult = $this->createUser($newUser) ;
 
-        if($userCreationResult["ROWS_INSERTED"] == 2){//true
+        if($userCreationResult["ROWS_INSERTED"]  == 2){//true
 
             if($this->sendEmail($newUser)){
                 return [
@@ -212,7 +212,7 @@ class SignupForm extends Model
                 ['html' => 'emailVerify-html', 'text' => 'emailVerify-text'],
                 ['user' => $userr]
             )
-            ->setFrom([Yii::$app->params['supportEmail'] => Yii::$app->name . ' robot'])
+            ->setFrom(['vicsdumae@gmail.com'/* Yii::$app->params['supportEmail']  */=> Yii::$app->name . ' robot'])
             ->setTo($userr->email)
             ->setSubject('Account registration at ' . Yii::$app->name)
             ->send();

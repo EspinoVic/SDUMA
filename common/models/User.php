@@ -28,6 +28,13 @@ use yii\web\IdentityInterface;
  *     ,[id_Horario]
  *     ,[id_UserLevel]
  *   ,[verification_token]
+ * @property common\models\Persona $datosPersona
+ */
+
+ /* 
+ NO SOBREESCRIBIR CON EL GENERADOR gii, 
+ ESTA CLASE SE MODIFICÓ MANUALMENTE, 
+ 
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -93,6 +100,28 @@ class User extends ActiveRecord implements IdentityInterface
         }
             
     }
+
+    /**
+     * Gets query for [[DatosPersona]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDatosPersona()
+    {
+        return $this->hasOne(Persona::class, ['id' => 'id_Datos_Persona']);
+    }
+
+
+    /**
+     * Gets query for [[Horario]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getHorario()
+    {
+        return $this->hasOne(Horario::class, ['id' => 'id_Horario']);
+    }
+
   /**
      * {@inheritdoc}
      */

@@ -10,7 +10,13 @@ return [
     'id' => 'app-frontend',
     'name'=>'SDUMA',
     'basePath' => dirname(__DIR__),
-    'bootstrap' => ['log'],
+    /* 'bootstrap' => ['log'], */
+    'bootstrap' => ['debug'],
+    'modules' => [
+        'debug' => [
+            'class' => 'yii\debug\Module',
+        ],
+    ],
     'controllerNamespace' => 'frontend\controllers',
     'components' => [
         'request' => [

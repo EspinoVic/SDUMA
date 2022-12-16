@@ -1,7 +1,7 @@
 <?php
 
 use common\models\Documento;
-use yii\helpers\Html;
+use yii\bootstrap5\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Documento', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Crear Documento', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -31,12 +31,24 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'nombre',
-            'isActivo',
+            /* 'isActivo', */
+            [
+                'label' => "Activo",                
+                'value' => function($currExpediente){
+                  return $currExpediente->isActivo?"Sí":"No";
+                }
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, Documento $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                } ,
+                'visibleButtons'=>[
+                    /* 'view'=> function($model){
+                        return $model->status!=1; //puede aparecer o no, segun el estado del modelo :0 awesome xd
+                    }, */
+                    'view' => false
+                ]                
             ],
         ],
     ]); ?>

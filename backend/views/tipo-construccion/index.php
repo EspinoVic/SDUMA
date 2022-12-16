@@ -1,7 +1,7 @@
 <?php
 
 use common\models\TipoConstruccion;
-use yii\helpers\Html;
+use yii\bootstrap5\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
@@ -31,12 +31,21 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'nombre',
-            'isActivo',
+            /*  'isActivo', */
             [
-                'class' => ActionColumn::className(),
+            'label' => "Activo",                
+            'value' => function($currExpediente){
+                    return $currExpediente->isActivo?"Sí":"No";
+                }
+            ],
+            [
+                'class' => ActionColumn::class,
                 'urlCreator' => function ($action, TipoConstruccion $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                },
+                'visibleButtons'=>[                    
+                    'view' => false
+                ]
             ],
         ],
     ]); ?>

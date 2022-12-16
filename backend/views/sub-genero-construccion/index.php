@@ -11,7 +11,7 @@ use yii\grid\GridView;
 /** @var common\models\SubGeneroConstruccionSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Sub Genero Construccions';
+$this->title = 'Subgenero de Construccion';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="sub-genero-construccion-index">
@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Sub Genero Construccion', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Crear Subgenero de Construcción', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -41,13 +41,19 @@ $this->params['breadcrumbs'][] = $this->title;
             //'tarifa',
             //'fechaCreacion',
             'anioVigencia',
-            'isActivo',
+            /*  'isActivo', */
+            [
+            'label' => "Activo",                
+            'value' => function($currExpediente){
+                    return $currExpediente->isActivo?"Sí":"No";
+                }
+            ],
             //'id_GeneroConstruccion',
             [
-                'class' => ActionColumn::className(),
+                'class' => ActionColumn::class,
                 'urlCreator' => function ($action, SubGeneroConstruccion $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                }
             ],
         ],
     ]); ?>

@@ -19,7 +19,7 @@ use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use kartik\mpdf\Pdf;
 /**
  * SolicitudConstruccionController implements the CRUD actions for SolicitudConstruccion model.
  */
@@ -103,13 +103,23 @@ class SolicitudConstruccionController extends Controller
     }
     /**
      * Creates a new SolicitudConstruccion model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * If creation is successful, the browser will be redirected to the 'X' page.
      * @return string|\yii\web\Response
      */
     //Debe traer el id de expediente
     public function actionCreate($exp)
     {
+        /* Si existe, hace redirect a update, sino,  */
         $CREATE_SOLI_EXPEDIENTE_NUMBER = $exp;
+
+        if(!Expediente::findOne(["id"=>$CREATE_SOLI_EXPEDIENTE_NUMBER])){
+            Yii::$app->session->setFlash('success', 'Expediente no existe');
+            return $this->redirect(['expedientes/index']);
+        }  
+        //si ya hay solicitud con ese expediente, redirije a editarlo
+        if(SolicitudConstruccion::findOne(["id_Expediente"=>$exp]))  
+            return $this->redirect(['solicitud-construccion/update']);
+
 
         $modelSolicitudConstruccion = new SolicitudConstruccion();
 
@@ -121,25 +131,20 @@ class SolicitudConstruccionController extends Controller
         $soliHasDocuments       = [];  
 
         if ($this->request->isPost) {
-            /* Si el array de modelos fuera estatico, se podría hacer con el count comentado */
-           /*  $countSoliHasDocument = count(
-                $this->request->post('SolicitudConstruccionHasDocumento') //no funciona con el nombre de la tabla, ya que los "_" se quitan y se usa CamelCase, y cuando esos campos se devuelven del form al POST, vienen en CamelCase, por lo tanto no hacen match con el table name
-            );
-            Yii::$app->session->setFlash('danger', 'CountSoliDoc:'.$countSoliHasDocument); */
-           // var_dump($this->request->post('SolicitudConstruccionHasDocumento'));
+ 
            
            //crea modelos vacios, para luego cargarlos
             foreach ($this->request->post('SolicitudConstruccionHasDocumento') as $key => $value/* modelo de soliHasDoc */) {
 
                 $soliHasDocuments[$key] = new SolicitudConstruccionHasDocumento();
                 /*Los documentos están ligados a una solicitud de construcción, en este accion, esa solicitud se crea, y este id asignado es ignorado, solamente se coloca para validacion */
-                $soliHasDocuments[$key]->id_SolicitudConstruccion = -1;
-                 
+               /*  $soliHasDocuments[$key]->id_SolicitudConstruccion = -1; */
+                 $soliHasDocuments[$key]->scenario = SolicitudConstruccionHasDocumento::SCENARIO_CREATE;
                 
                
             }
             $modelSolicitudConstruccion->id_Expediente = $CREATE_SOLI_EXPEDIENTE_NUMBER;
-
+            //Siempre cargar primero, después se valida, ya que si la validación de un modeelo falla y enseguida seguia un LOAD, ese load no será ejecutado y el retorno al view será nulo
             if (
                 $modelSolicitudConstruccion->load($this->request->post()) &&
                 $propietarioPersona->load($this->request->post()) &&
@@ -147,16 +152,17 @@ class SolicitudConstruccionController extends Controller
                 Domicilio::loadMultiple(
                     $multiplesDomicilio,
                     $this->request->post()
-                ) &&
-                Domicilio::validateMultiple($multiplesDomicilio) &&
+                ) && 
                 SolicitudConstruccionHasDocumento::loadMultiple(
                     $soliHasDocuments,
                     $this->request->post()
-                )
+                    )
+                && Domicilio::validateMultiple($multiplesDomicilio)
                 && SolicitudConstruccionHasDocumento::validateMultiple($soliHasDocuments)
             ) {
-                Yii::$app->session->setFlash('success', 'GOOD:');
-                
+
+                Yii::$app->session->setFlash('success', 'Solicitud válida');
+                 
                 if($modelSolicitudConstruccion -> id_DirectorResponsableObra == 0){
                     
                     $modelSolicitudConstruccion -> id_DirectorResponsableObra = null;
@@ -170,14 +176,14 @@ class SolicitudConstruccionController extends Controller
 
 
                 //Yii::$app->session->setFlash('warning', "nombreArchivo1:".$soliHasDocuments[0] -> nombreArchivo);
-                $modelSolicitudConstruccion ->createSolicitudExpediente (
+               /*  $modelSolicitudConstruccion ->createSolicitudExpediente (
                                 $propietarioPersona,  
                                 $soliDomicilioNotif ,
                                 $soliDomicilioPredio,
                                 $soliContacto,  
                                 $soliHasDocuments,
                                 Yii::$app->user->identity->id   
-                );
+                ); */
                 
 
                 
@@ -236,6 +242,17 @@ class SolicitudConstruccionController extends Controller
     public function actionUpdate($exp)
     {
         $UPDATE_SOLI_EXPEDIENTE_NUMBER = $exp;
+
+        if(!Expediente::findOne(["id"=>$UPDATE_SOLI_EXPEDIENTE_NUMBER])){
+            Yii::$app->session->setFlash('success', 'Expediente no existe');
+            return $this->redirect(['expedientes/index']);
+        }  
+
+        //Si no existe , redirije a crearlo
+        if(!SolicitudConstruccion::findOne(["id_Expediente"=>$exp]))  
+            return $this->redirect(['solicitud-construccion/create']);
+
+            
 
         $modelSolicitudConstruccion = new SolicitudConstruccion();
 
@@ -349,6 +366,112 @@ class SolicitudConstruccionController extends Controller
             'soliHasDocuments' => $soliHasDocuments,
         ]);
          
+    }
+
+    public function actionFormrecibodoc($exp){
+
+        $expediente = Expediente::findOne(["id" => $exp]);
+
+        /*     if(!$expediente){
+
+                    return $this->redirect(["site/error",
+                            [
+                            "name"=> "Error al buscar expediente.",
+                            "message"=>"No fue posible encontrar el expediente solicitdado."
+                            ]
+                        ]
+                    );
+                }
+        */
+        $solicitudConstruccion = SolicitudConstruccion::findOne(["id_Expediente" =>  $expediente->id]);
+
+        $soliHasDocuments  =  $solicitudConstruccion->solicitudConstruccionHasDocumentos;
+
+        return $this->render("formrecibodoc",
+            ["expediente" => $expediente,
+            "solicitudConstruccion"=> $solicitudConstruccion,
+            "soliHasDocuments"=> $soliHasDocuments]
+        );
+
+    }
+
+
+    public function actionPrintsolicitud($exp){
+        $expediente = Expediente::findOne(["id" => $exp]);
+        $solicitudConstruccion = SolicitudConstruccion::findOne(["id_Expediente" =>  $expediente->id]);
+
+        $soliHasDocuments  =  $solicitudConstruccion->solicitudConstruccionHasDocumentos;
+
+
+        return $this->render("printsolicitud",
+            ["expediente" => $expediente,
+            "solicitudConstruccion"=> $solicitudConstruccion,
+            "soliHasDocuments"=> $soliHasDocuments]
+        );
+
+    }
+
+    public function actionImprimible($exp){
+        $expediente = Expediente::findOne(["id" => $exp]);
+        $solicitudConstruccion = SolicitudConstruccion::findOne(["id_Expediente" =>  $expediente->id]);
+
+        $soliHasDocuments  =  $solicitudConstruccion->solicitudConstruccionHasDocumentos;
+
+        return $this->render("imprimible",
+            ["expediente" => $expediente,
+            "solicitudConstruccion"=> $solicitudConstruccion,
+            "soliHasDocuments"=> $soliHasDocuments]
+        );
+    }
+
+    public function actionReport() {
+        // get your HTML raw content without any layouts or scripts
+        $expediente = Expediente::findOne(["id" => 1]);
+        $solicitudConstruccion = SolicitudConstruccion::findOne(["id_Expediente" =>  $expediente->id]);
+
+        $soliHasDocuments  =  $solicitudConstruccion->solicitudConstruccionHasDocumentos;
+
+        $content = $this->renderPartial('_reportView', 
+            ["expediente" => $expediente,
+            "solicitudConstruccion"=> $solicitudConstruccion,
+            "soliHasDocuments"=> $soliHasDocuments]
+        );
+        
+        // setup kartik\mpdf\Pdf component
+        $pdf = new Pdf([
+            // set to use core fonts only
+            'mode' => Pdf::MODE_CORE, 
+            // A4 paper format
+            'format' => Pdf::FORMAT_A4, 
+            // portrait orientation
+            'orientation' => Pdf::ORIENT_PORTRAIT, 
+            // stream to browser inline
+            'destination' => Pdf::DEST_BROWSER, 
+            // your html content input
+            'content' => $content,  
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting 
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/src/assets/kv-mpdf-bootstrap.min.css',
+            //'cssFile' => '@frontend/views/solicitud-construccion/style.css',
+            // any css to be embedded if required
+/*             'cssInline' => "
+                .recibo-doc{
+
+                    outline: solid 1px black;
+                    font-size: 12px;
+                    background-red: red;
+                } ",  */
+             // set mPDF properties on the fly
+            'options' => ['title' => 'Krajee Report Title'],
+             // call mPDF methods on the fly
+            'methods' => [ 
+                'SetHeader'=>['Krajee Report Header'], 
+                'SetFooter'=>['{PAGENO}'],
+            ]
+        ]);
+        
+        // return the pdf output as per the destination setting
+        return $pdf->render(); 
     }
 
 

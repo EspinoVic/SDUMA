@@ -1,7 +1,11 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use common\models\Horario;
+use yii\bootstrap5\Html;
+use yii\bootstrap5\ActiveForm;
+use common\models\User;
+use common\models\UserLevel;
+use yii\helpers\ArrayHelper;
 
 /** @var yii\web\View $this */
 /** @var common\models\User $model */
@@ -12,25 +16,65 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
+    <div class="row">
 
-    <?= $form->field($model, 'auth_key')->textInput(['maxlength' => true]) ?>
+        <?= $form->field($model, 'username',['options'=>["class"=>"col-6"]])->textInput(['maxlength' => true]) ?>
+    
+        
+        <?=$form->field($model,"id_UserLevel",['options'=>["class"=>"col-4"]])->dropDownList(
+                    $items = 
+                    ArrayHelper::map(
+                        UserLevel::find( )->all(),
+                        'id',/* closure too */
+                        "Nombre"
+                        )
+                        
+            )->label("Nivel de usuario")         ?>
 
-    <?= $form->field($model, 'password_hash')->textInput(['maxlength' => true]) ?>
+    </div>    
 
-    <?= $form->field($model, 'password_reset_token')->textInput(['maxlength' => true]) ?>
+    <div class="row">
 
-    <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'status')->textInput() ?>
+    <?=$form->field($model,"status",['options'=>["class"=>"col-4"]])->dropDownList(
+        $items = [
+                User::STATUS_INACTIVE =>"Eliminado", 
+                User::STATUS_INACTIVE =>"Inactivo", 
+                User::STATUS_ACTIVE =>"Activo", 
+                 ]
+                
+        )->label("Estado del usuario")        
+        ?>
+   
+    <?=$form->field($model,"id_Horario" ,['options'=>["class"=>"col-4"]])->dropDownList(
+                $items = 
+                ArrayHelper::map(
+                    Horario::find( )->all(),
+                    'id',/* closure too */
+                    function ($currHorario){
+                        return $currHorario->nombre." - ".date("h:i a",  strtotime( $currHorario->inicioActividad)   )." - ".date("h:i a",  strtotime( $currHorario->finActividad)   );
+                    }
+                   
+                )
+            
+        )
+        ->label("Horario")
+        ?>
+    </div>
+
+
+
+    <?= $form->field($model, 'email',['options'=>["class"=>"col-4" ]])->input(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'id_Datos_Persona')->textInput() ?>
 
-    <?= $form->field($model, 'id_Horario')->textInput() ?>
-
-    <?= $form->field($model, 'id_UserLevel')->textInput() ?>
-
-    <?= $form->field($model, 'verification_token')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'auth_key')->hiddenInput()->label(false) ?>
+    
+    <?= $form->field($model, 'password_hash')->hiddenInput()->label(false) ?>
+    
+    <?= $form->field($model, 'password_reset_token')->hiddenInput()->label(false) ?>
+    
+    <?= $form->field($model, 'verification_token')->hiddenInput()->label(false) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

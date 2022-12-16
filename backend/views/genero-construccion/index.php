@@ -10,7 +10,7 @@ use yii\grid\GridView;
 /** @var common\models\GeneroConstruccionSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Genero Construccions';
+$this->title = 'Genero Construccion';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="genero-construccion-index">
@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Genero Construccion', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Crear Género Construccion', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -31,12 +31,21 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'nombre',
-            'isActivo',
+           /*  'isActivo', */
+           [
+            'label' => "Activo",                
+            'value' => function($currExpediente){
+                return $currExpediente->isActivo?"Sí":"No";
+            }
+            ],
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, GeneroConstruccion $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                },
+                'visibleButtons'=>[                    
+                    'view' => false
+                ]
             ],
         ],
     ]); ?>

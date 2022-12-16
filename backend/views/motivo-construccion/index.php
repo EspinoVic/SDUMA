@@ -31,12 +31,22 @@ $this->params['breadcrumbs'][] = $this->title;
 
             'id',
             'nombre',
-            'isActivo',
+            /*  'isActivo', */
             [
-                'class' => ActionColumn::className(),
+            'label' => "Activo",                
+            'value' => function($currExpediente){
+                return $currExpediente->isActivo?"Sí":"No";
+            }
+            ],
+            [
+                'class' => ActionColumn::class,
                 'urlCreator' => function ($action, MotivoConstruccion $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                },
+                'visibleButtons'=>[                    
+                    'view' => false
+                ]
+                 
             ],
         ],
     ]); ?>

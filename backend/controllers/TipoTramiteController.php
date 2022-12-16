@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use Yii;
 use common\models\TipoTramite;
 use common\models\TipoTramiteSearch;
 use yii\web\Controller;
@@ -53,12 +54,12 @@ class TipoTramiteController extends Controller
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+  /*   public function actionView($id)
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
-    }
+    } */
 
     /**
      * Creates a new TipoTramite model.
@@ -94,7 +95,8 @@ class TipoTramiteController extends Controller
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+           /*  return $this->redirect(['view', 'id' => $model->id]); */
+           Yii::$app->session->setFlash('success', "Registro actualizado correctamente.");
         }
 
         return $this->render('update', [

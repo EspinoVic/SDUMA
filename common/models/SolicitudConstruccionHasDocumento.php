@@ -26,6 +26,19 @@ class SolicitudConstruccionHasDocumento extends \yii\db\ActiveRecord
     {
         return 'SolicitudConstruccion_has_Documento';
     }
+    
+    const SCENARIO_CREATE = 'CREATE_SOLI';
+    const SCENARIO_UPDATE = 'UPDATE_SOLI';
+ 
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();//incluye el default
+
+        $scenarios[ self::SCENARIO_CREATE] =   [/* 'id_SolicitudConstruccion', */'id_Documento'];
+        $scenarios[ self::SCENARIO_UPDATE] =   [/* 'id_SolicitudConstruccion', */'id_Documento','isEntregado'];
+
+        return $scenarios;
+    }
 
     /**
      * {@inheritdoc}

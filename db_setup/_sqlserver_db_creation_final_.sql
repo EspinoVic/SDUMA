@@ -680,11 +680,12 @@ CREATE TABLE  sduma.dbo.Rol (
     ON UPDATE NO ACTION
 	); */
 
-INSERT INTO sduma.dbo.Rol (  nombre) 
+--User level controla el nivel
+/* INSERT INTO sduma.dbo.Rol (  nombre) 
 VALUES 
 ( 'ADMIN'),
 ( 'INTERNO'),
-('EXTERNO');
+('EXTERNO'); */
 
 CREATE TABLE sduma.dbo.User_has_Rol (
   id_User INT NOT NULL,

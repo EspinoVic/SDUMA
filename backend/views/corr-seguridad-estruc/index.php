@@ -10,7 +10,7 @@ use yii\grid\GridView;
 /** @var common\models\CorrSeguridadEstrucSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Corr Seguridad Estrucs';
+$this->title = 'Corr. Seguridad Estructural';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="corr-seguridad-estruc-index">
@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Corr Seguridad Estruc', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Crear Corr. Seguridad Estructural', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -33,7 +33,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'titulo',
             'abreviacion',
             'cedula',
-            'isActivo',
+            /*  'isActivo', */
+            [
+            'label' => "Activo",                
+            'value' => function($currExpediente){
+                    return $currExpediente->isActivo?"Sí":"No";
+                }
+            ],
             //'id_Persona',
             [
                 'class' => ActionColumn::className(),

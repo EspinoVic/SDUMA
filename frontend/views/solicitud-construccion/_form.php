@@ -48,34 +48,34 @@ use yii\widgets\ActiveField;
         ->field($modelSolicitudConstruccion, 'id_Expediente', [
             'options' => ['class' => 'col-md-1', 'display' => 'none'],
         ]) /* ->textInput() */
-        ->hiddenInput()
+        /* ->hiddenInput() */
         ->label(false) ?>
     
     <?= $form
         ->field($modelSolicitudConstruccion, 'fechaCreacion', [
             'options' => ['class' => 'col-md-1', 'display' => 'none'],
         ])
-        ->hiddenInput()
+        /* ->hiddenInput() */
         ->label(false) ?>
     <?= $form
         ->field($modelSolicitudConstruccion, 'fechaModificacion', [
             'options' => ['class' => 'col-md-1', 'display' => 'none'],
         ])
-        ->hiddenInput()
+        /* ->hiddenInput() */
         ->label(false) ?>
 
     <?= $form
         ->field($modelSolicitudConstruccion, 'isDeleted', [
             'options' => ['class' => 'col-md-1', 'display' => 'none'],
         ])
-        ->hiddenInput()
+        /* ->hiddenInput() */
         ->label(false) ?>
 
     <?= $form
         ->field($modelSolicitudConstruccion, 'id_User_ModificadoPor', [
             'options' => ['class' => 'col-md-1', 'display' => 'none'],
         ])
-        ->hiddenInput()
+        /* ->hiddenInput() */
         ->label(false) ?>
 
 
@@ -114,7 +114,7 @@ use yii\widgets\ActiveField;
     ['options' => ['class' => 'col-md-0', 'display' => 'none'],]
 
     )
-    ->hiddenInput()
+    /* ->hiddenInput() */
     ->label(false)
     ?>
 
@@ -139,7 +139,7 @@ use yii\widgets\ActiveField;
             'id_DomicilioNotificaciones',
             ['options' => ['class' => 'col-md-1', 'display' => 'none'],]
         )
-        ->hiddenInput()
+        /* ->hiddenInput() */
         ->label(false) ?>
  
     <?= $this->render('_domicilio_fields', [
@@ -200,7 +200,7 @@ use yii\widgets\ActiveField;
         ->field($modelSolicitudConstruccion, 'id_DomicilioPredio', [
             'options' => ['class' => 'col-md-1', 'display' => 'none'],
         ])
-        ->hiddenInput()
+        /* ->hiddenInput() */
         ->label(false) ?>
 
         
@@ -426,17 +426,23 @@ use yii\widgets\ActiveField;
                         </button>
                     </td>
                     <td>
+                        <?php 
+                            /* ob_start();
+                            var_dump("Cycle rendering:".$id);
+                            var_dump($soliHasDocument);
+                            Yii::debug(ob_get_clean(),"FORM RENDER uwu") */
+                        ?> 
                         <?= $form
                             ->field($soliHasDocument, "[$id]id_Documento", [
                                 'options' => ['class' => 'col-md-1', 'display' => 'none'],
                             ])
-                            ->hiddenInput()/* textInput() */
+                            /* ->hiddenInput() *//* textInput() */
                             ->label(false) 
                         ?>
                         <?php echo $form
                             ->field($soliHasDocument, "[$id]isEntregado")
                             ->checkbox()
-                            ->label(/* $soliHasDocument -> documento ->nombre */ Documento::findOne( ["id"=>$soliHasDocument->id_Documento/* /84 */]) -> nombre );
+                            ->label(/* $soliHasDocument -> documento ->nombre  */Documento::findOne( ["id"=>$soliHasDocument->id_Documento]) -> nombre );
                              ?>
                      <!--    <input type="button" value="Delete Row" onclick="SomeDeleteRowFunction()"> -->
                         
