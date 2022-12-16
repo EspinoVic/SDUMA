@@ -11,7 +11,13 @@ return [
     'name'=>'Configuración SDUMA',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
-    'bootstrap' => ['log'],
+    /* 'bootstrap' => ['log'], */
+    'bootstrap' => ['debug'],
+    'modules' => [
+        'debug' => [
+            'class' => 'yii\debug\Module',
+        ],
+    ],
     'modules' => [],
     'components' => [
         'request' => [

@@ -103,13 +103,23 @@ class SolicitudConstruccionController extends Controller
     }
     /**
      * Creates a new SolicitudConstruccion model.
-     * If creation is successful, the browser will be redirected to the 'view' page.
+     * If creation is successful, the browser will be redirected to the 'X' page.
      * @return string|\yii\web\Response
      */
     //Debe traer el id de expediente
     public function actionCreate($exp)
     {
+        /* Si existe, hace redirect a update, sino,  */
         $CREATE_SOLI_EXPEDIENTE_NUMBER = $exp;
+
+        if(!Expediente::findOne(["id"=>$CREATE_SOLI_EXPEDIENTE_NUMBER])){
+            Yii::$app->session->setFlash('success', 'Expediente no existe');
+            return $this->redirect(['expedientes/index']);
+        }  
+        //si ya hay solicitud con ese expediente, redirije a editarlo
+        if(SolicitudConstruccion::findOne(["id_Expediente"=>$exp]))  
+            return $this->redirect(['solicitud-construccion/update']);
+
 
         $modelSolicitudConstruccion = new SolicitudConstruccion();
 
@@ -121,25 +131,20 @@ class SolicitudConstruccionController extends Controller
         $soliHasDocuments       = [];  
 
         if ($this->request->isPost) {
-            /* Si el array de modelos fuera estatico, se podría hacer con el count comentado */
-           /*  $countSoliHasDocument = count(
-                $this->request->post('SolicitudConstruccionHasDocumento') //no funciona con el nombre de la tabla, ya que los "_" se quitan y se usa CamelCase, y cuando esos campos se devuelven del form al POST, vienen en CamelCase, por lo tanto no hacen match con el table name
-            );
-            Yii::$app->session->setFlash('danger', 'CountSoliDoc:'.$countSoliHasDocument); */
-           // var_dump($this->request->post('SolicitudConstruccionHasDocumento'));
+ 
            
            //crea modelos vacios, para luego cargarlos
             foreach ($this->request->post('SolicitudConstruccionHasDocumento') as $key => $value/* modelo de soliHasDoc */) {
 
                 $soliHasDocuments[$key] = new SolicitudConstruccionHasDocumento();
                 /*Los documentos están ligados a una solicitud de construcción, en este accion, esa solicitud se crea, y este id asignado es ignorado, solamente se coloca para validacion */
-                $soliHasDocuments[$key]->id_SolicitudConstruccion = -1;
-                 
+               /*  $soliHasDocuments[$key]->id_SolicitudConstruccion = -1; */
+                 $soliHasDocuments[$key]->scenario = SolicitudConstruccionHasDocumento::SCENARIO_CREATE;
                 
                
             }
             $modelSolicitudConstruccion->id_Expediente = $CREATE_SOLI_EXPEDIENTE_NUMBER;
-
+            //Siempre cargar primero, después se valida, ya que si la validación de un modeelo falla y enseguida seguia un LOAD, ese load no será ejecutado y el retorno al view será nulo
             if (
                 $modelSolicitudConstruccion->load($this->request->post()) &&
                 $propietarioPersona->load($this->request->post()) &&
@@ -147,16 +152,17 @@ class SolicitudConstruccionController extends Controller
                 Domicilio::loadMultiple(
                     $multiplesDomicilio,
                     $this->request->post()
-                ) &&
-                Domicilio::validateMultiple($multiplesDomicilio) &&
+                ) && 
                 SolicitudConstruccionHasDocumento::loadMultiple(
                     $soliHasDocuments,
                     $this->request->post()
-                )
+                    )
+                && Domicilio::validateMultiple($multiplesDomicilio)
                 && SolicitudConstruccionHasDocumento::validateMultiple($soliHasDocuments)
             ) {
-                Yii::$app->session->setFlash('success', 'GOOD:');
-                
+
+                Yii::$app->session->setFlash('success', 'Solicitud válida');
+                 
                 if($modelSolicitudConstruccion -> id_DirectorResponsableObra == 0){
                     
                     $modelSolicitudConstruccion -> id_DirectorResponsableObra = null;
@@ -170,14 +176,14 @@ class SolicitudConstruccionController extends Controller
 
 
                 //Yii::$app->session->setFlash('warning', "nombreArchivo1:".$soliHasDocuments[0] -> nombreArchivo);
-                $modelSolicitudConstruccion ->createSolicitudExpediente (
+               /*  $modelSolicitudConstruccion ->createSolicitudExpediente (
                                 $propietarioPersona,  
                                 $soliDomicilioNotif ,
                                 $soliDomicilioPredio,
                                 $soliContacto,  
                                 $soliHasDocuments,
                                 Yii::$app->user->identity->id   
-                );
+                ); */
                 
 
                 
@@ -235,7 +241,18 @@ class SolicitudConstruccionController extends Controller
      */
     public function actionUpdate($exp)
     {
-        $UPDATE_SOLI_EXPEDIENTE_NUMBER = $exp;
+        $CREATE_SOLI_EXPEDIENTE_NUMBER = $exp;
+
+        if(!Expediente::findOne(["id"=>$CREATE_SOLI_EXPEDIENTE_NUMBER])){
+            Yii::$app->session->setFlash('success', 'Expediente no existe');
+            return $this->redirect(['expedientes/index']);
+        }  
+
+        //Si no existe , redirije a crearlo
+        if(!SolicitudConstruccion::findOne(["id_Expediente"=>$exp]))  
+            return $this->redirect(['solicitud-construccion/create']);
+
+            
 
         $modelSolicitudConstruccion = new SolicitudConstruccion();
 

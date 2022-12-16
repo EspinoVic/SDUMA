@@ -30,7 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'soliDomicilioPredio' => $soliDomicilioPredio,
         'soliContacto' => $soliContacto,
         'soliHasDocuments' => $soliHasDocuments,
-        'formAction' => 'solicitud-construccion/create',
+        'formAction' => "solicitud-construccion/create?exp=$expenditenOwnerSoli->id",
         'expenditenOwnerSoli' => $expenditenOwnerSoli
 
     ]) ?>
