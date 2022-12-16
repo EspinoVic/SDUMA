@@ -241,9 +241,9 @@ class SolicitudConstruccionController extends Controller
      */
     public function actionUpdate($exp)
     {
-        $CREATE_SOLI_EXPEDIENTE_NUMBER = $exp;
+        $UPDATE_SOLI_EXPEDIENTE_NUMBER = $exp;
 
-        if(!Expediente::findOne(["id"=>$CREATE_SOLI_EXPEDIENTE_NUMBER])){
+        if(!Expediente::findOne(["id"=>$UPDATE_SOLI_EXPEDIENTE_NUMBER])){
             Yii::$app->session->setFlash('success', 'Expediente no existe');
             return $this->redirect(['expedientes/index']);
         }  
