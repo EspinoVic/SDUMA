@@ -9,6 +9,7 @@ use frontend\models\NuevoExpedienteForm;
 use common\models\Expediente;
 use common\models\ExpedienteSearch;
 use yii\web\NotFoundHttpException;
+use yii\helpers\ArrayHelper;
 
 class ExpedientesController extends \yii\web\Controller
 {
@@ -16,7 +17,12 @@ class ExpedientesController extends \yii\web\Controller
     {
         $searchModel = new ExpedienteSearch();
         $dataProvider = $searchModel 
-            ->search($this->request->queryParams)/* ->sort
+            ->search(ArrayHelper::merge(
+                $this->request->queryParams
+                , ["userModel"=>Yii::$app->user->identity]
+                )
+            );
+             /* ->sort
             ->defaultOrder = [
                      'id' => SORT_DESC,
                      'anio' => SORT_DESC,
