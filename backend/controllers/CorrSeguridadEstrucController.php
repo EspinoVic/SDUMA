@@ -4,9 +4,12 @@ namespace backend\controllers;
 
 use common\models\CorrSeguridadEstruc;
 use common\models\CorrSeguridadEstrucSearch;
+use Yii;
+use common\models\User;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 
 /**
  * CorrSeguridadEstrucController implements the CRUD actions for CorrSeguridadEstruc model.
@@ -18,17 +21,28 @@ class CorrSeguridadEstrucController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
+        return [ 
+            'access'=> [   
+                'class' => AccessControl::class,
+                'rules'=> [
+                    [
+                        'actions' => ['view','create','update','delete', 'index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            
+                            return User::isUserAdmin(Yii::$app->user->identity->username);
+                        }
+                    ]
                 ],
-            ]
-        );
+            ],
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
     }
 
     /**

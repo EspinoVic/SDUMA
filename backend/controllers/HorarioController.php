@@ -7,7 +7,9 @@ use common\models\HorarioSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use yii\filters\AccessControl;
+use Yii;
+use common\models\User;
 /**
  * HorarioController implements the CRUD actions for Horario model.
  */
@@ -18,17 +20,31 @@ class HorarioController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
+        return [ 
+            'access'=> [   
+                'class' => AccessControl::class,
+                'rules'=> [
+                    [
+                        /* 'controller'=>'HorarioController', */
+                        'actions' => ['view','create','update','delete', 'index'],
+                        'allow' => true,
+                       // 'roles' => [ ],//todos
+                        //'roles' => ['?'],//solo GUEST
+                        'roles' => ['@'],//autenticados //no importa el nivel, 
+                        'matchCallback' => function ($rule, $action) {
+                            
+                            return User::isUserAdmin(Yii::$app->user->identity->username);
+                        }
+                    ]
                 ],
-            ]
-        );
+            ],
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
     }
 
     /**

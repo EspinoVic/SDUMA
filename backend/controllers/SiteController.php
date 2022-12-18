@@ -4,6 +4,7 @@ namespace backend\controllers;
 
 use common\models\LoginForm;
 use common\models\User;
+use common\models\BackendBehaviorsVic;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -20,27 +21,30 @@ class SiteController extends Controller
      */
     public function behaviors()
     {
+
+       /*  return BackendBehaviorsVic::BackendBehaviors(['config', 'index']);*/
         return [
             'access' => [
 
                 'class' => AccessControl::class,
-                /* 'only' => ['logout', 'signup'], */ /* TODOS? */
+                //'only' => ['logout', 'signup'], // TODOS? 
                 'rules' => [
                     [
                         'actions' => ['login', 'error'],
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => [ 'logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ]
                     ,
                     [
-                        'actions' => ['config'],
+                        'actions' => ['config', 'index'],
                         'allow' => true,
                         'roles' => ['@'],
                         'matchCallback' => function ($rule, $action) {
+                               
                             return User::isUserAdmin(Yii::$app->user->identity->username);
                         }
                     ],
@@ -52,7 +56,7 @@ class SiteController extends Controller
                     'logout' => ['post'],
                 ],
             ],
-        ];
+        ];  
     }
 
     /**
