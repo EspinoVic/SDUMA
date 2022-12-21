@@ -13,31 +13,76 @@ use common\models\SolicitudConstruccionHasPersona;
 use common\models\SolicitudConstruccionSearch;
 use common\models\TipoTramiteHasDocumento;
 use common\models\TipoTramite;
+use common\models\User;
 use PDO;
 use PDOException;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use kartik\mpdf\Pdf;
 /**
  * SolicitudConstruccionController implements the CRUD actions for SolicitudConstruccion model.
  */
 class SolicitudConstruccionController extends Controller
 {
-    /**
+     /**
      * @inheritDoc
      */
     public function behaviors()
     {
-        return array_merge(parent::behaviors(), [
+        return [ 
+            'access'=> [   
+                'class' => AccessControl::class,
+                'rules'=> [
+                    [
+                        'actions' => ['view','create','update','delete', 'index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                        /* 'matchCallback' => function ($rule, $action) {
+                               ob_start();  
+                               var_dump("VIVIVI");  
+                               var_dump($action); 
+                             Yii::debug(ob_get_clean(),);  
+                            return User::isUserAdmin(Yii::$app->user->identity->username);
+                        } */
+                    ]
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::class,
                 'actions' => [
                     'delete' => ['POST'],
                 ],
             ],
-        ]);
+        ];
+    }
+
+
+    private function checkAccessExpediente($exp){        
+        $user =Yii::$app->user->identity;
+
+        //si no hay sesión, automaticamente false.
+        if(!$user) return false;
+
+        $userSrc = User::getUserSrcTruth($user->username);
+
+        switch ($userSrc->id_UserLevel) {
+            case User::USER_LEVEL_ADMIN:
+            case User::USER_LEVEL_INTERNO:
+                    return true;
+                break;
+                
+            case User::USER_LEVEL_EXTERNO:
+                //Si es el propietario del expediente, -> true
+                return Expediente::findOne(["id_User_CreadoPor"=> $userSrc->id])?true:false;
+                break;
+            default:
+                return false;
+                break;
+        }
+
     }
 
     /* 
@@ -46,6 +91,8 @@ class SolicitudConstruccionController extends Controller
     */
     public function actionIndex($exp){
 
+        $haveAcces = $this->checkAccessExpediente($exp);
+        if(!$haveAcces) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
         $soliConstruccion = SolicitudConstruccion::findOne(["id_Expediente" => $exp]);
 
         if($soliConstruccion){
@@ -62,15 +109,15 @@ class SolicitudConstruccionController extends Controller
      * @return string
      * @deprecated
      */
-    public function actionIndexDeprecated()
+    private function actionIndexDeprecated()
     {
-        $searchModel = new SolicitudConstruccionSearch();
+        /* $searchModel = new SolicitudConstruccionSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-        ]);
+        ]); */
     }
 
     /**
@@ -79,13 +126,13 @@ class SolicitudConstruccionController extends Controller
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    private function actionView($id)
     {
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
     }
-    function multi_implode($array, $glue)
+    private function multi_implode($array, $glue)
     {
         $ret = '';
 
@@ -109,6 +156,8 @@ class SolicitudConstruccionController extends Controller
     //Debe traer el id de expediente
     public function actionCreate($exp)
     {
+        $haveAcces = $this->checkAccessExpediente($exp);
+        if(!$haveAcces) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
         /* Si existe, hace redirect a update, sino,  */
         $CREATE_SOLI_EXPEDIENTE_NUMBER = $exp;
 
@@ -241,6 +290,8 @@ class SolicitudConstruccionController extends Controller
      */
     public function actionUpdate($exp)
     {
+        $haveAcces = $this->checkAccessExpediente($exp);
+        if(!$haveAcces) return $this->redirect(['site/error', 'uwu' =>"La página no existe o no tiene acceso."]); 
         $UPDATE_SOLI_EXPEDIENTE_NUMBER = $exp;
 
         if(!Expediente::findOne(["id"=>$UPDATE_SOLI_EXPEDIENTE_NUMBER])){

@@ -143,7 +143,7 @@ class SignupForm extends Model
                     "MSG"=> "Error al crear usuario: {$userCreationResult['ERROR_MSG']} "
             ];
         }
-         
+        //return $resSignup;
         /* $user->save() */  
        
     }

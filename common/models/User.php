@@ -91,6 +91,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
     public static function isUserAdmin($username)
     {
+
         if (static::findOne(['username' => $username, 'id_UserLevel' => self::USER_LEVEL_ADMIN])){
                             
                 return true;
@@ -101,6 +102,26 @@ class User extends ActiveRecord implements IdentityInterface
             
     }
 
+    public static function getUserSrcTruth($username){
+
+        return static::findOne(['username'=>$username]);
+
+    }
+
+
+    public static function isSDUMAEmployee($username)
+    {
+        
+        if(static::findOne([
+            'username'=>$username, 'id_UserLevel'=>[User::USER_LEVEL_INTERNO,User::USER_LEVEL_ADMIN]
+            ]
+            )){
+                return true;
+            }
+            return false;
+
+    }
+    
     /**
      * Gets query for [[DatosPersona]].
      *
