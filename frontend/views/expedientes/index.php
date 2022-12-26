@@ -90,8 +90,18 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
            // 'idAnual',
             //'anio',
-            'fechaCreacion:datetime',
-            'fechaModificacion:datetime',
+            /* 'fechaCreacion:datetime',
+            'fechaModificacion:datetime', */
+            ['label'=>'Fecha creación',
+                'value' => function($currExpediente){                    
+                   return date("d/M/Y h:i a",  strtotime( $currExpediente->fechaCreacion)   );  
+                }  
+            ],
+            /* ['label'=>'Fecha modificación',
+                'value' => function($currExpediente){                    
+                   return date("d/M/Y h:i a",  strtotime( $currExpediente->fechaModificacion)   );  
+                }  
+            ], */
             //'id_Persona_Solicita',
             //'id_User_CreadoPor',
             //'id_User_modificadoPor',Expediente
@@ -105,7 +115,7 @@ $this->params['breadcrumbs'][] = $this->title;
               'attribute' => 'personaSolicita.apellidoP',
             ],
             [
-              'label' => "Apellido Paterno",
+              'label' => "Apellido Materno",
               'attribute' => 'personaSolicita.apellidoM',
             ],
             'estado',

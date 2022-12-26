@@ -47,16 +47,17 @@ class ExpedientesController extends \yii\web\Controller
 
     public function actionCrear()
     {
-        $searchModel = new ExpedienteSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+       // $searchModel = new ExpedienteSearch();
+        //$dataProvider = $searchModel->search($this->request->queryParams);
 
         $modelNuevoExp = new NuevoExpedienteForm();
         
         $loaded = $modelNuevoExp->load(Yii::$app->request->post());
 
-        //seguramente se va al link de expedientes/create
-        if(!$loaded){
+        //Si no se cargí, regresa a inicio.
+        if(!$loaded/* $modelNuevoExp->validate() */){
             //normal flow
+            Yii::$app->session->setFlash( 'danger',   "Error al cargar su información" );
             return $this->redirect(['expedientes/index'])->send();
 
             /*  return $this->render('index', [
@@ -64,8 +65,7 @@ class ExpedientesController extends \yii\web\Controller
             ]); */
         }
 
-       //Test forzar datos erroneos // $modelNuevoExp->nombre = "";
-        //Ya no xd //si la data del modelo no se pudo validar, renderizará index bajo URL /create
+         //si la data del modelo no se pudo validar, renderizará index bajo URL /create
         if (!$modelNuevoExp->validate()) {
             Yii::$app->session->setFlash( 'danger',   "Error al validar los campos.." );
             return $this->redirect(['expedientes/index'])->send();
@@ -74,7 +74,7 @@ class ExpedientesController extends \yii\web\Controller
                 'searchModel' => $searchModel,
                 'dataProvider' => $dataProvider,
             ]);
- */
+            */
         
         }
  
@@ -87,11 +87,7 @@ class ExpedientesController extends \yii\web\Controller
         );
         
         return $this->redirect(['expedientes/index'])->send();
-
-        /* if( $expCreationResult["success"]){
-        
-            
-        }
+        /*
 
         return $this->render('index', [
             'modelNuevoExp' => $modelNuevoExp,
