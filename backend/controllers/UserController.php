@@ -104,9 +104,9 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
+        $model->updatedAt =  date('d/m/y H:i:s');
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index'/* , 'id' => $model->id */]);
         }
 
         return $this->render('update', [
