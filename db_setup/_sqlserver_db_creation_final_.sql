@@ -998,7 +998,7 @@ CREATE TABLE  sduma.dbo.SolicitudConstruccion_has_Documento (
 CREATE TYPE SoliHasDocParam AS TABLE(
      /*  id_SolicitudConstruccion INT NOT NULL, */ /* El SP le da el valor */
       id_Documento INT NOT NULL,
-      isEntregado BIT NOT NULL,
+      isEntregado BIT NOT NULL DEFAULT 1,
       nombreArchivo NVARCHAR(128) NULL,
       [path] NVARCHAR(128) NULL,
       realNombreArchivo NVARCHAR(90) NULL

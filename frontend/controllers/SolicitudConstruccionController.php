@@ -37,7 +37,7 @@ class SolicitudConstruccionController extends Controller
                 'class' => AccessControl::class,
                 'rules'=> [
                     [
-                        'actions' => ['view','create','update','delete', 'index'],
+                        'actions' => ['view','create','update','delete', 'index',"formrecibodoc",'printsolicitud'],
                         'allow' => true,
                         'roles' => ['@'],
                         /* 'matchCallback' => function ($rule, $action) {
@@ -225,18 +225,22 @@ class SolicitudConstruccionController extends Controller
 
 
                 //Yii::$app->session->setFlash('warning', "nombreArchivo1:".$soliHasDocuments[0] -> nombreArchivo);
-               /*  $modelSolicitudConstruccion ->createSolicitudExpediente (
+                $result = $modelSolicitudConstruccion ->createSolicitudExpediente (
                                 $propietarioPersona,  
                                 $soliDomicilioNotif ,
                                 $soliDomicilioPredio,
                                 $soliContacto,  
                                 $soliHasDocuments,
                                 Yii::$app->user->identity->id   
-                ); */
-                
+                );
+                Yii::$app->session->setFlash($result["success"]?'success':'error',$result["MSG"]);
 
-                
-                //return $this->redirect(['expedientes/index'/* , 'id' => $modelSolicitudConstruccion->id */]);
+                if($result["success"]){
+                    return $this->redirect(['solicitud-construccion/update',"exp"=>$CREATE_SOLI_EXPEDIENTE_NUMBER]);                    
+                }
+                //else //no redirect
+                //return $this->redirect(['solicitud-construccion/create',"exp"=>$CREATE_SOLI_EXPEDIENTE_NUMBER]);
+                //aun si se redirecciona a create, se irá a update, porque ya existe solicitud
             }
         } else {
             //cuando no es post

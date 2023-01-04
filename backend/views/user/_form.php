@@ -36,7 +36,7 @@ use yii\helpers\ArrayHelper;
     <div class="row">
 
 
-    <?=$form->field($model,"status",['options'=>["class"=>"col-4"]])->dropDownList(
+    <?=$form->field($model,"status",['options'=>["class"=>"col-3"]])->dropDownList(
         $items = [
                 User::STATUS_INACTIVE =>"Eliminado", 
                 User::STATUS_INACTIVE =>"Inactivo", 
@@ -46,7 +46,7 @@ use yii\helpers\ArrayHelper;
         )->label("Estado del usuario")        
         ?>
    
-    <?=$form->field($model,"id_Horario" ,['options'=>["class"=>"col-4"]])->dropDownList(
+    <?=$form->field($model,"id_Horario" ,['options'=>["class"=>"col-7"]])->dropDownList(
                 $items = 
                 ArrayHelper::map(
                     Horario::find( )->all(),

@@ -48,34 +48,34 @@ use yii\widgets\ActiveField;
         ->field($modelSolicitudConstruccion, 'id_Expediente', [
             'options' => ['class' => 'col-md-1', 'display' => 'none'],
         ]) /* ->textInput() */
-        /* ->hiddenInput() */
+        ->hiddenInput()
         ->label(false) ?>
     
     <?= $form
         ->field($modelSolicitudConstruccion, 'fechaCreacion', [
             'options' => ['class' => 'col-md-1', 'display' => 'none'],
         ])
-        /* ->hiddenInput() */
+        ->hiddenInput()
         ->label(false) ?>
     <?= $form
         ->field($modelSolicitudConstruccion, 'fechaModificacion', [
             'options' => ['class' => 'col-md-1', 'display' => 'none'],
         ])
-        /* ->hiddenInput() */
+        ->hiddenInput()
         ->label(false) ?>
 
     <?= $form
         ->field($modelSolicitudConstruccion, 'isDeleted', [
             'options' => ['class' => 'col-md-1', 'display' => 'none'],
         ])
-        /* ->hiddenInput() */
+        ->hiddenInput()
         ->label(false) ?>
 
     <?= $form
         ->field($modelSolicitudConstruccion, 'id_User_ModificadoPor', [
             'options' => ['class' => 'col-md-1', 'display' => 'none'],
         ])
-        /* ->hiddenInput() */
+        ->hiddenInput()
         ->label(false) ?>
 
 
@@ -222,7 +222,7 @@ use yii\widgets\ActiveField;
        ])
        ->dropDownList(
            $items = ArrayHelper::merge(
-               ['0' => 'Seleccione'],
+               ['0' => 'Seleccione género'],
                ArrayHelper::map(
                    GeneroConstruccion::findAll(['isActivo' => 1]),
                    'id',
@@ -239,7 +239,7 @@ use yii\widgets\ActiveField;
        ])
        ->dropDownList(
            $items = ArrayHelper::merge(
-               ['0' => 'Seleccione genero'],
+               ['0' => 'Seleccione subgenero'],
                ArrayHelper::map(
                    SubGeneroConstruccion::findAll([
                        'isActivo' => 1,
@@ -247,7 +247,10 @@ use yii\widgets\ActiveField;
                            $modelSolicitudConstruccion->id_GeneroConstruccion,
                    ]),
                    'id',
-                   'nombre'
+                   function($currSubGenero){
+                        return $currSubGenero->nombre." - ".$currSubGenero->nombreTarifa;
+                   }
+                   
                )
            )
        )
@@ -436,7 +439,7 @@ use yii\widgets\ActiveField;
                             ->field($soliHasDocument, "[$id]id_Documento", [
                                 'options' => ['class' => 'col-md-1', 'display' => 'none'],
                             ])
-                            /* ->hiddenInput() *//* textInput() */
+                            ->hiddenInput()/* textInput() */
                             ->label(false) 
                         ?>
                         <?php echo $form
