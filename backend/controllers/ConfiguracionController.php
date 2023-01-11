@@ -14,36 +14,8 @@ class ConfiguracionController extends Controller{
 
     public function behaviors()
     {
-        return[
-            'access' =>[
-                'class' => AccessControl::class,
-                 /* 'only' => ['logout', 'signup'], */ /* TODOS? */
-                'rules' =>[
-                    [
-                        'actions' => ['login', 'error'],
-                        'allow' => true,
-                        'roles'=> ['?'],
-                        
-                    ],
-                    [
-                        'actions' => ['logout','index'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                        'matchCallback' => function ($rule, $action) {
-                            return User::isUserAdmin(Yii::$app->user->identity->username);
-                        }
-                    ],
-                    
-                ],
+        return \backend\models\BackendBehaviorsVic::BackendBehaviors(['config', 'index']);
 
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
     }
 
 

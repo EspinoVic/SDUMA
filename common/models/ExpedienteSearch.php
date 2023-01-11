@@ -47,10 +47,25 @@ class ExpedienteSearch extends Expediente
         $query = Expediente::find()
             ->join("LEFT JOIN","Persona",'Expediente.id_Persona_Solicita = Persona.id')
            // ->select("Persona.*","Persona.*") //delegar 
-            ;
-        ob_start();
+          
+           ;
+        $user = $params["userModel"];
+        if($user->id_UserLevel == User::USER_LEVEL_ADMIN){
+            //TODOS
+        }
+        if($user->id_UserLevel == User::USER_LEVEL_INTERNO){
+            //TODOS
+        }
+        if($user->id_UserLevel == User::USER_LEVEL_EXTERNO){
+            //FILTRADO
+            $query = $query->where(["id_User_CreadoPor"=>$user->id]);
+        }
+           
+        
+           
+        /* ob_start();
         var_dump($params);
-        Yii::debug(ob_get_clean(), __METHOD__);
+        Yii::debug(ob_get_clean(), __METHOD__); */
 
         // add conditions that should always apply here
 

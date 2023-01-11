@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\TipoPredio $model */
 
-$this->title = 'Create Tipo Predio';
+$this->title = 'Crear Tipo Predio';
 $this->params['breadcrumbs'][] = ['label' => 'Tipo Predios', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

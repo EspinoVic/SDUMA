@@ -130,7 +130,7 @@ class SiteController extends Controller
      *
      * @return mixed
      */
-    public function actionContact()
+    private function actionContact()
     {
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
@@ -153,7 +153,7 @@ class SiteController extends Controller
      *
      * @return mixed
      */
-    public function actionAbout()
+    private function actionAbout()
     {
         return $this->render('about');
     }
@@ -166,8 +166,11 @@ class SiteController extends Controller
     public function actionSignup()
     {
         $model = new SignupForm();
-        if ($model->load(Yii::$app->request->post())  ) {
+        if ($model->load(Yii::$app->request->post()) 
+            && $model->validate() 
+        ) {
 
+            
             $resSignup = $model->signup();
             
             /* error,danger,success,info,warning */
@@ -259,7 +262,7 @@ class SiteController extends Controller
             throw new BadRequestHttpException($e->getMessage());
         }
         if (($user = $model->verifyEmail()) && Yii::$app->user->login($user)) {
-            Yii::$app->session->setFlash('success', 'Tu email ha sido confirmado!');
+            Yii::$app->session->setFlash('success', 'Su email ha sido verificado!');
             return $this->goHome();
         }
 

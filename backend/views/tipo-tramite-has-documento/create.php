@@ -5,8 +5,8 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\TipoTramiteHasDocumento $model */
 
-$this->title = 'Create Tipo Tramite Has Documento';
-$this->params['breadcrumbs'][] = ['label' => 'Tipo Tramite Has Documentos', 'url' => ['index']];
+$this->title = 'Documentos por Tipo de trámite';
+$this->params['breadcrumbs'][] = ['label' => 'Documentos por Tipo de trámite', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tipo-tramite-has-documento-create">

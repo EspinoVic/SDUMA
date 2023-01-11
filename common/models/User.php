@@ -73,8 +73,8 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             ['status', 'default', 'value' => self::STATUS_INACTIVE],
             ['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
-            [['username', 'auth_key', 'password_hash', 'email', 'created_at', 'updated_at', 'id_Datos_Persona'], 'required'],
-            [['status', 'created_at', 'updated_at', 'id_Datos_Persona', 'id_Horario', 'id_UserLevel'], 'integer'],
+            [['username', 'auth_key', 'password_hash', 'email', /* 'created_at', 'updated_at', */ 'id_Datos_Persona'], 'required'],
+            [['status', /* 'created_at', 'updated_at', */ 'id_Datos_Persona', 'id_Horario', 'id_UserLevel'], 'integer'],
             [['username', 'password_hash', 'password_reset_token', 'email', 'verification_token'], 'string', 'max' => 255],
             [['auth_key'], 'string', 'max' => 32],
             [['username'], 'unique'],
@@ -91,6 +91,7 @@ class User extends ActiveRecord implements IdentityInterface
     }
     public static function isUserAdmin($username)
     {
+
         if (static::findOne(['username' => $username, 'id_UserLevel' => self::USER_LEVEL_ADMIN])){
                             
                 return true;
@@ -101,6 +102,26 @@ class User extends ActiveRecord implements IdentityInterface
             
     }
 
+    public static function getUserSrcTruth($username){
+
+        return static::findOne(['username'=>$username]);
+
+    }
+
+
+    public static function isSDUMAEmployee($username)
+    {
+        
+        if(static::findOne([
+            'username'=>$username, 'id_UserLevel'=>[User::USER_LEVEL_INTERNO,User::USER_LEVEL_ADMIN]
+            ]
+            )){
+                return true;
+            }
+            return false;
+
+    }
+    
     /**
      * Gets query for [[DatosPersona]].
      *
@@ -135,13 +156,14 @@ class User extends ActiveRecord implements IdentityInterface
             'password_reset_token' => 'Password Reset Token',
             'email' => 'Email',
             'status' => 'Status',
-            'created_at' => 'Creado en',
-            'updated_at' => 'Actualizado en',
+           /*  'created_at' => 'Creado en',
+            'updated_at' => 'Actualizado en', */
             'id_Datos_Persona' => 'Id Datos Persona',
             'id_Horario' => 'Id Horario',
             'id_UserLevel' => 'Id User Level',
             'verification_token' => 'Verification Token',
-            'createdAt' => 'Creado en'
+            'createdAt' => 'Creado en',
+            'updatedAt' => 'Actualizado en'
 
         ];
     }

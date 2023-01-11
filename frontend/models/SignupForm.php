@@ -34,14 +34,14 @@ class SignupForm extends Model
         return [
             ['username', 'trim'],
             ['username', 'required'],
-            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This username has already been taken.'],
+            ['username', 'unique', 'targetClass' => '\common\models\User', 'message' => 'Este usuario ya existe, elija otro.'],
             ['username', 'string', 'min' => 2, 'max' => 255],
 
             ['email', 'trim'],
             ['email', 'required'],
             ['email', 'email'],
             ['email', 'string', 'max' => 255],
-            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'This email address has already been taken.'],
+            ['email', 'unique', 'targetClass' => '\common\models\User', 'message' => 'Este correo ya está asociado a una cuenta.'],
 
             ['password', 'required'],
             ['password', 'string', 'min' => Yii::$app->params['user.passwordMinLength']],
@@ -81,10 +81,7 @@ class SignupForm extends Model
      */
     public function signup()
     {
-        if (!$this->validate()) {
-            return null;
-        }
-        
+       
         $user = new User();
         $user->username = $this->username;
         $user->email = $this->email;
@@ -143,7 +140,7 @@ class SignupForm extends Model
                     "MSG"=> "Error al crear usuario: {$userCreationResult['ERROR_MSG']} "
             ];
         }
-         
+        //return $resSignup;
         /* $user->save() */  
        
     }
@@ -168,10 +165,7 @@ class SignupForm extends Model
                 ':apellidoM'=>$newUser->apellidoM
         ];
         $sql2 = "EXEC sduma.dbo.testSP :vicParam";
-        $val = "ALV";
-        $params2 =[
-            ':vicParam'=> $val
-        ];
+         
         /* ->bindValue(':username',$newUser->username)
         ->bindValue(':email',$newUser->email)
         ->bindValue(':password_hash',$newUser->password_hash)
@@ -214,7 +208,7 @@ class SignupForm extends Model
             )
             ->setFrom(['vicsdumae@gmail.com'/* Yii::$app->params['supportEmail']  */=> Yii::$app->name . ' robot'])
             ->setTo($userr->email)
-            ->setSubject('Account registration at ' . Yii::$app->name)
+            ->setSubject('Registro de cuenta en ' . Yii::$app->name)
             ->send();
     }
 }

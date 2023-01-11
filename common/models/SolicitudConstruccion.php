@@ -156,7 +156,7 @@ class SolicitudConstruccion extends \yii\db\ActiveRecord
             
             $docsParam[] = array(
                 $value->id_Documento,
-                $value->isEntregado,
+                $value->isEntregado == null?0:$value->isEntregado,
                 $value->nombreArchivo,
                 $value->path,
                 $value->realNombreArchivo,
@@ -332,6 +332,7 @@ class SolicitudConstruccion extends \yii\db\ActiveRecord
         }
         catch (PDOException $ex) {
             Yii::info($ex, $category = 'PDO ERROR Execute command.');
+            return ["success" => false,"MSG" =>"Error al crear solicitud."]; 
 
         }
         catch( Exception $ex){

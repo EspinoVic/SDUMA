@@ -7,7 +7,8 @@ use common\models\UserSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-
+use yii\filters\AccessControl;
+use Yii;
 /**
  * UserController implements the CRUD actions for User model.
  */
@@ -18,17 +19,28 @@ class UserController extends Controller
      */
     public function behaviors()
     {
-        return array_merge(
-            parent::behaviors(),
-            [
-                'verbs' => [
-                    'class' => VerbFilter::className(),
-                    'actions' => [
-                        'delete' => ['POST'],
-                    ],
+        return [ 
+            'access'=> [   
+                'class' => AccessControl::class,
+                'rules'=> [
+                    [
+                        'actions' => ['view','create','update','delete', 'index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                        'matchCallback' => function ($rule, $action) {
+                            
+                            return User::isUserAdmin(Yii::$app->user->identity->username);
+                        }
+                    ]
                 ],
-            ]
-        );
+            ],
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => [
+                    'delete' => ['POST'],
+                ],
+            ],
+        ];
     }
 
     /**
@@ -92,9 +104,9 @@ class UserController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
+        $model->updatedAt =  date('d/m/y H:i:s');
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['index'/* , 'id' => $model->id */]);
         }
 
         return $this->render('update', [

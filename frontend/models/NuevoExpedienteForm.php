@@ -63,11 +63,11 @@ class NuevoExpedienteForm extends Model
            
         }
         catch(Exception $ex){
-            Yii::info($ex, $category = 'ERROR Execute command.');
-            return ["success" => false, "MSG" => $ex->getMessage()."Exception creo"];
+            Yii::info($ex, $category = 'Error al crear expediente.');
+            return ["success" => false, "MSG" => $ex->getMessage()."Error al crear expediente"];
         }
-        Yii::info($res, $category = 'DB ACTION');
-        return ["success" => true,"MSG" => "Expediente creado."."NO EXCEPTION"]; 
+        Yii::info($res, $category = 'Expediente creado');
+        return ["success" => true,"MSG" => "Expediente creado."]; 
         
  
         

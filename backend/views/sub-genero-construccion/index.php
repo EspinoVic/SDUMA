@@ -38,7 +38,10 @@ $this->params['breadcrumbs'][] = $this->title;
             'tamanioLimiteInferior',
             'tamanioLimiteSuperior',
             'nombreTarifa',
-            //'tarifa',
+            ['label' =>"Tarifa $" ,
+             'value'=>'tarifa'
+            ],
+           // 'tarifa',
             //'fechaCreacion',
             'anioVigencia',
             /*  'isActivo', */
