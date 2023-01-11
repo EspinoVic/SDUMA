@@ -11,7 +11,7 @@ use yii\grid\GridView;
 /** @var common\models\TipoTramiteHasDocumentoSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Tipo Tramite Has Documentos';
+$this->title = 'Documentos por Tipo de trámite';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tipo-tramite-has-documento-index">

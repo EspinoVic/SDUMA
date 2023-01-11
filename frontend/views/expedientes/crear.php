@@ -44,8 +44,8 @@ use yii\bootstrap5\ActiveForm;
         <?=$form->field($modelNuevoExp,"apellidoM")->textInput() ?>
         
         <div class="form-group">
-            <?= Html::submitButton('Submit', ['class' => 'btn btn-primary']) ?>
-        </div>
+            <?= Html::submitButton('Crear expediente', ['class' => 'btn btn-primary']) ?>
+        </div>        
     <?php ActiveForm::end(); ?>
 
 </div><!-- expedientes-crear -->

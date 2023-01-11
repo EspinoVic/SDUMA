@@ -66,7 +66,7 @@ use yii\helpers\ArrayHelper;
 
     <?= $form->field($model, 'email',['options'=>["class"=>"col-4" ]])->input(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'id_Datos_Persona')->textInput() ?>
+    <?= $form->field($model, 'id_Datos_Persona')->hiddenInput()/* textInput() */->label(false) ?>
 
     <?= $form->field($model, 'auth_key')->hiddenInput()->label(false) ?>
     
@@ -77,7 +77,7 @@ use yii\helpers\ArrayHelper;
     <?= $form->field($model, 'verification_token')->hiddenInput()->label(false) ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        <?= Html::submitButton('Guardar cambios', ['class' => 'btn btn-success']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

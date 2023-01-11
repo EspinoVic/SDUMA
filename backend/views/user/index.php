@@ -85,8 +85,12 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => ActionColumn::class,
                 'urlCreator' => function ($action, User $model, $key, $index, $column) {
+                  /*   if($action == "view") return null; */
                     return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+                 },
+                 'visibleButtons'=>[                    
+                    'view' => false
+                ]
             ],
         ],
     ]); ?>

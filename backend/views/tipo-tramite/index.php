@@ -10,7 +10,7 @@ use yii\grid\GridView;
 /** @var common\models\TipoTramiteSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Tipo Tramite ';
+$this->title = 'Tipo Trámite ';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="tipo-tramite-index">
