@@ -31,6 +31,20 @@ CREATE TABLE sduma.dbo.Domicilio (
   
   );
 
+CREATE TABLE sduma.dbo.Domicilio2 (
+	  id INT NOT NULL IDENTITY(1,1),
+	  coloniaFraccBarrio NVARCHAR(90) NOT NULL,
+	  calle NVARCHAR(45) NOT NULL,
+	  numExt NVARCHAR(45) NULL,
+	  numInt NVARCHAR(45) NULL,
+	  cp NVARCHAR(10) NOT NULL, 
+    calleOriente VARCHAR(90)   NULL,
+    callePoniente VARCHAR(90)   NULL,
+    calleNorte VARCHAR(90) NULL,
+    calleSur VARCHAR(90) NULL
+    PRIMARY KEY (id)
+);
+      
 
 CREATE TABLE sduma.dbo.TipoPredio (
 	  id INT NOT NULL IDENTITY(1,1),
@@ -639,7 +653,195 @@ CREATE TABLE sduma.dbo.Persona (
   PRIMARY KEY (id)
   
   );
+CREATE TABLE sduma.dbo.PersonaMoral (
+  id INT NOT NULL IDENTITY(1,1) ,
+  rfc NVARCHAR(50) NOT NULL,
+  denominacion NVARCHAR(255) NOT NULL,
+  PRIMARY KEY (id)
+  
+  );
 
+
+CREATE TABLE sduma.dbo.Escritura(
+  id INT NOT NULL IDENTITY(1,1) ,
+  noEscritura INT NOT NULL,
+  noRegistro INT NOT NULL,
+  noTomo INT NOT NULL
+  PRIMARY KEY (id)
+);
+CREATE TABLE sduma.dbo.ConstanciaEscritura(
+  id INT NOT NULL IDENTITY(1,1) ,
+  noEscritura INT NOT NULL,
+  noNotaria INT NOT NULL,
+  fechaEmision DATETIME NOT NULL,
+  PRIMARY KEY (id)
+);
+CREATE TABLE sduma.dbo.ConstanciaPosecionEjidal(
+  id INT NOT NULL IDENTITY(1,1) ,
+  noConstanciaPosEjidal INT NOT NULL,
+  nombreQuienEmitio VARCHAR(255) NOT NULL,
+  fechaEmision DATETIME NOT NULL,
+  PRIMARY KEY (id)
+);
+
+CREATE TABLE sduma.dbo.SolicitudGenericaCuentaCon(
+  id INT NOT NULL IDENTITY(1,1) ,
+  nombre VARCHAR(70) NOT NULL,
+  isActivo bit NOT NULL DEFAULT 1
+  PRIMARY KEY (id)
+);
+
+INSERT INTO [dbo].[SolicitudGenericaCuentaCon] ([nombre] ,[isActivo])
+     VALUES 
+     ('ESCRITURA',1),
+	   ('CONSTANCIA DE ESCRITURA',1),
+	   ('CONSTANCIA DE POSECIÖN EJIDAL',1)
+GO
+
+
+CREATE TABLE sduma.dbo.SolicitudGenerica(
+
+  id INT NOT NULL IDENTITY(1,1),
+  superficieTotal INT NOT NULL,
+  niveles INT NOT NULL DEFAULT 1,
+
+  superficiePorConstruir DECIMAL(16,2) NOT NULL,
+  areaPreExistente DECIMAL(16,2) NOT NULL,
+
+  altura DECIMAL(16,2) NULL,
+  metrosLineales DECIMAL(16,2) NULL,
+
+  firmaMetrosLinealesDRO VARCHAR(100) NULL,
+  firmaAlturaDRO VARCHAR(100) NULL,
+
+--FK desde aquí
+  --uno u otro
+  id_PersonaFisica INT NULL,
+  id_PersonaMoral INT NULL,
+
+  id_Contacto INT NOT NULL,
+  id_DomicilioNotificaciones INT NOT NULL,
+
+  id_MotivoConstruccion INT NOT NULL,
+  id_SolicitudGenericaCuentaCon INT NOT NULL,
+
+  id_Escritura INT NULL,
+  id_ConstanciaEscritura INT NULL,
+  id_ConstanciaPosecionEjidal INT NULL,
+
+  id_TipoPredio INT NULL,
+
+  id_GeneroConstruccion INT NOT NULL,
+  id_SubGeneroConstruccion INT NULL,
+
+
+  id_DomicilioPredio INT NOT NULL,
+
+  id_DirectorResponsableObra INT NULL,
+
+  --archivos directamente ligados --FILE 
+  id_Documento_MemoriaCalculo INT NOT NULL, --sperficie > 250 m2
+  id_Documento_MecanicaSuelos INT NOT NULL, --Más de 3 niveles
+  id_Documento_LicenciaConstruccionAreaPreexistenteFile INT NOT NULL,
+
+
+  id_User_CreadoPor INT NOT NULL,
+  id_User_ModificadoPor INT NOT NULL,
+  fechaCreacion DATETIME NOT NULL,
+  fechaModificacion DATETIME NOT NULL,
+
+
+--SOLO CONSTRAINTS CHECK
+--ALTER TABLE Price ADD 
+  CONSTRAINT CK_SolicitudGenericaCuentaCon_grater_than_zero
+    CHECK (id_SolicitudGenericaCuentaCon > 0),
+--SOLO CONSTRAINTS FK
+
+
+  CONSTRAINT fk_SolicitudGenerica_has_PersonaFisica
+    FOREIGN KEY (id_PersonaFisica)
+    REFERENCES sduma.dbo.[Persona] (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_SolicitudGenerica_has_PersonaMoral
+    FOREIGN KEY (id_PersonaMoral)
+    REFERENCES sduma.dbo.[PersonaMoral] (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_SolicitudGenerica_Contacto
+    FOREIGN KEY (id_Contacto)
+    REFERENCES sduma.dbo.Contacto (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_SolicitudGenerica_DomicilioNotif
+    FOREIGN KEY (id_DomicilioNotificaciones)
+    REFERENCES sduma.dbo.Domicilio (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_SolicitudGenerica_MotivoConstruccion
+    FOREIGN KEY (id_MotivoConstruccion)
+    REFERENCES sduma.dbo.MotivoConstruccion (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_SolicitudGenerica_has_SolicitudGenericaCuentaCon
+    FOREIGN KEY (id_SolicitudGenericaCuentaCon)
+    REFERENCES sduma.dbo.[SolicitudGenericaCuentaCon] (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_SolicitudGenerica_has_Escritura
+    FOREIGN KEY (id_Escritura)
+    REFERENCES sduma.dbo.[Escritura] (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_SolicitudGenerica_has_ConstanciaEscritura
+    FOREIGN KEY (id_ConstanciaEscritura)
+    REFERENCES sduma.dbo.[ConstanciaEscritura] (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_SolicitudGenerica_has_ConstanciaPosecionEjidal
+    FOREIGN KEY (id_ConstanciaPosecionEjidal)
+    REFERENCES sduma.dbo.[ConstanciaPosecionEjidal] (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_SolicitudGenerica_has_TipoPredio
+    FOREIGN KEY (id_TipoPredio)
+    REFERENCES sduma.dbo.[TipoPredio] (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_SolicitudGenerica_GeneroConstruccion
+    FOREIGN KEY (id_GeneroConstruccion)
+    REFERENCES sduma.dbo.GeneroConstruccion (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_SolicitudGenerica_SubGeneroConstruccion
+    FOREIGN KEY (id_SubGeneroConstruccion)
+    REFERENCES sduma.dbo.SubGeneroConstruccion (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+ CONSTRAINT fk_SolicitudGenerica_DomicilioPredio
+    FOREIGN KEY (id_DomicilioPredio)
+    REFERENCES sduma.dbo.Domicilio (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_SolicitudGenerica_DirectorResponsableObra
+    FOREIGN KEY (id_DirectorResponsableObra)
+    REFERENCES sduma.dbo.DirectorResponsableObra (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_SolicitudGenerica_UserCreadoPor
+    FOREIGN KEY (id_User_CreadoPor)
+    REFERENCES sduma.dbo.[user] (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_SolicitudGenerica_UserModificadoPor
+    FOREIGN KEY (id_User_ModificadoPor)
+    REFERENCES sduma.dbo.[user] (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  
+  PRIMARY KEY (id)
+
+);
 
 CREATE TABLE sduma.dbo.Horario (
   id INT NOT NULL IDENTITY(1,1)  ,

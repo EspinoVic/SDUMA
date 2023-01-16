@@ -48,8 +48,8 @@ class Persona extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'nombre' => 'Nombre',
-            'apellidoP' => 'Apellido P',
-            'apellidoM' => 'Apellido M',
+            'apellidoP' => 'Apellido Paterno',
+            'apellidoM' => 'Apellido Materno',
         ];
     }
 

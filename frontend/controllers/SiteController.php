@@ -2,6 +2,13 @@
 
 namespace frontend\controllers;
 
+use common\models\ConstanciaEscritura;
+use common\models\ConstanciaPosecionEjidal;
+use common\models\Contacto;
+use common\models\DirectorResponsableObra;
+use common\models\Documento;
+use common\models\Domicilio2;
+use common\models\Escritura;
 use frontend\models\ResendVerificationEmailForm;
 use frontend\models\VerifyEmailForm;
 use Yii;
@@ -17,6 +24,13 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use common\models\User;
+use common\models\Persona;
+use common\models\PersonaMoral;
+use common\models\SolicitudConstruccion;
+use common\models\SolicitudGenerica;
+use common\models\SolicitudGenericaCuentaCon;
+use common\models\UploadFileVic;
+use yii\web\UploadedFile;
 
 /**
  * Site controller
@@ -88,6 +102,87 @@ class SiteController extends Controller
     public function actionIndex()
     {
         return $this->render('index');
+    }
+
+    public function actionSegunda(){
+
+        $domicilioNotif = new Domicilio2();
+        $domicilioPredio = new Domicilio2();
+        $personaSolicita = new Persona();
+        $personaMoralSolicita = new PersonaMoral();
+       // $modelSolicitudConstruccion = new SolicitudConstruccion();
+        //$modelSolicitudConstruccion->id_MotivoConstruccion = 3;
+        $modelEscritura = new Escritura();
+        $modelConstanciaEscritura = new ConstanciaEscritura();
+        $modelConstanciaPosecionEjidal = new ConstanciaPosecionEjidal();
+        //$solicitudGenericaCuentaCon = new SolicitudGenericaCuentaCon();
+        $modelSolicitudGenerica = new SolicitudGenerica();
+        $modelEntregables = array();
+        
+        $modelDRO = new DirectorResponsableObra();
+        $modelPersonaDRO= new Persona();
+
+        $modelApoderados = array();
+        $modelApoderados[1] = new Persona();
+        $modelContacto = new Contacto();
+        /**
+         * @var UploadFileVic
+         */
+        $memoriaCalculoFile = new UploadFileVic(); // new UploadedFile();//file
+        $mecanicaSuelosFile = new UploadFileVic();
+        $licenciaConstruccionAreaPreexistenteFile = new UploadFileVic();
+
+        if($this->request->isPost){
+            $noApoderados =$this->request->post("noApoderados");
+            $modelApoderados[1]->load($this->request->post("Persona"),"apoderado1");
+
+            if(is_numeric($noApoderados) && $noApoderados > 1){
+                for ($i=2; $i <=$noApoderados ; $i++) {  //index 1 ya fue asignado afuera 
+                    $modelApoderados[$i] = new Persona();
+                    $modelApoderados[$i]->load($this->request->post("Persona"),"apoderado$i");
+                }
+            }
+           // $modelSolicitudConstruccion->load($this->request->post());
+            $modelSolicitudGenerica->load($this->request->post());
+           // $memoriaCalculoFile->load($this->request->post());
+            //$memoriaCalculoFile = UploadedFile::getInstanceByName('memoriaCalculoFile');
+            //$memoriaCalculoFile = UploadedFile::getInstanceByName('myFile');
+            $personaSolicita->load($this->request->post("Persona"),"personaF");
+            $modelPersonaDRO->load($this->request->post("Persona"),"DRO");
+            $memoriaCalculoFile->myFile = UploadedFile::getInstance($memoriaCalculoFile,'myFile');
+            if($memoriaCalculoFile->myFile){
+                
+                $memoriaCalculoFile->myFile->saveAs(
+                    "C:\\sduma_files\\".$memoriaCalculoFile->myFile->baseName . 
+                    "." . $memoriaCalculoFile->myFile->extension
+                    ,false);
+            }
+            $licenciaConstruccionAreaPreexistenteFile->myFile = UploadedFile::getInstance($licenciaConstruccionAreaPreexistenteFile,'myFile');
+                
+        }
+
+        return $this->render('segunda', [
+             
+            'domicilioNotif' => $domicilioNotif ,
+            'domicilioPredio' => $domicilioPredio ,
+            'personaSolicita' => $personaSolicita ,
+            'personaMoralSolicita' => $personaMoralSolicita ,
+            //'modelSolicitudConstruccion' => $modelSolicitudConstruccion,
+            'modelEscritura' => $modelEscritura,
+            'modelConstanciaEscritura' => $modelConstanciaEscritura,
+            'modelConstanciaPosecionEjidal' => $modelConstanciaPosecionEjidal,            
+            'modelSolicitudGenerica' => $modelSolicitudGenerica,
+            'modelEntregables'=> $modelEntregables,
+            'memoriaCalculoFile' =>$memoriaCalculoFile,
+            'licenciaConstruccionAreaPreexistenteFile' =>$licenciaConstruccionAreaPreexistenteFile,
+            'mecanicaSuelosFile' => $mecanicaSuelosFile,
+            'modelDRO' => $modelDRO,
+            'modelPersonaDRO' => $modelPersonaDRO,
+            'modelApoderados' => $modelApoderados,
+            'modelContacto' => $modelContacto,
+        ]);
+         
+
     }
 
     /**
