@@ -62,6 +62,11 @@
        'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ]
      ],
      [
+       'label'=> 'Configuración de documentos',
+       'url' => ['/config-tramite-motivo-cuentacon-doc/index'],
+       'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ]
+     ],
+     [
        'label'=> 'Directores Responsables de Obra',
        'url' => ['/director-responsable-obra/index'],
        'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ],
