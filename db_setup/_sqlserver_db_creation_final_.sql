@@ -843,6 +843,39 @@ CREATE TABLE sduma.dbo.SolicitudGenerica(
 
 );
 
+--la relación de configuración de documentos
+--Cada trámite tiene X motivo y a su vez tiene cierto "CuentaCon" (ver tabla) y tiene cierto documento (por año)
+CREATE TABLE sduma.dbo.ConfigTramiteMotivoCuentaconDoc(
+  id_TipoTramite INT NOT NULL,
+  id_MotivoConstruccion INT NOT NULL,
+  id_SolicitudGenericaCuentaCon INT NOT NULL,
+  id_Documento INT NOT NULL,
+
+  CONSTRAINT fk_ConfigTramiteMotivoCuentaconDoc_TipoTramite
+    FOREIGN KEY (id_TipoTramite)
+    REFERENCES sduma.dbo.TipoTramite (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_ConfigTramiteMotivoCuentaconDoc_MotivoConstruccion
+    FOREIGN KEY (id_MotivoConstruccion)
+    REFERENCES sduma.dbo.MotivoConstruccion (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_ConfigTramiteMotivoCuentaconDoc_SolicitudGenericaCuentaCon
+    FOREIGN KEY (id_SolicitudGenericaCuentaCon)
+    REFERENCES sduma.dbo.SolicitudGenericaCuentaCon (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_ConfigTramiteMotivoCuentaconDoc_Documento
+    FOREIGN KEY (id_Documento)
+    REFERENCES sduma.dbo.Documento (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+
+    PRIMARY KEY (id_TipoTramite,id_MotivoConstruccion,id_SolicitudGenericaCuentaCon,id_Documento)
+
+);
+
 CREATE TABLE sduma.dbo.Horario (
   id INT NOT NULL IDENTITY(1,1)  ,
   nombre NVARCHAR(45) NOT NULL,
