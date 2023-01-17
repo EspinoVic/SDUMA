@@ -5,8 +5,9 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\ConfigTramiteMotivoCuentaconDoc $model */
 
-$this->title = 'Create Config Tramite Motivo Cuentacon Doc';
-$this->params['breadcrumbs'][] = ['label' => 'Config Tramite Motivo Cuentacon Docs', 'url' => ['index']];
+//$this->title = 'Relacionar documentos con Trámite, Motivo, Documento del ciudadano y Documento de la solicitud';
+$this->title = 'Crear configuración de documentos';
+$this->params['breadcrumbs'][] = ['label' => 'Configuración de documentos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="config-tramite-motivo-cuentacon-doc-create">

@@ -1,10 +1,12 @@
 <?php
 
 use common\models\ConfigTramiteMotivoCuentaconDoc;
-use yii\helpers\Html;
+use yii\bootstrap5\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
+use common\models\WidgetStyleVic;
+
 
 /** @var yii\web\View $this */
 /** @var common\ConfigTramiteMotivoCuentaconDocSearch $searchModel */
@@ -25,16 +27,41 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
+        'pager' => WidgetStyleVic::PagerStyle(),
+        /* 'filterModel' => $searchModel, */
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id_TipoTramite',
-            'id_MotivoConstruccion',
-            'id_SolicitudGenericaCuentaCon',
-            'id_Documento',
+            //'id_TipoTramite',
+            //'id_MotivoConstruccion',
+            //'id_SolicitudGenericaCuentaCon',
+           // 'id_Documento',
+
+           ['label'=>'Tipo de trámite',
+            'value'=> function($currConfigTramiteMotivoCuentaconDocSearch){
+               return $currConfigTramiteMotivoCuentaconDocSearch->tipoTramite->nombre;
+            }
+           ],
+           ['label'=>'Motivo de Construcción',
+            'value'=> function($currConfigTramiteMotivoCuentaconDocSearch){
+                return $currConfigTramiteMotivoCuentaconDocSearch->motivoConstruccion->nombre;
+            }
+            ],
+            ['label'=>'Cuenta con',
+            'value'=> function($currConfigTramiteMotivoCuentaconDocSearch){
+                return $currConfigTramiteMotivoCuentaconDocSearch->solicitudGenericaCuentaCon->nombre;
+            }
+            ],
+           ['label'=>'Documento',
+            'value'=> function($currConfigTramiteMotivoCuentaconDocSearch){
+               return $currConfigTramiteMotivoCuentaconDocSearch->documento->nombre;
+            }
+           ],
+
+
+
             [
-                'class' => ActionColumn::className(),
+                'class' => ActionColumn::class,
                 'urlCreator' => function ($action, ConfigTramiteMotivoCuentaconDoc $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id_Documento' => $model->id_Documento, 'id_MotivoConstruccion' => $model->id_MotivoConstruccion, 'id_SolicitudGenericaCuentaCon' => $model->id_SolicitudGenericaCuentaCon, 'id_TipoTramite' => $model->id_TipoTramite]);
                  }
