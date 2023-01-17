@@ -92,7 +92,7 @@ use yii\web\JsExpression;
   <br>
 
     <h5><?= Html::encode('Motivo de Solicitud') ?></h5>       
-    <div class="row">
+    <div  class="row">
 
       <?= $form
         ->field($modelSolicitudGenerica, 'id_MotivoConstruccion',['options' => ['class' => 'col-md-4']])
@@ -130,23 +130,35 @@ use yii\web\JsExpression;
                           }
                       )
                     ),
-                    ['onchange'=> new JsExpression('cuentaConChange(event)'  )]
+                    /* ['onchange'=> new JsExpression('cuentaConChange(event)'  )] */ //ahora controlado por ssr
+                    ['onchange'=> 'this.form.submit()' ]
               )
               ->label('Cuenta con') 
               ?>
+          <?= Html::buttonInput("Actualizar", ['class' => 'btn btn-primary col-md-1', "onclick"=>"this.form.submit()"])
+          ?>
 
     </div>
   
   <br>
-  <?= $this->render("_escritura",['modelEscritura'=>$modelEscritura,'form'=>$form, 'idContainer'=>"contEscrituraFields"])  ?>
-  <?= $this->render("_constanciaEscritura",['modelConstanciaEscritura'=>$modelConstanciaEscritura,'form'=>$form, 'idContainer'=>"contConstanciaEscrituraFields"])  ?>
-  <?= $this->render("_constanciaPosecionEjidal",['modelConstanciaPosecionEjidal'=>$modelConstanciaPosecionEjidal,'form'=>$form, 'idContainer'=>"contConstanciaPosecionEjidalFields"])  ?>
+  <?php if($modelSolicitudGenerica-> id_SolicitudGenericaCuentaCon =="1"){   ?> 
+  
+    <?= $this->render("_escritura",['modelEscritura'=>$modelEscritura,'form'=>$form, 'idContainer'=>"contEscrituraFields"])  ?>
+
+  <?php }else if($modelSolicitudGenerica-> id_SolicitudGenericaCuentaCon =="2"){ ?> 
+    
+    <?= $this->render("_constanciaEscritura",['modelConstanciaEscritura'=>$modelConstanciaEscritura,'form'=>$form, 'idContainer'=>"contConstanciaEscrituraFields"])  ?>
+  
+  <?php }else if($modelSolicitudGenerica-> id_SolicitudGenericaCuentaCon =="3"){ ?> 
+
+    <?= $this->render("_constanciaPosecionEjidal",['modelConstanciaPosecionEjidal'=>$modelConstanciaPosecionEjidal,'form'=>$form, 'idContainer'=>"contConstanciaPosecionEjidalFields"])  ?>
+  <?php }  ?> 
   <br>
 
   <script  type="text/javascript">
 
 
-   /*  document.addEventListener("DOMContentLoaded", function(event) {
+    /* document.addEventListener("DOMContentLoaded", function(event) {
       motivoSolicitudChange()
     }); */
     const motivoSolicitudChange = function (event){
@@ -169,7 +181,7 @@ use yii\web\JsExpression;
       }
     }
     
-    const contEscrituraFields = document.getElementById("contEscrituraFields");
+    /* const contEscrituraFields = document.getElementById("contEscrituraFields");
     const contConstanciaEscrituraFields = document.getElementById("contConstanciaEscrituraFields");
     const contConstanciaPosecionEjidalFields = document.getElementById("contConstanciaPosecionEjidalFields");
 
@@ -200,7 +212,7 @@ use yii\web\JsExpression;
       }
       
     }
-    cuentaConChange();
+     */
 
   </script>
 

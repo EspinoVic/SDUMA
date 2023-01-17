@@ -11,57 +11,36 @@ use common\models\Documento;
         <thead>
             <tr>                                   
                 <th scope="col">Entregable</th>
-                <th scope="col">Nombre Archivo</th>
-                <th scope="col">Acciones Archivo</th>
-                <th scope="col"></th> 
+                <th scope="col">Subir Archivo</th>
             </tr>
         </thead>
         <tbody>
 
-            <?php foreach ($soliHasDocuments as $id => $soliHasDocument) { ?>
+            <?php foreach ($modelEntregables as $id => $currEntregable) { ?>
                 <tr <?php echo "id = 'docRow$id' "  ?> >                                     
 
-                    <td>
-                        <?php 
-                            /* ob_start();
-                            var_dump("Cycle rendering:".$id);
-                            var_dump($soliHasDocument);
-                            Yii::debug(ob_get_clean(),"FORM RENDER uwu") */
-                        ?> 
+                    <td>                        
                         <?= $form
-                            ->field($soliHasDocument, "[$id]id_Documento", [
+                            ->field($currEntregable->documento, "[$id]id", [
                                 'options' => ['class' => 'col-md-1', 'display' => 'none'],
                             ])
                             ->hiddenInput()/* textInput() */
                             ->label(false) 
-                        ?>
-                        <?php echo $form
-                            ->field($soliHasDocument, "[$id]isEntregado")
-                            ->checkbox()
-                            ->label(/* $soliHasDocument -> documento ->nombre  */Documento::findOne( ["id"=>$soliHasDocument->id_Documento]) -> nombre );
-                             ?>
-                     <!--    <input type="button" value="Delete Row" onclick="SomeDeleteRowFunction()"> -->
-                        
-                    </td>
-                    <td><!-- border-0 -->
+                        ?>         
                         <span >
                             <?= $form->field(
-                                $soliHasDocument,
-                                "[$id]nombreArchivo",
+                                $currEntregable->documento,
+                                "[$id]nombre",
                                 
                             ) ->textInput(
-                                     ['class' => 'border-0 disabled',
+                                     ['class' => 'border-0 disabled col-md-6',
                                       ' readonly' => ""
                                      ]
                                 ) -> label(false) ?> 
-                       </span>
+                       </span>           
                     </td>
                     <td>
-                        <button type="button" class="btn btn-outline-danger">Borrar</button>
-                    </td>
-                    <td>
-                        <input class="form-control form-control-sm  " id="formFileSm" type="file">
-
+                        <input class="form-control form-control-sm  " id="" type="file">
                     </td>
                 </tr>
             <?php } ?>

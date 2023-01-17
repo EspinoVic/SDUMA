@@ -11,6 +11,7 @@ use Yii;
  * @property string $nombre
  * @property int $isActivo
  *
+ * @property ConfigTramiteMotivoCuentaconDoc[] $configTramiteMotivoCuentaconDocs
  * @property SolicitudConstruccionHasDocumento[] $solicitudConstruccionHasDocumentos
  * @property SolicitudConstruccion[] $solicitudConstruccions
  * @property TipoTramiteHasDocumento[] $tipoTramiteHasDocumentos
@@ -34,7 +35,7 @@ class Documento extends \yii\db\ActiveRecord
         return [
             [['nombre'], 'required'],
             [['isActivo'], 'integer'],
-            [['nombre'], 'string', 'max' => 45],
+            [['nombre'], 'string', 'max' => 255],
         ];
     }
 
@@ -48,6 +49,16 @@ class Documento extends \yii\db\ActiveRecord
             'nombre' => 'Nombre',
             'isActivo' => 'Is Activo',
         ];
+    }
+
+    /**
+     * Gets query for [[ConfigTramiteMotivoCuentaconDocs]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getConfigTramiteMotivoCuentaconDocs()
+    {
+        return $this->hasMany(ConfigTramiteMotivoCuentaconDoc::class, ['id_Documento' => 'id']);
     }
 
     /**

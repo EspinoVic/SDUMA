@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\ConfigTramiteMotivoCuentaconDoc;
 use common\models\ConstanciaEscritura;
 use common\models\ConstanciaPosecionEjidal;
 use common\models\Contacto;
@@ -29,6 +30,7 @@ use common\models\PersonaMoral;
 use common\models\SolicitudConstruccion;
 use common\models\SolicitudGenerica;
 use common\models\SolicitudGenericaCuentaCon;
+use common\models\TipoTramite;
 use common\models\UploadFileVic;
 use yii\web\UploadedFile;
 
@@ -117,7 +119,8 @@ class SiteController extends Controller
         $modelConstanciaPosecionEjidal = new ConstanciaPosecionEjidal();
         //$solicitudGenericaCuentaCon = new SolicitudGenericaCuentaCon();
         $modelSolicitudGenerica = new SolicitudGenerica();
-        $modelEntregables = array();
+        $modelEntregables = null;/*  array(); */
+       
         
         $modelDRO = new DirectorResponsableObra();
         $modelPersonaDRO= new Persona();
@@ -144,9 +147,16 @@ class SiteController extends Controller
             }
            // $modelSolicitudConstruccion->load($this->request->post());
             $modelSolicitudGenerica->load($this->request->post());
-           // $memoriaCalculoFile->load($this->request->post());
-            //$memoriaCalculoFile = UploadedFile::getInstanceByName('memoriaCalculoFile');
-            //$memoriaCalculoFile = UploadedFile::getInstanceByName('myFile');
+            // extraer vars para archivos
+            $modelEntregables = ConfigTramiteMotivoCuentaconDoc::findAll(
+                [
+                    "id_TipoTramite"=>1,//TipoTramite::findOne(["nombre"=>"CONTRUCCION"]) //trámite construcción
+                    "id_MotivoConstruccion"=>$modelSolicitudGenerica->id_MotivoConstruccion,
+                    "id_SolicitudGenericaCuentaCon"=>$modelSolicitudGenerica->id_SolicitudGenericaCuentaCon,
+                    //"doc"=>1,            
+                ]
+            );
+        
             $personaSolicita->load($this->request->post("Persona"),"personaF");
             $modelPersonaDRO->load($this->request->post("Persona"),"DRO");
             $memoriaCalculoFile->myFile = UploadedFile::getInstance($memoriaCalculoFile,'myFile');
@@ -160,6 +170,20 @@ class SiteController extends Controller
             $licenciaConstruccionAreaPreexistenteFile->myFile = UploadedFile::getInstance($licenciaConstruccionAreaPreexistenteFile,'myFile');
                 
         }
+
+ /*        if(!$modelEntregables){
+
+            //default EDIT: No hay default, viene definido por el post siempre.
+            $modelEntregables = ConfigTramiteMotivoCuentaconDoc::findAll(
+               [
+                   "id_TipoTramite"=>1,
+                   "id_MotivoConstruccion"=>1,
+                   "id_SolicitudGenericaCuentaCon"=>1,
+                   //"doc"=>1,            
+               ]
+           );
+        }
+ */
 
         return $this->render('segunda', [
              
