@@ -8,14 +8,22 @@ use Yii;
  * This is the model class for table "SolicitudGenerica".
  *
  * @property int $id
+ * @property int $statusSolicitud
  * @property int $superficieTotal
  * @property int $niveles
- * @property float $superficiePorConstruir
- * @property float $areaPreExistente
+ * @property float|null $superficiePorConstruir
+ * @property float|null $areaPreExistente
+ * @property string|null $tipoTomaAgua
+ * @property int $numeroTomaAgua
+ * @property string $fechaPagoAguaOContrato
+ * @property int|null $numeroReciboAgua
+ * @property int $subeRecibo
+ * @property int|null $numeroPredial
+ * @property string|null $fechaPagoPredial
  * @property float|null $altura
  * @property float|null $metrosLineales
- * @property string|null $firmaMetrosLinealesDRO
- * @property string|null $firmaAlturaDRO
+ * @property int|null $id_MetrosLinealesDRO
+ * @property int|null $id_AlturaDRO
  * @property int|null $id_PersonaFisica
  * @property int|null $id_PersonaMoral
  * @property int $id_Contacto
@@ -25,14 +33,14 @@ use Yii;
  * @property int|null $id_Escritura
  * @property int|null $id_ConstanciaEscritura
  * @property int|null $id_ConstanciaPosecionEjidal
- * @property int|null $id_TipoPredio
+ * @property int $id_TipoPredio
  * @property int $id_GeneroConstruccion
- * @property int|null $id_SubGeneroConstruccion
+ * @property int $id_SubGeneroConstruccion
  * @property int $id_DomicilioPredio
- * @property int|null $id_DirectorResponsableObra
- * @property int $id_Documento_MemoriaCalculo
- * @property int $id_Documento_MecanicaSuelos
- * @property int $id_Documento_LicenciaConstruccionAreaPreexistenteFile
+ * @property int $id_DirectorResponsableObra
+ * @property int|null $id_Archivo_MemoriaCalculo
+ * @property int|null $id_Archivo_MecanicaSuelos
+ * @property int|null $id_Archivo_LicenciaConstruccionAreaPreexistenteFile
  * @property int $id_User_CreadoPor
  * @property int $id_User_ModificadoPor
  * @property string $fechaCreacion
@@ -71,11 +79,11 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['superficieTotal', 'superficiePorConstruir', 'areaPreExistente', 'id_Contacto', 'id_DomicilioNotificaciones', 'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon', 'id_GeneroConstruccion', 'id_DomicilioPredio', 'id_Documento_MemoriaCalculo', 'id_Documento_MecanicaSuelos', 'id_Documento_LicenciaConstruccionAreaPreexistenteFile', 'id_User_CreadoPor', 'id_User_ModificadoPor', 'fechaCreacion', 'fechaModificacion'], 'required'],
-            [['superficieTotal', 'niveles', 'id_PersonaFisica', 'id_PersonaMoral', 'id_Contacto', 'id_DomicilioNotificaciones', 'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon', 'id_Escritura', 'id_ConstanciaEscritura', 'id_ConstanciaPosecionEjidal', 'id_TipoPredio', 'id_GeneroConstruccion', 'id_SubGeneroConstruccion', 'id_DomicilioPredio', 'id_DirectorResponsableObra', 'id_Documento_MemoriaCalculo', 'id_Documento_MecanicaSuelos', 'id_Documento_LicenciaConstruccionAreaPreexistenteFile', 'id_User_CreadoPor', 'id_User_ModificadoPor'], 'integer'],
+            [['statusSolicitud', 'superficieTotal', 'niveles', 'numeroTomaAgua', 'numeroReciboAgua', 'subeRecibo', 'numeroPredial', 'id_MetrosLinealesDRO', 'id_AlturaDRO', 'id_PersonaFisica', 'id_PersonaMoral', 'id_Contacto', 'id_DomicilioNotificaciones', 'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon', 'id_Escritura', 'id_ConstanciaEscritura', 'id_ConstanciaPosecionEjidal', 'id_TipoPredio', 'id_GeneroConstruccion', 'id_SubGeneroConstruccion', 'id_DomicilioPredio', 'id_DirectorResponsableObra', 'id_Archivo_MemoriaCalculo', 'id_Archivo_MecanicaSuelos', 'id_Archivo_LicenciaConstruccionAreaPreexistenteFile', 'id_User_CreadoPor', 'id_User_ModificadoPor'], 'integer'],
+            [['superficieTotal', 'numeroTomaAgua', 'fechaPagoAguaOContrato', 'id_Contacto', 'id_DomicilioNotificaciones', 'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon', 'id_TipoPredio', 'id_GeneroConstruccion', 'id_SubGeneroConstruccion', 'id_DomicilioPredio', 'id_DirectorResponsableObra', 'id_User_CreadoPor', 'id_User_ModificadoPor', 'fechaCreacion', 'fechaModificacion'], 'required'],
             [['superficiePorConstruir', 'areaPreExistente', 'altura', 'metrosLineales'], 'number'],
-            [['fechaCreacion', 'fechaModificacion'], 'safe'],
-            [['firmaMetrosLinealesDRO', 'firmaAlturaDRO'], 'string', 'max' => 100],
+            [['fechaPagoAguaOContrato', 'fechaPagoPredial', 'fechaCreacion', 'fechaModificacion'], 'safe'],
+            [['tipoTomaAgua'], 'string', 'max' => 255],
             [['id_PersonaFisica'], 'exist', 'skipOnError' => true, 'targetClass' => Persona::class, 'targetAttribute' => ['id_PersonaFisica' => 'id']],
             [['id_PersonaMoral'], 'exist', 'skipOnError' => true, 'targetClass' => PersonaMoral::class, 'targetAttribute' => ['id_PersonaMoral' => 'id']],
             [['id_Contacto'], 'exist', 'skipOnError' => true, 'targetClass' => Contacto::class, 'targetAttribute' => ['id_Contacto' => 'id']],
@@ -102,14 +110,22 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
+            'statusSolicitud' => 'Status Solicitud',
             'superficieTotal' => 'Superficie Total',
             'niveles' => 'Niveles',
             'superficiePorConstruir' => 'Superficie Por Construir',
             'areaPreExistente' => 'Area Pre Existente',
+            'tipoTomaAgua' => 'Tipo Toma Agua',
+            'numeroTomaAgua' => 'Numero Toma Agua',
+            'fechaPagoAguaOContrato' => 'Fecha Pago Agua O Contrato',
+            'numeroReciboAgua' => 'Numero Recibo Agua',
+            'subeRecibo' => 'Sube Recibo',
+            'numeroPredial' => 'Numero Predial',
+            'fechaPagoPredial' => 'Fecha Pago Predial',
             'altura' => 'Altura',
             'metrosLineales' => 'Metros Lineales',
-            'firmaMetrosLinealesDRO' => 'Firma Metros Lineales Dro',
-            'firmaAlturaDRO' => 'Firma Altura Dro',
+            'id_MetrosLinealesDRO' => 'Id Metros Lineales Dro',
+            'id_AlturaDRO' => 'Id Altura Dro',
             'id_PersonaFisica' => 'Id Persona Fisica',
             'id_PersonaMoral' => 'Id Persona Moral',
             'id_Contacto' => 'Id Contacto',
@@ -124,9 +140,9 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
             'id_SubGeneroConstruccion' => 'Id Sub Genero Construccion',
             'id_DomicilioPredio' => 'Id Domicilio Predio',
             'id_DirectorResponsableObra' => 'Id Director Responsable Obra',
-            'id_Documento_MemoriaCalculo' => 'Id Documento Memoria Calculo',
-            'id_Documento_MecanicaSuelos' => 'Id Documento Mecanica Suelos',
-            'id_Documento_LicenciaConstruccionAreaPreexistenteFile' => 'Id Documento Licencia Construccion Area Preexistente File',
+            'id_Archivo_MemoriaCalculo' => 'Id Archivo Memoria Calculo',
+            'id_Archivo_MecanicaSuelos' => 'Id Archivo Mecanica Suelos',
+            'id_Archivo_LicenciaConstruccionAreaPreexistenteFile' => 'Id Archivo Licencia Construccion Area Preexistente File',
             'id_User_CreadoPor' => 'Id User Creado Por',
             'id_User_ModificadoPor' => 'Id User Modificado Por',
             'fechaCreacion' => 'Fecha Creacion',

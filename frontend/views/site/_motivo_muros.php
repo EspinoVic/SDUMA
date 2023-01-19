@@ -16,7 +16,7 @@ use common\models\Documento;
     <!-- SI es mayor a 2.5, desbloquear FIRMA DRO-->
 
     <?= $form
-    ->field($modelSolicitudGenerica, 'firmaAlturaDRO',['options' => ['class' => 'col-md-5',"id"=>"inputTxtfirmaAlturaDRO","style"=>"display:none"]])
+    ->field($modelSolicitudGenerica, 'id_AlturaDRO',['options' => ['class' => 'col-md-5',"id"=>"inputTxtfirmaAlturaDRO","style"=>"display:none"]])
     ->textInput() 
     ?>
 </div>
@@ -30,7 +30,7 @@ use common\models\Documento;
     ?>
 
     <?= $form
-    ->field($modelSolicitudGenerica, 'firmaMetrosLinealesDRO',['options' => ['class' => 'col-md-5',"id"=>"inputTxtfirmaMetrosLinealesDRO","style"=>"display:none"]])
+    ->field($modelSolicitudGenerica, 'id_MetrosLinealesDRO',['options' => ['class' => 'col-md-5',"id"=>"inputTxtfirmaMetrosLinealesDRO","style"=>"display:none"]])
     ->textInput() 
     ?>
     <!-- SI es mayor 30 metros lineales, desbloquear FIRMA DRO-->

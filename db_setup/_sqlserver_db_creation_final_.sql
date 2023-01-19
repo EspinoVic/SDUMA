@@ -702,17 +702,30 @@ GO
 CREATE TABLE sduma.dbo.SolicitudGenerica(
 
   id INT NOT NULL IDENTITY(1,1),
+  statusSolicitud INT NOT NULL DEFAULT 0,
   superficieTotal INT NOT NULL,
   niveles INT NOT NULL DEFAULT 1,
 
-  superficiePorConstruir DECIMAL(16,2) NOT NULL,
-  areaPreExistente DECIMAL(16,2) NOT NULL,
+  superficiePorConstruir DECIMAL(16,2) NULL,
+  areaPreExistente DECIMAL(16,2) NULL,
+
+--cosas de agua y predial
+  tipoTomaAgua VARCHAR(255) NULL,
+  numeroTomaAgua INT NOT NULL,
+  fechaPagoAguaOContrato DATETIME NOT NULL,
+
+  numeroReciboAgua INT NULL, -- Para constancia ejidal, no se toma en cuenta si sube el contrato.
+  subeRecibo BIT NOT NULL DEFAULT 1, --else significa sube contrato
+
+  --predial solo para ESCRITURA Y CONSTANCIA DE ESCRITURA
+  numeroPredial INT NULL,
+  fechaPagoPredial DATETIME NULL,
 
   altura DECIMAL(16,2) NULL,
   metrosLineales DECIMAL(16,2) NULL,
 
-  firmaMetrosLinealesDRO VARCHAR(100) NULL,
-  firmaAlturaDRO VARCHAR(100) NULL,
+  id_MetrosLinealesDRO INT NULL,
+  id_AlturaDRO INT NULL,
 
 --FK desde aquí
   --uno u otro
@@ -729,20 +742,20 @@ CREATE TABLE sduma.dbo.SolicitudGenerica(
   id_ConstanciaEscritura INT NULL,
   id_ConstanciaPosecionEjidal INT NULL,
 
-  id_TipoPredio INT NULL,
+  id_TipoPredio INT NOT NULL,
 
   id_GeneroConstruccion INT NOT NULL,
-  id_SubGeneroConstruccion INT NULL,
+  id_SubGeneroConstruccion INT NOT NULL,
 
 
   id_DomicilioPredio INT NOT NULL,
 
-  id_DirectorResponsableObra INT NULL,
+  id_DirectorResponsableObra INT NOT NULL,
 
   --archivos directamente ligados --FILE 
-  id_Documento_MemoriaCalculo INT NOT NULL, --sperficie > 250 m2
-  id_Documento_MecanicaSuelos INT NOT NULL, --Más de 3 niveles
-  id_Documento_LicenciaConstruccionAreaPreexistenteFile INT NOT NULL,
+  id_Archivo_MemoriaCalculo INT NULL, --sperficie > 250 m2
+  id_Archivo_MecanicaSuelos INT NULL, --Más de 3 niveles
+  id_Archivo_LicenciaConstruccionAreaPreexistenteFile INT NULL,
 
 
   id_User_CreadoPor INT NOT NULL,

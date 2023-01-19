@@ -98,8 +98,8 @@ use yii\web\JsExpression;
         ->field($modelSolicitudGenerica, 'id_MotivoConstruccion',['options' => ['class' => 'col-md-4']])
         ->dropDownList(
             $items = 
-            ArrayHelper::merge(
-              ["-1"=>"Seleccione"],                        
+           /*  ArrayHelper::merge(
+              ["-1"=>"Seleccione"],   */                      
               ArrayHelper::map(
                   MotivoConstruccion::findAll(['isActivo' => 1]),
                   'id' /* closure too */,
@@ -109,7 +109,7 @@ use yii\web\JsExpression;
                       ]; /* .'-'.$currentTipoTramite['seconde parameter']; */
                   }
               )
-            )
+           /*  ) */
         )
         ->label('Motivo de solicitud') 
         ?>
@@ -118,8 +118,8 @@ use yii\web\JsExpression;
               ->field($modelSolicitudGenerica, 'id_SolicitudGenericaCuentaCon',['options' => ['class' => 'col-md-4']])
               ->dropDownList(
                   $items = 
-                  ArrayHelper::merge(
-                      ["null"=>"Seleccione"],                        
+                 /*  ArrayHelper::merge(
+                      ["null"=>"Seleccione"],   */                      
                       ArrayHelper::map(
                           SolicitudGenericaCuentaCon::findAll(['isActivo' => 1]),
                           'id' /* closure too */,
@@ -129,14 +129,12 @@ use yii\web\JsExpression;
                               ]; /* .'-'.$currentSolicitudGenericaCuentaCon['seconde parameter']; */
                           }
                       )
-                    ),
+                    /* ) */,
                     /* ['onchange'=> new JsExpression('cuentaConChange(event)'  )] */ //ahora controlado por ssr
                     ['onchange'=> 'this.form.submit()' ]
               )
               ->label('Cuenta con') 
-              ?>
-          <?= Html::buttonInput("Actualizar", ['class' => 'btn btn-primary col-md-1', "onclick"=>"this.form.submit()"])
-          ?>
+              ?>          
 
     </div>
   
@@ -155,6 +153,13 @@ use yii\web\JsExpression;
   <?php }  ?> 
   <br>
 
+
+  <?= $this->render("_agua",["form"=>$form,"modelSolicitudGenerica"=>$modelSolicitudGenerica])  ?>
+  <br>
+  <?php if($modelSolicitudGenerica->id_SolicitudGenericaCuentaCon != 3): /* CUANDO ES EJIDAL, no necesita predio */?> 
+    <?= $this->render("_predial",["form"=>$form,"modelSolicitudGenerica"=>$modelSolicitudGenerica])  ?>
+  <?php endif;  ?> 
+  
   <script  type="text/javascript">
 
 
