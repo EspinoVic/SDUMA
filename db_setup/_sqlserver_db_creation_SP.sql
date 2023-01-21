@@ -1,3 +1,5 @@
+USE sduma;
+
 CREATE PROCEDURE dbo.sp_create_user
     @username nvarchar(255),
     @email nvarchar(255),

@@ -112,12 +112,10 @@ class SiteController extends Controller
         $domicilioPredio = new Domicilio2();
         $personaSolicita = new Persona();
         $personaMoralSolicita = new PersonaMoral();
-       // $modelSolicitudConstruccion = new SolicitudConstruccion();
-        //$modelSolicitudConstruccion->id_MotivoConstruccion = 3;
+
         $modelEscritura = new Escritura();
         $modelConstanciaEscritura = new ConstanciaEscritura();
         $modelConstanciaPosecionEjidal = new ConstanciaPosecionEjidal();
-        //$solicitudGenericaCuentaCon = new SolicitudGenericaCuentaCon();
         $modelSolicitudGenerica = new SolicitudGenerica();
         $modelEntregables = null;/*  array(); */
        
@@ -125,8 +123,8 @@ class SiteController extends Controller
         $modelDRO = new DirectorResponsableObra();
         $modelPersonaDRO= new Persona();
 
-        $modelApoderados = array();
-        $modelApoderados[1] = new Persona();
+        $modelPropietarios = array();
+        $modelPropietarios[1] = new Persona();
         $modelContacto = new Contacto();
         /**
          * @var UploadFileVic
@@ -136,13 +134,13 @@ class SiteController extends Controller
         $licenciaConstruccionAreaPreexistenteFile = new UploadFileVic();
 
         if($this->request->isPost){
-            $noApoderados =$this->request->post("noApoderados");
-            $modelApoderados[1]->load($this->request->post("Persona"),"apoderado1");
+            $noPropietario =$this->request->post("noPropietario");
+            $modelPropietarios[1]->load($this->request->post("Persona"),"propietario1");
 
-            if(is_numeric($noApoderados) && $noApoderados > 1){
-                for ($i=2; $i <=$noApoderados ; $i++) {  //index 1 ya fue asignado afuera 
-                    $modelApoderados[$i] = new Persona();
-                    $modelApoderados[$i]->load($this->request->post("Persona"),"apoderado$i");
+            if(is_numeric($noPropietario) && $noPropietario > 1){
+                for ($i=2; $i <=$noPropietario ; $i++) {  //index 1 ya fue asignado afuera 
+                    $modelPropietarios[$i] = new Persona();
+                    $modelPropietarios[$i]->load($this->request->post("Persona"),"propietario$i");
                 }
             }
            // $modelSolicitudConstruccion->load($this->request->post());
@@ -202,7 +200,7 @@ class SiteController extends Controller
             'mecanicaSuelosFile' => $mecanicaSuelosFile,
             'modelDRO' => $modelDRO,
             'modelPersonaDRO' => $modelPersonaDRO,
-            'modelApoderados' => $modelApoderados,
+            'modelPropietarios' => $modelPropietarios,
             'modelContacto' => $modelContacto,
         ]);
          

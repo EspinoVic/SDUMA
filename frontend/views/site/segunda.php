@@ -11,6 +11,7 @@
 /** @var common\models\Persona $modelPersonaDRO */
 /** @var file $licenciaConstruccionAreaPreexistenteFile */
 /** @var common\models\Contacto $modelContacto */
+/** @var common\models\Persona $modelPropietarios[] */
 
 /** @var yii\web\View $this */
 /** @var yii\web\View $this */
@@ -314,7 +315,7 @@ use yii\web\JsExpression;
 
     <br>
       
-    <?= $this->render("_apoderados",["form"=>$form,"modelApoderados"=>$modelApoderados])  ?>
+    <?= $this->render("_propietarios",["form"=>$form,"modelPropietarios"=>$modelPropietarios])  ?>
 
 <br>
     <div class="form-group">
