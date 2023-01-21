@@ -16,7 +16,7 @@ use yii\bootstrap5\Html;
     <br>
     <br>
     <?php foreach ($modelPropietarios as $id => $currPropietario) { ?>
-        <h6>Apoderado <?= Html::encode($id)  ?></h6>
+        <h6>Propietario <?= Html::encode($id)  ?></h6>
         <?= $form->field($currPropietario, "[propietario$id]nombre",['options' => ['class' => 'col-md-4']])?>
         <?= $form->field($currPropietario, "[propietario$id]apellidoP",['options' => ['class' => 'col-md-4']])?>
         <?= $form->field($currPropietario, "[propietario$id]apellidoM",['options' => ['class' => 'col-md-4']])?>
