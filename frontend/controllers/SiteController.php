@@ -130,6 +130,8 @@ class SiteController extends Controller
         $memoriaCalculoFile = new UploadFileVic(); // new UploadedFile();//file
         $mecanicaSuelosFile = new UploadFileVic();
         $licenciaConstruccionAreaPreexistenteFile = new UploadFileVic();
+        $licenciaConstruccionAreaPreexistenteFile->scenario = UploadFileVic::SCENARIO_NO_MANDATORY_FILE;
+
         $modelDROList = DirectorResponsableObra::findAll(["isActivo"=>1]);
 
         if($this->request->isPost){

@@ -17,7 +17,19 @@ class UploadFileVic extends Model
             [['myFile'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, pdf'],
         ];
     }
+    public const SCENARIO_MANDATORY_FILE = 'MANDATORY SCENARIO';
+    public const SCENARIO_NO_MANDATORY_FILE = 'NO MANDATORY SCENARIO';    
     
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+
+        //$scenarios[self::SCENARIO_MANDATORY_FILE] = ['myFile']; //default scenario defined in rules function
+        $scenarios[self::SCENARIO_NO_MANDATORY_FILE] = [/* empty */];
+
+        return $scenarios;
+    }
+
     public function upload()
     {
         if ($this->validate()) {

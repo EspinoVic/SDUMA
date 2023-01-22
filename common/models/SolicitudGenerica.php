@@ -46,10 +46,15 @@ use Yii;
  * @property string $fechaCreacion
  * @property string $fechaModificacion
  *
+ * @property DirectorResponsableObra $alturaDRO
+ * @property Archivo $archivoLicenciaConstruccionAreaPreexistenteFile
+ * @property Archivo $archivoMecanicaSuelos
+ * @property Archivo $archivoMemoriaCalculo
  * @property ConstanciaEscritura $constanciaEscritura
  * @property ConstanciaPosecionEjidal $constanciaPosecionEjidal
  * @property Contacto $contacto
  * @property DirectorResponsableObra $directorResponsableObra
+ * @property DirectorResponsableObra $directorResponsableObra0
  * @property Domicilio $domicilioNotificaciones
  * @property Domicilio $domicilioPredio
  * @property Escritura $escritura
@@ -58,6 +63,7 @@ use Yii;
  * @property Persona $personaFisica
  * @property PersonaMoral $personaMoral
  * @property SolicitudGenericaCuentaCon $solicitudGenericaCuentaCon
+ * @property SolicitudGenericaHasDocumento[] $solicitudGenericaHasDocumentos
  * @property SubGeneroConstruccion $subGeneroConstruccion
  * @property TipoPredio $tipoPredio
  * @property User $userCreadoPor
@@ -84,22 +90,27 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
             [['superficiePorConstruir', 'areaPreExistente', 'altura', 'metrosLineales'], 'number'],
             [['fechaPagoAguaOContrato', 'fechaPagoPredial', 'fechaCreacion', 'fechaModificacion'], 'safe'],
             [['tipoTomaAgua'], 'string', 'max' => 255],
-            [['id_PersonaFisica'], 'exist', 'skipOnError' => true, 'targetClass' => Persona::class, 'targetAttribute' => ['id_PersonaFisica' => 'id']],
-            [['id_PersonaMoral'], 'exist', 'skipOnError' => true, 'targetClass' => PersonaMoral::class, 'targetAttribute' => ['id_PersonaMoral' => 'id']],
-            [['id_Contacto'], 'exist', 'skipOnError' => true, 'targetClass' => Contacto::class, 'targetAttribute' => ['id_Contacto' => 'id']],
-            [['id_DomicilioNotificaciones'], 'exist', 'skipOnError' => true, 'targetClass' => Domicilio::class, 'targetAttribute' => ['id_DomicilioNotificaciones' => 'id']],
-            [['id_MotivoConstruccion'], 'exist', 'skipOnError' => true, 'targetClass' => MotivoConstruccion::class, 'targetAttribute' => ['id_MotivoConstruccion' => 'id']],
-            [['id_SolicitudGenericaCuentaCon'], 'exist', 'skipOnError' => true, 'targetClass' => SolicitudGenericaCuentaCon::class, 'targetAttribute' => ['id_SolicitudGenericaCuentaCon' => 'id']],
-            [['id_Escritura'], 'exist', 'skipOnError' => true, 'targetClass' => Escritura::class, 'targetAttribute' => ['id_Escritura' => 'id']],
-            [['id_ConstanciaEscritura'], 'exist', 'skipOnError' => true, 'targetClass' => ConstanciaEscritura::class, 'targetAttribute' => ['id_ConstanciaEscritura' => 'id']],
-            [['id_ConstanciaPosecionEjidal'], 'exist', 'skipOnError' => true, 'targetClass' => ConstanciaPosecionEjidal::class, 'targetAttribute' => ['id_ConstanciaPosecionEjidal' => 'id']],
-            [['id_TipoPredio'], 'exist', 'skipOnError' => true, 'targetClass' => TipoPredio::class, 'targetAttribute' => ['id_TipoPredio' => 'id']],
-            [['id_GeneroConstruccion'], 'exist', 'skipOnError' => true, 'targetClass' => GeneroConstruccion::class, 'targetAttribute' => ['id_GeneroConstruccion' => 'id']],
-            [['id_SubGeneroConstruccion'], 'exist', 'skipOnError' => true, 'targetClass' => SubGeneroConstruccion::class, 'targetAttribute' => ['id_SubGeneroConstruccion' => 'id']],
-            [['id_DomicilioPredio'], 'exist', 'skipOnError' => true, 'targetClass' => Domicilio::class, 'targetAttribute' => ['id_DomicilioPredio' => 'id']],
+            [['id_DirectorResponsableObra'], 'exist', 'skipOnError' => true, 'targetClass' => DirectorResponsableObra::class, 'targetAttribute' => ['id_DirectorResponsableObra' => 'id']],
+            [['id_AlturaDRO'], 'exist', 'skipOnError' => true, 'targetClass' => DirectorResponsableObra::class, 'targetAttribute' => ['id_AlturaDRO' => 'id']],
             [['id_DirectorResponsableObra'], 'exist', 'skipOnError' => true, 'targetClass' => DirectorResponsableObra::class, 'targetAttribute' => ['id_DirectorResponsableObra' => 'id']],
             [['id_User_CreadoPor'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['id_User_CreadoPor' => 'id']],
             [['id_User_ModificadoPor'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['id_User_ModificadoPor' => 'id']],
+            [['id_MotivoConstruccion'], 'exist', 'skipOnError' => true, 'targetClass' => MotivoConstruccion::class, 'targetAttribute' => ['id_MotivoConstruccion' => 'id']],
+            [['id_DomicilioNotificaciones'], 'exist', 'skipOnError' => true, 'targetClass' => Domicilio::class, 'targetAttribute' => ['id_DomicilioNotificaciones' => 'id']],
+            [['id_DomicilioPredio'], 'exist', 'skipOnError' => true, 'targetClass' => Domicilio::class, 'targetAttribute' => ['id_DomicilioPredio' => 'id']],
+            [['id_TipoPredio'], 'exist', 'skipOnError' => true, 'targetClass' => TipoPredio::class, 'targetAttribute' => ['id_TipoPredio' => 'id']],
+            [['id_Contacto'], 'exist', 'skipOnError' => true, 'targetClass' => Contacto::class, 'targetAttribute' => ['id_Contacto' => 'id']],
+            [['id_GeneroConstruccion'], 'exist', 'skipOnError' => true, 'targetClass' => GeneroConstruccion::class, 'targetAttribute' => ['id_GeneroConstruccion' => 'id']],
+            [['id_SubGeneroConstruccion'], 'exist', 'skipOnError' => true, 'targetClass' => SubGeneroConstruccion::class, 'targetAttribute' => ['id_SubGeneroConstruccion' => 'id']],
+            [['id_PersonaFisica'], 'exist', 'skipOnError' => true, 'targetClass' => Persona::class, 'targetAttribute' => ['id_PersonaFisica' => 'id']],
+            [['id_PersonaMoral'], 'exist', 'skipOnError' => true, 'targetClass' => PersonaMoral::class, 'targetAttribute' => ['id_PersonaMoral' => 'id']],
+            [['id_Escritura'], 'exist', 'skipOnError' => true, 'targetClass' => Escritura::class, 'targetAttribute' => ['id_Escritura' => 'id']],
+            [['id_ConstanciaEscritura'], 'exist', 'skipOnError' => true, 'targetClass' => ConstanciaEscritura::class, 'targetAttribute' => ['id_ConstanciaEscritura' => 'id']],
+            [['id_ConstanciaPosecionEjidal'], 'exist', 'skipOnError' => true, 'targetClass' => ConstanciaPosecionEjidal::class, 'targetAttribute' => ['id_ConstanciaPosecionEjidal' => 'id']],
+            [['id_SolicitudGenericaCuentaCon'], 'exist', 'skipOnError' => true, 'targetClass' => SolicitudGenericaCuentaCon::class, 'targetAttribute' => ['id_SolicitudGenericaCuentaCon' => 'id']],
+            [['id_Archivo_MemoriaCalculo'], 'exist', 'skipOnError' => true, 'targetClass' => Archivo::class, 'targetAttribute' => ['id_Archivo_MemoriaCalculo' => 'id']],
+            [['id_Archivo_MecanicaSuelos'], 'exist', 'skipOnError' => true, 'targetClass' => Archivo::class, 'targetAttribute' => ['id_Archivo_MecanicaSuelos' => 'id']],
+            [['id_Archivo_LicenciaConstruccionAreaPreexistenteFile'], 'exist', 'skipOnError' => true, 'targetClass' => Archivo::class, 'targetAttribute' => ['id_Archivo_LicenciaConstruccionAreaPreexistenteFile' => 'id']],
         ];
     }
 
@@ -151,6 +162,46 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[AlturaDRO]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAlturaDRO()
+    {
+        return $this->hasOne(DirectorResponsableObra::class, ['id' => 'id_AlturaDRO']);
+    }
+
+    /**
+     * Gets query for [[ArchivoLicenciaConstruccionAreaPreexistenteFile]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getArchivoLicenciaConstruccionAreaPreexistenteFile()
+    {
+        return $this->hasOne(Archivo::class, ['id' => 'id_Archivo_LicenciaConstruccionAreaPreexistenteFile']);
+    }
+
+    /**
+     * Gets query for [[ArchivoMecanicaSuelos]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getArchivoMecanicaSuelos()
+    {
+        return $this->hasOne(Archivo::class, ['id' => 'id_Archivo_MecanicaSuelos']);
+    }
+
+    /**
+     * Gets query for [[ArchivoMemoriaCalculo]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getArchivoMemoriaCalculo()
+    {
+        return $this->hasOne(Archivo::class, ['id' => 'id_Archivo_MemoriaCalculo']);
+    }
+
+    /**
      * Gets query for [[ConstanciaEscritura]].
      *
      * @return \yii\db\ActiveQuery
@@ -186,6 +237,16 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
      * @return \yii\db\ActiveQuery
      */
     public function getDirectorResponsableObra()
+    {
+        return $this->hasOne(DirectorResponsableObra::class, ['id' => 'id_DirectorResponsableObra']);
+    }
+
+    /**
+     * Gets query for [[DirectorResponsableObra0]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getDirectorResponsableObra0()
     {
         return $this->hasOne(DirectorResponsableObra::class, ['id' => 'id_DirectorResponsableObra']);
     }
@@ -268,6 +329,16 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
     public function getSolicitudGenericaCuentaCon()
     {
         return $this->hasOne(SolicitudGenericaCuentaCon::class, ['id' => 'id_SolicitudGenericaCuentaCon']);
+    }
+
+    /**
+     * Gets query for [[SolicitudGenericaHasDocumentos]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSolicitudGenericaHasDocumentos()
+    {
+        return $this->hasMany(SolicitudGenericaHasDocumento::class, ['id_SolicitudGenerica' => 'id']);
     }
 
     /**
