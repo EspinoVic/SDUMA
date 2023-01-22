@@ -17,7 +17,7 @@ class DocumentoSearch extends Documento
     public function rules()
     {
         return [
-            [['id', 'isActivo', 'soloEntregaFisica'], 'integer'],
+            [['id', 'isActivo', 'isSoloEntregaFisica', 'hasMultipleArchivo'], 'integer'],
             [['nombre'], 'safe'],
         ];
     }
@@ -60,7 +60,8 @@ class DocumentoSearch extends Documento
         $query->andFilterWhere([
             'id' => $this->id,
             'isActivo' => $this->isActivo,
-            'soloEntregaFisica' => $this->soloEntregaFisica,
+            'isSoloEntregaFisica' => $this->isSoloEntregaFisica,
+            'hasMultipleArchivo' => $this->hasMultipleArchivo,
         ]);
 
         $query->andFilterWhere(['like', 'nombre', $this->nombre]);

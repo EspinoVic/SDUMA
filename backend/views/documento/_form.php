@@ -18,9 +18,13 @@ use yii\bootstrap5\ActiveForm;
                 $items = [0=>"No", 1 => "Sí"]
         )->label("Registro activo")        
         ?>
-    <?=$form->field($model,"soloEntregaFisica")->dropDownList(
+    <?=$form->field($model,"isSoloEntregaFisica")->dropDownList(
                 $items = [0=>"No", 1 => "Sí"]
         )->label("Entrega física únicamente")        
+        ?>
+    <?=$form->field($model,"hasMultipleArchivo")->dropDownList(
+                $items = [0=>"No", 1 => "Sí"]
+        )->label("Subida múltiple")        
         ?>
 
     <div class="form-group">

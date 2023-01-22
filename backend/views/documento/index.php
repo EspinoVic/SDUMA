@@ -41,7 +41,13 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label' => "Solo entrega física",                
                 'value' => function($currExpediente){
-                  return $currExpediente->soloEntregaFisica?"Sí":"No";
+                  return $currExpediente->isSoloEntregaFisica?"Sí":"No";
+                }
+            ],
+            [
+                'label' => "Subida multiple",                
+                'value' => function($currExpediente){
+                  return $currExpediente->hasMultipleArchivo?"Sí":"No";
                 }
             ],
             [

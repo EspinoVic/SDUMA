@@ -588,7 +588,8 @@ INSERT INTO sduma.dbo.TipoTramite ( nombre)
 	  id INT NOT NULL IDENTITY(1,1),
 	  nombre NVARCHAR(255) NOT NULL,
 	  isActivo BIT NOT NULL DEFAULT 1,
-    soloEntregaFisica BIT NOT NULL DEFAULT 0,
+    isSoloEntregaFisica BIT NOT NULL DEFAULT 0,
+    hasMultipleArchivo BIT NOT NULL DEFAULT 0,
 	  PRIMARY KEY (id)
   );
 
@@ -596,21 +597,40 @@ INSERT INTO sduma.dbo.TipoTramite ( nombre)
 INSERT INTO [dbo].[Documento]
            ([nombre]
            ,[isActivo]
-           ,soloEntregaFisica
+           ,isSoloEntregaFisica
+           ,hasMultipleArchivo
            )
      VALUES
-       ('Escritura inscrita en el registro público de la propiedad', 1,0),
-		   ('Identificación oficial del propietario', 1,0),
-		   ('Recibo de agua actualizado', 1,0),
-		   ('Recibo de pago predial actualizado', 1,0),
-		   ('Constancia físcal de no adeutos municipales', 1,0),
-		   ('Constancia de alineamiento', 1,0),
-		   ('Licencia de uso de suelo', 1,0),
-		   ('Plano técnivo a escala del proyecto pretendiendo hasta 35m2', 1,1),
-		   ('Proyecto ejecutivo según reglamento', 1,1),
-		   ('Fotografías del inmueble motivo de la solicitud', 1,0),
-		   ('Pago de derechos', 1,0),
-		   ('Acreditación de personalidad e interé jurídico.', 1,0);
+      --CONSTANCIA EJIDAL
+       ('Carta de posesión Ejidal, Comunal o Gubernamental', 1,0,0),
+		   ('Identificación Oficial del Propietario', 1,0,0),
+		   ('Recibo de agua actualizado', 1,0,0),
+       ('Constancia de NO Registro Predial (Tesorería Municipal)', 1,0,0),
+       ('Proyecto Ejecutivo según Reglamento', 1,0,0),
+       ('Fotografías del Inmueble motivo de la solicitud', 1,0,0),
+       ('Pago de Derechos', 1,0,0),
+       ('Acreditación de Personalidad e Interés Jurídico', 1,0,0),
+       --CONSTANCIA ESCRITURA
+       ('Constancia de Escritura', 1,0,0),
+          ----('Identificación Oficial del Propietario', 1,0,0),
+          ----('Recibo de Agua Actualizado', 1,0,0),
+          ----('Recibo de Pago Predial Actualizado', 1,0,0),
+          ----('Proyecto Ejecutivo según Reglamento', 1,0,0),
+          ----('Fotografías del Inmueble motivo de la Solicitud', 1,0,0),
+      --ESCRITURA
+       ('Escritura Inscrita en el Registro Público de la Propiedad', 1,0,0),
+		      ----('Identificación Oficial del Propietario', 1,0,0),
+		      ----('Recibo de Agua Actualizado', 1,0,0),
+		      ----('Recibo de Pago Predial Actualizado', 1,0,0),
+		      ----('Proyecto Ejecutivo según Reglamento', 1,0,0),
+		      ----('Fotografías del Inmueble motivo de la Solicitud', 1,0,0),
+
+ 		   ('Plano técnivo a escala del proyecto pretendiendo hasta 35m2', 1,1,0),
+		   ('Proyecto ejecutivo según reglamento', 1,1,0)
+		   
+       /*      
+		   ('Acreditación de personalidad e interé jurídico.', 1,0,0) */
+       ;
 
 
 CREATE TABLE sduma.dbo.TipoTramite_has_Documento (
@@ -631,7 +651,7 @@ CREATE TABLE sduma.dbo.TipoTramite_has_Documento (
     ON UPDATE NO ACTION);
 
 --PROBAR ESTOS ON DELETE/UPDATE NO ACTION;
-INSERT INTO [dbo].[TipoTramite_has_Documento]
+/* INSERT INTO [dbo].[TipoTramite_has_Documento]
            ([id_TipoTramite],[id_Documento])
            VALUES
            (1,1),
@@ -645,7 +665,7 @@ INSERT INTO [dbo].[TipoTramite_has_Documento]
            (1,9),
            (1,10),
            (1,11),
-           (1,12);
+           (1,12); */
 
 
 CREATE TABLE sduma.dbo.Persona (
