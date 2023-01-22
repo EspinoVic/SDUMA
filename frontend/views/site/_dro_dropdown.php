@@ -4,6 +4,9 @@
 /** @var common\models\DirectorResponsableObra $modelDROList */
 /** @var  $form */
 
+/**  @var $attributeNameDRO Indica que FK de DRO se va a renderizar*/
+/**  @var $idContainer Id para el container padre, para que JS si necesita, remueva y/añada ese elemento del dom*/
+
 
 
 use yii\bootstrap5\Html;
@@ -12,8 +15,12 @@ use yii\helpers\ArrayHelper;
 ?>
 
 <?= $form
-        ->field($modelSolicitudGenerica, 'id_DirectorResponsableObra', [
-            'options' => ['class' => 'col-md-3'],
+        ->field($modelSolicitudGenerica, $attributeNameDRO /* model attribute  */, [
+            'options' => ArrayHelper::merge(
+                    ['class' => 'col-md-3'],
+                    !$idContainer ? [] : ["id" => $idContainer]
+                ) 
+                
         ])
         ->dropDownList(
           $items =  ArrayHelper::merge(

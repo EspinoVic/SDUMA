@@ -322,7 +322,7 @@ use yii\web\JsExpression;
       <?= $this->render("_niveles",["form"=>$form,"mecanicaSuelosFile"=>$mecanicaSuelosFile,"modelSolicitudGenerica"=>$modelSolicitudGenerica])  ?>
         
       <?php if($modelSolicitudGenerica->id_GeneroConstruccion == GeneroConstruccion::findOne(["nombre"=>"Muros"])->id):  ?> 
-        <?= $this->render("_motivo_muros",['form'=>$form, 'modelSolicitudGenerica'=> $modelSolicitudGenerica])  ?>
+        <?= $this->render("_motivo_muros",['form'=>$form, 'modelSolicitudGenerica'=> $modelSolicitudGenerica,"modelDROList"=>$modelDROList,])  ?>
       <?php else:  ?> 
         <?= $this->render("_motivo_todos",['form'=>$form,'memoriaCalculoFile'=>$memoriaCalculoFile ,'modelSolicitudGenerica'=> $modelSolicitudGenerica,'licenciaConstruccionAreaPreexistenteFile'=>$licenciaConstruccionAreaPreexistenteFile])  ?>
       <?php endif;  ?> 
@@ -335,7 +335,14 @@ use yii\web\JsExpression;
             'tipoDomicilio'=> "Domicilio de predio"
         ]) ?>  
     <br>
-    <?= $this->render("_dro_dropdown",["form"=>$form,"modelDROList"=>$modelDROList,'modelSolicitudGenerica'=> $modelSolicitudGenerica,/* "modelPersonaDRO"=>$modelPersonaDRO */])  ?>      
+    <?= $this->render("_dro_dropdown",
+    ["form"=>$form,
+    "modelDROList"=>$modelDROList,
+    'modelSolicitudGenerica'=> $modelSolicitudGenerica,
+    "attributeNameDRO"=> "id_DirectorResponsableObra",
+    "idContainer"=> ""
+    ])  
+    ?>      
     
     <br>
       

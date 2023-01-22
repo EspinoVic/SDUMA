@@ -1,8 +1,13 @@
 <?php 
-/** @var common\models\SolicitudGenerica[] $modelSolicitudGenerica */
+/** @var common\models\SolicitudGenerica $modelSolicitudGenerica */
+/** @var common\models\DirectorResponsableObra[] $modelDROList */
 /** @var  $form */
 use yii\bootstrap5\Html;
 use common\models\Documento;
+
+
+$contInputTxtfirmaAlturaDROName = "contInputTxtfirmaAlturaDRO";
+$contInputTxtfirmametrosLinealesDRO = "contInputTxtfirmametrosLinealesDRO";
 ?>
 
 
@@ -14,11 +19,14 @@ use common\models\Documento;
     ->textInput(['maxlength' => true, "type"=>"number", "step"=>"0.01" , "min"=>"0",'onchange'=> 'alturaChange(event)']) 
     ?>
     <!-- SI es mayor a 2.5, desbloquear FIRMA DRO-->
-
-    <?= $form
-    ->field($modelSolicitudGenerica, 'id_AlturaDRO',['options' => ['class' => 'col-md-5',"id"=>"inputTxtfirmaAlturaDRO","style"=>"display:none"]])
-    ->textInput() 
+    <?= $this->render("_dro_dropdown",
+        ["form"=>$form,"modelDROList"=>$modelDROList,
+        'modelSolicitudGenerica'=> $modelSolicitudGenerica,
+        "attributeNameDRO"=> "id_AlturaDRO",
+        "idContainer"=>$contInputTxtfirmaAlturaDROName
+        ])  
     ?>
+
 </div>
 
 <div class="row g3 px-3 pb-3">
@@ -29,10 +37,13 @@ use common\models\Documento;
     ->textInput(['maxlength' => true, "type"=>"number", "step"=>"0.01" ,"min"=>"0",'onchange'=> 'metrosLinealesChange(event)']) 
     ?>
 
-    <?= $form
-    ->field($modelSolicitudGenerica, 'id_MetrosLinealesDRO',['options' => ['class' => 'col-md-5',"id"=>"inputTxtfirmaMetrosLinealesDRO","style"=>"display:none"]])
-    ->textInput() 
-    ?>
+    <?= $this->render("_dro_dropdown",
+        ["form"=>$form,"modelDROList"=>$modelDROList,
+        'modelSolicitudGenerica'=> $modelSolicitudGenerica,
+        "attributeNameDRO"=> "id_MetrosLinealesDRO",
+        "idContainer"=>$contInputTxtfirmametrosLinealesDRO
+        ])  
+    ?>   
     <!-- SI es mayor 30 metros lineales, desbloquear FIRMA DRO-->
 
 </div>
@@ -40,35 +51,57 @@ use common\models\Documento;
 
 <script>	
 
-    const firmaAlturaDRO = document.getElementById("inputTxtfirmaAlturaDRO");
-    const inputTxtfirmaMetrosLinealesDRO = document.getElementById("inputTxtfirmaMetrosLinealesDRO");
+    const contInputTxtfirmaAlturaDROName = document.getElementById('<?=$contInputTxtfirmaAlturaDROName ?>' );
+    const contInputTxtfirmaAlturaDROName_Parent = contInputTxtfirmaAlturaDROName.parentElement;
+
+    const contInputTxtfirmametrosLinealesDRO = document.getElementById('<?=$contInputTxtfirmametrosLinealesDRO ?>' );
+    const contInputTxtfirmametrosLinealesDRO_Parent = contInputTxtfirmametrosLinealesDRO.parentElement;
 
 
     const alturaChange = function(event){
         //desbloquea FIRMA DRO
         let source = event.target || event.srcElement;
         let alturaInput = source.value;
-        
-        if(alturaInput >= 2.5){
-            firmaAlturaDRO.style.display = "block";
+        hideShowAlturaDRO_dd(alturaChange);
+    }
+
+    const hideShowAlturaDRO_dd = function (alturaAmount){
+
+        /* if(!alturaAmount)contInputTxtfirmaAlturaDROName.remove();
+        else  */
+        if(alturaAmount >= 2.5){
+            contInputTxtfirmaAlturaDROName_Parent.appendChild(contInputTxtfirmaAlturaDROName);
         }
         else{
-            firmaAlturaDRO.style.display = "none";
-            
-        }
+            contInputTxtfirmaAlturaDROName.remove();            
+        }        
     }
+
     const metrosLinealesChange = function(event){
         //desbloquea FIRMA DRO
         let source = event.target || event.srcElement;
         let metrosLinealesInput = source.value;
+        hideShowMetrosLienalesDRO_dd(metrosLinealesInput);
+    }
 
-        if(metrosLinealesInput > 30){
-            inputTxtfirmaMetrosLinealesDRO.style.display = "block";
+    const hideShowMetrosLienalesDRO_dd = function(metrosLineales){
+
+            
+       /*  if(!metrosLineales)contInputTxtfirmametrosLinealesDRO.remove();
+        else  */
+        if(metrosLineales > 30){
+            contInputTxtfirmametrosLinealesDRO_Parent.appendChild(contInputTxtfirmametrosLinealesDRO);
         }
         else{
-            inputTxtfirmaMetrosLinealesDRO.style.display = "none";
+            contInputTxtfirmametrosLinealesDRO.remove();            
             
         }
+
     }
+
+    hideShowAlturaDRO_dd(<?= $modelSolicitudGenerica->altura  ?>)
+    hideShowMetrosLienalesDRO_dd(<?= $modelSolicitudGenerica->metrosLineales  ?> )
+
+
 
 </script>
