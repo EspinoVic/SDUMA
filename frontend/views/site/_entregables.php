@@ -26,18 +26,11 @@ use common\models\Documento;
                             ])
                             ->hiddenInput()/* textInput() */
                             ->label(false) 
-                        ?>         
-                        <span >
-                            <?= $form->field(
-                                $currEntregable->documento,
-                                "[$id]nombre",
-                                
-                            ) ->textInput(
-                                     ['class' => 'border-0 disabled col-md-6',
-                                      ' readonly' => ""
-                                     ]
-                                ) -> label(false) ?> 
-                       </span>           
+                        ?>    
+                        <?= 
+                            Html::label($currEntregable->documento->nombre)
+                        ?>     
+                                 
                     </td>
                     <td>
                         <input class="form-control form-control-sm  " id="" type="file">

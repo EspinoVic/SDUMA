@@ -1263,10 +1263,10 @@ CREATE TABLE sduma.dbo.SolicitudConstruccion_has_Persona (
 CREATE TABLE  sduma.dbo.SolicitudGenerica_has_Documento (
   id_SolicitudGenerica INT NOT NULL,
   id_Documento INT NOT NULL,
-  id_Archivo INT NOT NULL,
-  
-  PRIMARY KEY (id_SolicitudGenerica, id_Documento, id_Archivo),
-  INDEX fk_SolicitudGenerica_has_Documento_Documento_idx (id_Documento ASC,id_SolicitudGenerica ASC,id_Archivo ASC )  ,
+  id_Archivo INT NULL, --Algunos documentos solo se entregan en fisico, por lo tanto no se sube un archivo, por lo tanto (x2), este FK será null
+  isEntregado BIT NOT NULL DEFAULT 0,
+
+  INDEX fk_SolicitudGenerica_has_Documento_Documento_idx (id_Documento ASC,id_SolicitudGenerica ASC/* ,id_Archivo ASC */ )  ,
   CONSTRAINT fk_SolicitudGenerica_has_Documento_SolicitudGenerica
     FOREIGN KEY (id_SolicitudGenerica)
     REFERENCES sduma.dbo.SolicitudGenerica (id)
