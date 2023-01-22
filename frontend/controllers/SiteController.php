@@ -134,6 +134,22 @@ class SiteController extends Controller
 
         $modelDROList = DirectorResponsableObra::findAll(["isActivo"=>1]);
 
+        //Por default mostrará, Licencia / Escritura
+        if($this->request->isGet){
+            $modelTramiteMotivoCuentaConDoc = ConfigTramiteMotivoCuentaconDoc::findAll(
+                [
+                    "id_TipoTramite"=>1,//TipoTramite::findOne(["nombre"=>"CONTRUCCION"]) //trámite construcción
+                    "id_MotivoConstruccion"=>1,
+                    "id_SolicitudGenericaCuentaCon"=>1,
+                    //"doc"=>1,            
+                ]
+            );
+            foreach ($modelTramiteMotivoCuentaConDoc as $key => $curr) {
+                $modelFilesRef_TramiteMotivoCuentaConDoc["entregable$curr->id_Documento"] =  new UploadFileVic(); 
+            }
+        }
+
+
         if($this->request->isPost){
             $noPropietario =$this->request->post("noPropietario");
             $modelPropietarios[1]->load($this->request->post("Persona"),"propietario1");
