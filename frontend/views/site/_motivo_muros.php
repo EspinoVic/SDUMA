@@ -62,7 +62,7 @@ $contInputTxtfirmametrosLinealesDRO = "contInputTxtfirmametrosLinealesDRO";
         //desbloquea FIRMA DRO
         let source = event.target || event.srcElement;
         let alturaInput = source.value;
-        hideShowAlturaDRO_dd(alturaChange);
+        hideShowAlturaDRO_dd(alturaInput);
     }
 
     const hideShowAlturaDRO_dd = function (alturaAmount){
