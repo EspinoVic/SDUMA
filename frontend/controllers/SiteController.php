@@ -132,6 +132,7 @@ class SiteController extends Controller
         $memoriaCalculoFile = new UploadFileVic(); // new UploadedFile();//file
         $mecanicaSuelosFile = new UploadFileVic();
         $licenciaConstruccionAreaPreexistenteFile = new UploadFileVic();
+        $modelDROList = DirectorResponsableObra::findAll(["isActivo"=>1]);
 
         if($this->request->isPost){
             $noPropietario =$this->request->post("noPropietario");
@@ -202,6 +203,7 @@ class SiteController extends Controller
             'modelPersonaDRO' => $modelPersonaDRO,
             'modelPropietarios' => $modelPropietarios,
             'modelContacto' => $modelContacto,
+            'modelDROList' => $modelDROList
         ]);
          
 

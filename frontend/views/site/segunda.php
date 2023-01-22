@@ -12,10 +12,12 @@
 /** @var file $licenciaConstruccionAreaPreexistenteFile */
 /** @var common\models\Contacto $modelContacto */
 /** @var common\models\Persona $modelPropietarios[] */
+/** @var common\models\DirectorResponsableObra $modelDROList[] */ //Existentes DROs activos
 
 /** @var yii\web\View $this */
 /** @var yii\web\View $this */
 
+use common\models\DirectorResponsableObra;
 use common\models\GeneroConstruccion;
 use yii\bootstrap5\Html;
 use yii\bootstrap5\ActiveForm;
@@ -241,7 +243,7 @@ use yii\web\JsExpression;
                 }
             )
         )
-        ->label('Tipo de predio Dropdown') ?>
+        ->label('Tipo de predio') ?>
 
     <?= $form->field(
           $model = $modelSolicitudGenerica,
@@ -311,8 +313,8 @@ use yii\web\JsExpression;
             'tipoDomicilio'=> "Domicilio de predio"
         ]) ?>  
     <br>
-    <?= $this->render("_dro",["form"=>$form,"modelDRO"=>$modelDRO,"modelPersonaDRO"=>$modelPersonaDRO])  ?>
-
+    <?= $this->render("_dro_dropdown",["form"=>$form,"modelDROList"=>$modelDROList,'modelSolicitudGenerica'=> $modelSolicitudGenerica,/* "modelPersonaDRO"=>$modelPersonaDRO */])  ?>      
+    
     <br>
       
     <?= $this->render("_propietarios",["form"=>$form,"modelPropietarios"=>$modelPropietarios])  ?>
