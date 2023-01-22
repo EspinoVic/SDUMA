@@ -117,8 +117,8 @@ class SiteController extends Controller
         $modelConstanciaEscritura = new ConstanciaEscritura();
         $modelConstanciaPosecionEjidal = new ConstanciaPosecionEjidal();
         $modelSolicitudGenerica = new SolicitudGenerica();
-        $modelEntregables = null;/*  array(); */
-       
+        $modelTramiteMotivoCuentaConDoc = null;/*  array(); */
+        $modelFilesRef_TramiteMotivoCuentaConDoc = array();
         
         $modelDRO = new DirectorResponsableObra();
         $modelPersonaDRO= new Persona();
@@ -126,9 +126,7 @@ class SiteController extends Controller
         $modelPropietarios = array();
         $modelPropietarios[1] = new Persona();
         $modelContacto = new Contacto();
-        /**
-         * @var UploadFileVic
-         */
+       
         $memoriaCalculoFile = new UploadFileVic(); // new UploadedFile();//file
         $mecanicaSuelosFile = new UploadFileVic();
         $licenciaConstruccionAreaPreexistenteFile = new UploadFileVic();
@@ -147,7 +145,7 @@ class SiteController extends Controller
            // $modelSolicitudConstruccion->load($this->request->post());
             $modelSolicitudGenerica->load($this->request->post());
             // extraer vars para archivos
-            $modelEntregables = ConfigTramiteMotivoCuentaconDoc::findAll(
+            $modelTramiteMotivoCuentaConDoc = ConfigTramiteMotivoCuentaconDoc::findAll(
                 [
                     "id_TipoTramite"=>1,//TipoTramite::findOne(["nombre"=>"CONTRUCCION"]) //trámite construcción
                     "id_MotivoConstruccion"=>$modelSolicitudGenerica->id_MotivoConstruccion,
@@ -155,6 +153,13 @@ class SiteController extends Controller
                     //"doc"=>1,            
                 ]
             );
+            foreach ($modelTramiteMotivoCuentaConDoc as $key => $curr) {
+                $modelFilesRef_TramiteMotivoCuentaConDoc["entregable$curr->id_Documento"] =  new UploadFileVic(); 
+
+            }
+           
+
+
         
             $personaSolicita->load($this->request->post("Persona"),"personaF");
             $modelPersonaDRO->load($this->request->post("Persona"),"DRO");
@@ -170,10 +175,10 @@ class SiteController extends Controller
                 
         }
 
- /*        if(!$modelEntregables){
+ /*        if(!$modelTramiteMotivoCuentaConDoc){
 
             //default EDIT: No hay default, viene definido por el post siempre.
-            $modelEntregables = ConfigTramiteMotivoCuentaconDoc::findAll(
+            $modelTramiteMotivoCuentaConDoc = ConfigTramiteMotivoCuentaconDoc::findAll(
                [
                    "id_TipoTramite"=>1,
                    "id_MotivoConstruccion"=>1,
@@ -195,7 +200,8 @@ class SiteController extends Controller
             'modelConstanciaEscritura' => $modelConstanciaEscritura,
             'modelConstanciaPosecionEjidal' => $modelConstanciaPosecionEjidal,            
             'modelSolicitudGenerica' => $modelSolicitudGenerica,
-            'modelEntregables'=> $modelEntregables,
+            'modelTramiteMotivoCuentaConDoc'=> $modelTramiteMotivoCuentaConDoc,
+            'modelFilesRef_TramiteMotivoCuentaConDoc'=> $modelFilesRef_TramiteMotivoCuentaConDoc,
             'memoriaCalculoFile' =>$memoriaCalculoFile,
             'licenciaConstruccionAreaPreexistenteFile' =>$licenciaConstruccionAreaPreexistenteFile,
             'mecanicaSuelosFile' => $mecanicaSuelosFile,

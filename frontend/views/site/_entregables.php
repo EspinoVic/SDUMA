@@ -1,12 +1,13 @@
 <?php 
-/** @var common\models\Documentos[] $modelEntregables */
+/** @var common\models\ConfigTramiteMotivoCuentaconDoc[] $modelTramiteMotivoCuentaConDoc */
+/** @var common\models\UploadFileVic $modelFilesRef_TramiteMotivoCuentaConDoc[] */
 /** @var  $form */
 /* @var $id */
 use yii\bootstrap5\Html;
 use common\models\Documento;
 ?>
 
-<?php if($modelEntregables):  ?> 
+<?php if($modelTramiteMotivoCuentaConDoc):  ?> 
     <table id="tableEntregables" class="table table-hover  ">
         <thead>
             <tr>                                   
@@ -16,24 +17,32 @@ use common\models\Documento;
         </thead>
         <tbody>
 
-            <?php foreach ($modelEntregables as $id => $currEntregable) { ?>
+            <?php foreach ($modelTramiteMotivoCuentaConDoc as $id => $currEntregable) { ?>
                 <tr <?php echo "id = 'docRow$id' "  ?> >                                     
 
                     <td>                        
                         <?= $form
-                            ->field($currEntregable->documento, "[$id]id", [
+                            ->field($currEntregable->documento, "[$id]id", [//id_Documento same
                                 'options' => ['class' => 'col-md-1', 'display' => 'none'],
                             ])
                             ->hiddenInput()/* textInput() */
                             ->label(false) 
                         ?>    
-                        <?= 
-                            Html::label($currEntregable->documento->nombre)
-                        ?>     
+                        <?=Html::label($currEntregable->documento->nombre)?>     
                                  
                     </td>
                     <td>
-                        <input class="form-control form-control-sm  " id="" type="file">
+                        <!-- Referencia al FILE - Archivo models -->
+                        <?= $form
+                        ->field($modelFilesRef_TramiteMotivoCuentaConDoc["entregable$currEntregable->id_Documento"], 
+                            "[entregable$currEntregable->id_Documento]myFile",
+                            //['options' => ['class' => 'form-control ',]]
+                        )
+                        ->fileInput([/* 'multiple' => true,  */'accept' => '.pdf,.jpeg,.jpg,.png']) 
+                        ->label(false)        
+                        ?>
+                      
+
                     </td>
                 </tr>
             <?php } ?>

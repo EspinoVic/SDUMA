@@ -6,7 +6,8 @@
 /** @var common\models\PersonaMoral $personaMoralSolicita */
 /** @var common\models\SolicitudConstruccion $modelSolicitudConstruccion */
 /** @var common\models\SolicitudGenerica $modelSolicitudGenerica */
-/** @var common\models\Documento $modelEntregables[] */
+/** @var common\models\ConfigTramiteMotivoCuentaconDoc $modelTramiteMotivoCuentaConDoc[] */
+/** @var common\models\UploadFileVic $modelFilesRef_TramiteMotivoCuentaConDoc[] */
 /** @var common\models\DirectorResponsableObra $modelDRO */
 /** @var common\models\Persona $modelPersonaDRO */
 /** @var file $licenciaConstruccionAreaPreexistenteFile */
@@ -224,7 +225,14 @@ use yii\web\JsExpression;
 
   </script>
 
-  <?= $this->render("_entregables",["modelEntregables"=>$modelEntregables,"form"=>$form])  ?>
+  <?= $this->render("_entregables",
+    [
+      "modelTramiteMotivoCuentaConDoc"=>$modelTramiteMotivoCuentaConDoc,
+      "modelFilesRef_TramiteMotivoCuentaConDoc"=>$modelFilesRef_TramiteMotivoCuentaConDoc,
+      "form"=>$form
+    ]
+  )  ?>
+  
   <br>
   <div class="row g3 border rounded-3  p-3">
     <h4>Información del predio </h4>

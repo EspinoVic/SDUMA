@@ -606,17 +606,19 @@ INSERT INTO [dbo].[Documento]
 		   ('Identificación Oficial del Propietario', 1,0,0),
 		   ('Recibo de agua actualizado', 1,0,0),
        ('Constancia de NO Registro Predial (Tesorería Municipal)', 1,0,0),
-       ('Proyecto Ejecutivo según Reglamento', 1,0,0),
+       ---('Proyecto Ejecutivo según Reglamento', 1,0,0),
        ('Fotografías del Inmueble motivo de la solicitud', 1,0,0),
        ('Pago de Derechos', 1,0,0),
        ('Acreditación de Personalidad e Interés Jurídico', 1,0,0),
+       
        --CONSTANCIA ESCRITURA
        ('Constancia de Escritura', 1,0,0),
           ----('Identificación Oficial del Propietario', 1,0,0),
           ----('Recibo de Agua Actualizado', 1,0,0),
-          ----('Recibo de Pago Predial Actualizado', 1,0,0),
+       ('Recibo de Pago Predial Actualizado', 1,0,0),
           ----('Proyecto Ejecutivo según Reglamento', 1,0,0),
           ----('Fotografías del Inmueble motivo de la Solicitud', 1,0,0),
+      
       --ESCRITURA
        ('Escritura Inscrita en el Registro Público de la Propiedad', 1,0,0),
 		      ----('Identificación Oficial del Propietario', 1,0,0),
@@ -764,6 +766,76 @@ CREATE TABLE sduma.dbo.ConfigTramiteMotivoCuentaconDoc(
     PRIMARY KEY (id_TipoTramite,id_MotivoConstruccion,id_SolicitudGenericaCuentaCon,id_Documento)
 
 );
+
+INSERT INTO [dbo].[ConfigTramiteMotivoCuentaconDoc]
+           ([id_TipoTramite]
+           ,[id_MotivoConstruccion]
+           ,[id_SolicitudGenericaCuentaCon]
+           ,[id_Documento])
+     VALUES
+     ----,LICENCIA,
+        --Constancia Ejidal
+           (1 ,1 ,3 ,1),
+           (1 ,1 ,3 ,2),
+           (1 ,1 ,3 ,3),
+           (1 ,1 ,3 ,4),
+           (1 ,1 ,3 ,5),
+           (1 ,1 ,3 ,6),
+           (1 ,1 ,3 ,7),
+        --CONSTANCIA ESCRITURA
+           (1 ,1 ,2 ,8),
+           (1 ,1 ,2 ,9),
+           (1 ,1 ,2 ,2),
+           (1 ,1 ,2 ,3),
+           (1 ,1 ,2 ,5),
+           (1 ,1 ,2 ,7),
+        --ESCRITURA
+           (1 ,1 ,1 ,10),
+           (1 ,1 ,1 ,11),
+           (1 ,1 ,1 ,12),
+           (1 ,1 ,1 ,9),
+           (1 ,1 ,1 ,2),
+           (1 ,1 ,1 ,3),
+           (1 ,1 ,1 ,5),
+           (1 ,1 ,1 ,7),
+      ----,REGISTRO,
+        --Constancia Ejidal
+           (1 ,2 ,3 ,1),
+           (1 ,2 ,3 ,2),
+           (1 ,2 ,3 ,3),
+           (1 ,2 ,3 ,4),
+           (1 ,2 ,3 ,5),
+           (1 ,2 ,3 ,6),
+           (1 ,2 ,3 ,7),           
+      ----,RECTIFICACION,
+        --Constancia Ejidal
+           (1 ,4 ,3 ,1),
+           (1 ,4 ,3 ,2),
+           (1 ,4 ,3 ,3),
+           (1 ,4 ,3 ,4),
+           (1 ,4 ,3 ,5),
+           (1 ,4 ,3 ,6),
+           (1 ,4 ,3 ,7),
+        --CONSTANCIA ESCRITURA
+           (1 ,4 ,2 ,8),
+           (1 ,4 ,2 ,9),
+           (1 ,4 ,2 ,2),
+           (1 ,4 ,2 ,3),
+           (1 ,4 ,2 ,5),
+           (1 ,4 ,2 ,7),
+        --ESCRITURA
+           (1 ,4 ,1 ,10),
+           (1 ,4 ,1 ,11),
+           (1 ,4 ,1 ,12),
+           (1 ,4 ,1 ,9),
+           (1 ,4 ,1 ,2),
+           (1 ,4 ,1 ,3),
+           (1 ,4 ,1 ,5),
+           (1 ,4 ,1 ,7)
+
+           
+           ;
+
 
 CREATE TABLE sduma.dbo.Horario (
   id INT NOT NULL IDENTITY(1,1)  ,
