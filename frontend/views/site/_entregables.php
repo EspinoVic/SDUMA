@@ -33,14 +33,19 @@ use common\models\Documento;
                     </td>
                     <td>
                         <!-- Referencia al FILE - Archivo models -->
-                        <?= $form
-                        ->field($modelFilesRef_TramiteMotivoCuentaConDoc["entregable$currEntregable->id_Documento"], 
-                            "[entregable$currEntregable->id_Documento]myFile",
-                            //['options' => ['class' => 'form-control ',]]
-                        )
-                        ->fileInput([/* 'multiple' => true,  */'accept' => '.pdf,.jpeg,.jpg,.png']) 
-                        ->label(false)        
-                        ?>
+                        <?php if($currEntregable->documento->isSoloEntregaFisica):  ?> 
+                            <?=Html::label("Este documento se entrega de manera física únicamente.")?>     
+                        <?php else:  ?> 
+
+                            <?= $form
+                                ->field($modelFilesRef_TramiteMotivoCuentaConDoc["entregable$currEntregable->id_Documento"], 
+                                    "[entregable$currEntregable->id_Documento]myFile",
+                                    //['options' => ['class' => 'form-control ',]]
+                                )
+                                ->fileInput([/* 'multiple' => true,  */'accept' => '.pdf,.jpeg,.jpg,.png']) 
+                                ->label(false)        
+                                ?>
+                        <?php endif;  ?> 
                       
 
                     </td>
