@@ -52,35 +52,49 @@ use yii\web\JsExpression;
   </section>
 
   <br>
-  <?= $this->render("_persona",["persona"=>$personaSolicita,"form"=>$form,"idContainer"=>"contTramitaPersonaF"]) ?>
- 
-  <?= $this->render("_persona_moral",["personaMoral"=>$personaMoralSolicita,"form"=>$form,"idContainer"=>"contTramitaPersonaM"]) ?>
+  <section id="tipoPersonaParent">
+    
+    <?= $this->render("_persona",["persona"=>$personaSolicita,"form"=>$form,"idContainer"=>"contTramitaPersonaF"]) ?>
+   
+    <?= $this->render("_persona_moral",["personaMoral"=>$personaMoralSolicita,"form"=>$form,"idContainer"=>"contTramitaPersonaM"]) ?>
+  
+  </section>
   <br>
  
   <?= $this->render("_contacto",["form"=>$form,"modelContacto"=> $modelContacto])  ?>
   <br>
   
   <script>
- 
- 
-    document.addEventListener("DOMContentLoaded", function(event) {
+    
+    const contTramitaPersonaF = document.getElementById("contTramitaPersonaF");
+    const contTramitaPersonaM = document.getElementById("contTramitaPersonaM");
+    const tipoPersonaParent = document.getElementById("tipoPersonaParent");
+    
+    
+    /* tipoPersonaParent -> parent container */
+    /* contTramitaPersonaF.parentElement.removeChild(contTramitaPersonaF);
+    contTramitaPersonaM.parentElement.removeChild(contTramitaPersonaM); */
+    tipoPersonaParent.innerHTML = "";
+
+
+    /* document.addEventListener("DOMContentLoaded", function(event) {
       solicitaTipoPersonaChange()
-    });
+    }); */
     const solicitaTipoPersonaChange = function (whatRender){
       if(whatRender=='M'){
         //hide Fisica
         //Show moral
-        document.getElementById("contTramitaPersonaF").style.display = "none";
-        document.getElementById("contTramitaPersonaM").style.display = "flex";
+        tipoPersonaParent.innerHTML = "";
+        tipoPersonaParent.appendChild(contTramitaPersonaM);
       }
       else if(whatRender=='F'){
         //show Fisica
         //hide moral
-        document.getElementById("contTramitaPersonaF").style.display = "flex";
-        document.getElementById("contTramitaPersonaM").style.display = "none";
+        tipoPersonaParent.innerHTML = "";
+        tipoPersonaParent.appendChild(contTramitaPersonaF);
+
       }else{//initial
-        document.getElementById("contTramitaPersonaF").style.display = "flex";
-        document.getElementById("contTramitaPersonaM").style.display = "none";
+        tipoPersonaParent.innerHTML = "";
       }
     }
   </script>
