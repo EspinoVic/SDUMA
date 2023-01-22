@@ -39,7 +39,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'class' => ActionColumn::className(),
+                'label' => "Solo entrega física",                
+                'value' => function($currExpediente){
+                  return $currExpediente->soloEntregaFisica?"Sí":"No";
+                }
+            ],
+            [
+                'class' => ActionColumn::class,
                 'urlCreator' => function ($action, Documento $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                 } ,

@@ -18,6 +18,10 @@ use yii\bootstrap5\ActiveForm;
                 $items = [0=>"No", 1 => "Sí"]
         )->label("Registro activo")        
         ?>
+    <?=$form->field($model,"soloEntregaFisica")->dropDownList(
+                $items = [0=>"No", 1 => "Sí"]
+        )->label("Entrega física únicamente")        
+        ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

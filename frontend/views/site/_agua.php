@@ -17,7 +17,7 @@ use yii\bootstrap5\Html;
     ->label("Número de toma de agua")
     ?>
 
-<!-- SOLAMENTE SI ES EJIDAL, PODRÄ ELEJIS ENTRE CONTRATO O RECIBO -->
+<!-- SOLAMENTE SI ES EJIDAL, PODRÄ ELEJIR ENTRE CONTRATO O RECIBO -->
     <?= $form
         ->field($modelSolicitudGenerica, 'subeRecibo', [
             'options' => ['class' => 'col-md-2'],])
@@ -39,7 +39,7 @@ use yii\bootstrap5\Html;
 
     ->textInput(["type"=>"date" /* ,"value"=>date("d/m/Y" ,  strtotime( $model->finActividad)) */  ])
 
-    ->label("Fecha pago de agua o contrato de agua")
+    ->label("Fecha pago de recibo o contrato de agua")
     ?>
 
 

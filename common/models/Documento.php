@@ -10,10 +10,12 @@ use Yii;
  * @property int $id
  * @property string $nombre
  * @property int $isActivo
+ * @property int $soloEntregaFisica
  *
  * @property ConfigTramiteMotivoCuentaconDoc[] $configTramiteMotivoCuentaconDocs
  * @property SolicitudConstruccionHasDocumento[] $solicitudConstruccionHasDocumentos
  * @property SolicitudConstruccion[] $solicitudConstruccions
+ * @property SolicitudGenericaHasDocumento[] $solicitudGenericaHasDocumentos
  * @property TipoTramiteHasDocumento[] $tipoTramiteHasDocumentos
  * @property TipoTramite[] $tipoTramites
  */
@@ -34,7 +36,7 @@ class Documento extends \yii\db\ActiveRecord
     {
         return [
             [['nombre'], 'required'],
-            [['isActivo'], 'integer'],
+            [['isActivo', 'soloEntregaFisica'], 'integer'],
             [['nombre'], 'string', 'max' => 255],
         ];
     }
@@ -48,6 +50,7 @@ class Documento extends \yii\db\ActiveRecord
             'id' => 'ID',
             'nombre' => 'Nombre',
             'isActivo' => 'Is Activo',
+            'soloEntregaFisica' => 'Solo Entrega Fisica',
         ];
     }
 
@@ -79,6 +82,16 @@ class Documento extends \yii\db\ActiveRecord
     public function getSolicitudConstruccions()
     {
         return $this->hasMany(SolicitudConstruccion::class, ['id' => 'id_SolicitudConstruccion'])->viaTable('SolicitudConstruccion_has_Documento', ['id_Documento' => 'id']);
+    }
+
+    /**
+     * Gets query for [[SolicitudGenericaHasDocumentos]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSolicitudGenericaHasDocumentos()
+    {
+        return $this->hasMany(SolicitudGenericaHasDocumento::class, ['id_Documento' => 'id']);
     }
 
     /**

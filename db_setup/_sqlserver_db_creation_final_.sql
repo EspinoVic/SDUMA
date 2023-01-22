@@ -53,7 +53,7 @@ CREATE TABLE sduma.dbo.TipoPredio (
 	   PRIMARY KEY (id)
 
 );
- 
+
 
 INSERT INTO [dbo].[TipoPredio]
            ([nombre]
@@ -588,26 +588,29 @@ INSERT INTO sduma.dbo.TipoTramite ( nombre)
 	  id INT NOT NULL IDENTITY(1,1),
 	  nombre NVARCHAR(255) NOT NULL,
 	  isActivo BIT NOT NULL DEFAULT 1,
+    soloEntregaFisica BIT NOT NULL DEFAULT 0,
 	  PRIMARY KEY (id)
   );
 
   
 INSERT INTO [dbo].[Documento]
            ([nombre]
-           ,[isActivo])
+           ,[isActivo]
+           ,soloEntregaFisica
+           )
      VALUES
-       ('Escritura inscrita en el registro público de la propiedad', 1),
-		   ('Identificación oficial del propietario', 1),
-		   ('Recibo de agua actualizado', 1),
-		   ('Recibo de pago predial actualizado', 1),
-		   ('Constancia físcal de no adeutos municipales', 1),
-		   ('Constancia de alineamiento', 1),
-		   ('Licencia de uso de suelo', 1),
-		   ('Plano técnivo a escala del proyecto pretendiendo hasta 35m2', 1),
-		   ('Proyecto ejecutivo según reglamento', 1),
-		   ('Fotografías del inmueble motivo de la solicitud', 1),
-		   ('Pago de derechos', 1),
-		   ('Acreditación de personalidad e interé jurídico.', 1);
+       ('Escritura inscrita en el registro público de la propiedad', 1,0),
+		   ('Identificación oficial del propietario', 1,0),
+		   ('Recibo de agua actualizado', 1,0),
+		   ('Recibo de pago predial actualizado', 1,0),
+		   ('Constancia físcal de no adeutos municipales', 1,0),
+		   ('Constancia de alineamiento', 1,0),
+		   ('Licencia de uso de suelo', 1,0),
+		   ('Plano técnivo a escala del proyecto pretendiendo hasta 35m2', 1,1),
+		   ('Proyecto ejecutivo según reglamento', 1,1),
+		   ('Fotografías del inmueble motivo de la solicitud', 1,0),
+		   ('Pago de derechos', 1,0),
+		   ('Acreditación de personalidad e interé jurídico.', 1,0);
 
 
 CREATE TABLE sduma.dbo.TipoTramite_has_Documento (
