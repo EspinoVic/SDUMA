@@ -1,5 +1,5 @@
 <?php 
-/** @var common\models\SolicitudGenerica[] $modelSolicitudGenerica */
+/** @var common\models\SolicitudGenerica $modelSolicitudGenerica */
 /** @var file $licenciaConstruccionAreaPreexistenteFile */
 /** @var ffile $memoriaCalculoFile */
 /** @var  $form */
@@ -16,11 +16,12 @@ use yii\bootstrap5\Html;
     <!-- SI es mayor a 250, memoria de cálculo-->
 
     <?= $form
-    ->field($memoriaCalculoFile, '[memoriaCalculo]myFile',['options' => ['class' => 'col-md-4',"id"=>"inputFileMemoriaCalculo","style"=>"display:none"]])
+    ->field($memoriaCalculoFile, '[memoriaCalculo]myFile',['options' => ['class' => 'col-md-4',"id"=>"inputFileMemoriaCalculo"]])
     ->fileInput([/* 'multiple' => true,  */'accept' => '.pdf,.jpeg,.jpg,.png']) 
     ->label("Memoria de cálculo (subir archivo)")        
     ?>
   </div>
+
   <div class="row g3 p-3">
 
     <?= $form
@@ -33,23 +34,30 @@ use yii\bootstrap5\Html;
         ->fileInput([/* 'multiple' => true,  */'accept' => '.pdf,.jpeg,.jpg,.png']) 
         ->label("Licencia de construcción de area preexistente (opcional)")
         ?>
-
-
     <script>	
 
         const inputFileMemoriaCalculo = document.getElementById("inputFileMemoriaCalculo");
+        const inputFileMemoriaCalculoParent = inputFileMemoriaCalculo.parentElement;
+
         const superficiePorConstruirChange = function(event){
             //desbloquea memoria de calculo
             let source = event.target || event.srcElement;
-            let whatRender = source.value;
+            let inputSuperficiePorConstuir = source.value;
+            hideShowSuperficiePorConstruirFileInput(inputSuperficiePorConstuir)
+            
+        }
 
-            if(whatRender >= 250){
-                inputFileMemoriaCalculo.style.display = "block"
+        const hideShowSuperficiePorConstruirFileInput = function (superficiePorConstruirAmount){
+            if(superficiePorConstruirAmount >= 250){
+
+                inputFileMemoriaCalculoParent.append(inputFileMemoriaCalculo);
+
             }else{
-                inputFileMemoriaCalculo.style.display = "none"
+                inputFileMemoriaCalculo.remove();
             }
         }
-         
+        hideShowSuperficiePorConstruirFileInput(<?=  $modelSolicitudGenerica->areaPreExistente  ?>);
+
 
     </script>
 
