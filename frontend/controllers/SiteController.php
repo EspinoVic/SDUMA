@@ -108,30 +108,33 @@ class SiteController extends Controller
 
     public function actionSegunda(){
 
-        $domicilioNotif = new Domicilio2();
-        $domicilioPredio = new Domicilio2();
+        $modelSolicitudGenerica = new SolicitudGenerica();
+        $modelContacto = new Contacto();
         $personaSolicita = new Persona();
         $personaMoralSolicita = new PersonaMoral();
 
+        $domicilioNotif = new Domicilio2();
+        
         $modelEscritura = new Escritura();
         $modelConstanciaEscritura = new ConstanciaEscritura();
         $modelConstanciaPosecionEjidal = new ConstanciaPosecionEjidal();
-        $modelSolicitudGenerica = new SolicitudGenerica();
-        $modelTramiteMotivoCuentaConDoc = null;/*  array(); */
-        $modelFilesRef_TramiteMotivoCuentaConDoc = array();
         
-        $modelDRO = new DirectorResponsableObra();
-        $modelPersonaDRO= new Persona();
+        //documentos disponibles para la configuración de tramite
+        $modelTramiteMotivoCuentaConDoc = null;/*  array(); */
+        //Archivos, cada uno corresponde a un Documento (modelTramiteMotivoCuentaConDoc)
+        $modelFilesRef_TramiteMotivoCuentaConDoc = array();                
+        
 
         $modelPropietarios = array();
-        $modelPropietarios[1] = new Persona();
-        $modelContacto = new Contacto();
-       
         $memoriaCalculoFile = new UploadFileVic(); // new UploadedFile();//file
         $mecanicaSuelosFile = new UploadFileVic();
         $licenciaConstruccionAreaPreexistenteFile = new UploadFileVic();
         $licenciaConstruccionAreaPreexistenteFile->scenario = UploadFileVic::SCENARIO_NO_MANDATORY_FILE;
-
+        
+        $domicilioPredio = new Domicilio2();
+        //siempre habrá al menos 1 propietario
+        $modelPropietarios[1] = new Persona();
+        
         $modelDROList = DirectorResponsableObra::findAll(["isActivo"=>1]);
 
         //Por default mostrará, Licencia / Escritura
@@ -151,7 +154,22 @@ class SiteController extends Controller
 
 
         if($this->request->isPost){
-            $noPropietario =$this->request->post("noPropietario");
+
+            $modelSolicitudGenerica->load($this->request->post());
+            $modelContacto->load($this->request->post());
+
+            $personaSolicita->load($this->request->post("Persona"),"personaF");
+            $personaMoralSolicita->load($this->request->post());
+
+
+            $domicilioNotif->load($this->request->post("Domicilio2"),"0"); //Domicilio2 tambien funciona xd
+            $domicilioPredio->load($this->request->post("Domicilio2"),"1");
+            
+            $modelEscritura->load($this->request->post());
+            $modelConstanciaEscritura->load($this->request->post());
+            $modelConstanciaPosecionEjidal->load($this->request->post());
+
+            $noPropietario =$this->request->post("noPropietarios");
             $modelPropietarios[1]->load($this->request->post("Persona"),"propietario1");
 
             if(is_numeric($noPropietario) && $noPropietario > 1){
@@ -160,8 +178,15 @@ class SiteController extends Controller
                     $modelPropietarios[$i]->load($this->request->post("Persona"),"propietario$i");
                 }
             }
-           // $modelSolicitudConstruccion->load($this->request->post());
-            $modelSolicitudGenerica->load($this->request->post());
+
+            $memoriaCalculoFile->myFile = UploadedFile::getInstance($memoriaCalculoFile,'[memoriaCalculo]myFile');
+            if($memoriaCalculoFile->myFile){
+                
+                $memoriaCalculoFile->myFile->saveAs(
+                    "C:\\sduma_files\\".$memoriaCalculoFile->myFile->baseName . 
+                    "." . $memoriaCalculoFile->myFile->extension
+                    ,false);
+            }
             // extraer vars para archivos
             $modelTramiteMotivoCuentaConDoc = ConfigTramiteMotivoCuentaconDoc::findAll(
                 [
@@ -172,40 +197,37 @@ class SiteController extends Controller
                 ]
             );
             foreach ($modelTramiteMotivoCuentaConDoc as $key => $curr) {
-                $modelFilesRef_TramiteMotivoCuentaConDoc["entregable$curr->id_Documento"] =  new UploadFileVic(); 
+                if(!$curr->documento->isSoloEntregaFisica){
+                    
+                    $modelFilesRef_TramiteMotivoCuentaConDoc["entregable$curr->id_Documento"] =  new UploadFileVic(); 
+                    $modelFilesRef_TramiteMotivoCuentaConDoc["entregable$curr->id_Documento"]->myFile 
+                      = UploadedFile::getInstance($modelFilesRef_TramiteMotivoCuentaConDoc["entregable$curr->id_Documento"],"[entregable$curr->id_Documento]myFile");
 
+                }
             }
            
 
 
-        
-            $personaSolicita->load($this->request->post("Persona"),"personaF");
-            $modelPersonaDRO->load($this->request->post("Persona"),"DRO");
-            $memoriaCalculoFile->myFile = UploadedFile::getInstance($memoriaCalculoFile,'myFile');
-            if($memoriaCalculoFile->myFile){
+            $mecanicaSuelosFile->myFile = UploadedFile::getInstance($mecanicaSuelosFile,'[mecanicaSuelos]myFile');
+            if($mecanicaSuelosFile->myFile){
                 
-                $memoriaCalculoFile->myFile->saveAs(
-                    "C:\\sduma_files\\".$memoriaCalculoFile->myFile->baseName . 
-                    "." . $memoriaCalculoFile->myFile->extension
+                $mecanicaSuelosFile->myFile->saveAs(
+                    "C:\\sduma_files\\".$mecanicaSuelosFile->myFile->baseName . 
+                    "." . $mecanicaSuelosFile->myFile->extension
                     ,false);
             }
-            $licenciaConstruccionAreaPreexistenteFile->myFile = UploadedFile::getInstance($licenciaConstruccionAreaPreexistenteFile,'myFile');
+
+            $licenciaConstruccionAreaPreexistenteFile->myFile = UploadedFile::getInstance($licenciaConstruccionAreaPreexistenteFile,'["licenciaConstruccionAreaPreexistente"]myFile');
+            if($licenciaConstruccionAreaPreexistenteFile->myFile){
                 
+                $licenciaConstruccionAreaPreexistenteFile->myFile->saveAs(
+                    "C:\\sduma_files\\".$licenciaConstruccionAreaPreexistenteFile->myFile->baseName . 
+                    "." . $licenciaConstruccionAreaPreexistenteFile->myFile->extension
+                    ,false);
+            }
+
         }
 
- /*        if(!$modelTramiteMotivoCuentaConDoc){
-
-            //default EDIT: No hay default, viene definido por el post siempre.
-            $modelTramiteMotivoCuentaConDoc = ConfigTramiteMotivoCuentaconDoc::findAll(
-               [
-                   "id_TipoTramite"=>1,
-                   "id_MotivoConstruccion"=>1,
-                   "id_SolicitudGenericaCuentaCon"=>1,
-                   //"doc"=>1,            
-               ]
-           );
-        }
- */
 
         return $this->render('segunda', [
              
@@ -223,8 +245,6 @@ class SiteController extends Controller
             'memoriaCalculoFile' =>$memoriaCalculoFile,
             'licenciaConstruccionAreaPreexistenteFile' =>$licenciaConstruccionAreaPreexistenteFile,
             'mecanicaSuelosFile' => $mecanicaSuelosFile,
-            'modelDRO' => $modelDRO,
-            'modelPersonaDRO' => $modelPersonaDRO,
             'modelPropietarios' => $modelPropietarios,
             'modelContacto' => $modelContacto,
             'modelDROList' => $modelDROList

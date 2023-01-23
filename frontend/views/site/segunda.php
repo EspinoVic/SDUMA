@@ -7,8 +7,6 @@
 /** @var common\models\SolicitudGenerica $modelSolicitudGenerica */
 /** @var common\models\ConfigTramiteMotivoCuentaconDoc $modelTramiteMotivoCuentaConDoc[] */
 /** @var common\models\UploadFileVic $modelFilesRef_TramiteMotivoCuentaConDoc[] */
-/** @var common\models\DirectorResponsableObra $modelDRO */
-/** @var common\models\Persona $modelPersonaDRO */
 /** @var file $licenciaConstruccionAreaPreexistenteFile */
 /** @var common\models\Contacto $modelContacto */
 /** @var common\models\Persona $modelPropietarios[] */
