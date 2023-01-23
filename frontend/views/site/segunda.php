@@ -4,7 +4,6 @@
 /** @var common\models\Domicilio2 $domicilioPredio */
 /** @var common\models\Persona $personaSolicita */
 /** @var common\models\PersonaMoral $personaMoralSolicita */
-/** @var common\models\SolicitudConstruccion $modelSolicitudConstruccion */
 /** @var common\models\SolicitudGenerica $modelSolicitudGenerica */
 /** @var common\models\ConfigTramiteMotivoCuentaconDoc $modelTramiteMotivoCuentaConDoc[] */
 /** @var common\models\UploadFileVic $modelFilesRef_TramiteMotivoCuentaConDoc[] */
@@ -45,10 +44,12 @@ use yii\web\JsExpression;
     ]); ?>
 
   <section class="tipoPersona">
-    <h5><?= Html::encode('Tipo de persona') ?></h5>       
-    
-    <input type="radio" class="form-check-input" value="Física" checked onchange="solicitaTipoPersonaChange('F')" name="rbTipoPersonagod" id="idRbPFisica" >Fisica</input>
-    <input type="radio" class="form-check-input" value="Moral"   onchange="solicitaTipoPersonaChange('M')" name="rbTipoPersonagod" id="idRbPMoral" >Moral</input>
+     
+    <?=  $form->field($modelSolicitudGenerica, 'isSolicitaPersonaFisica')
+        ->radioList( [0=>'Moral', 1 => 'Física'],[ "onchange"=>"solicitaTipoPersonaChange(event)"] )
+        ->label("Tipo de persona");
+    ?>    
+  
   </section>
 
   <br>
@@ -70,33 +71,34 @@ use yii\web\JsExpression;
     const contTramitaPersonaM = document.getElementById("contTramitaPersonaM");
     const tipoPersonaParent = document.getElementById("tipoPersonaParent");
     
-    
-    /* tipoPersonaParent -> parent container */
-    /* contTramitaPersonaF.parentElement.removeChild(contTramitaPersonaF);
-    contTramitaPersonaM.parentElement.removeChild(contTramitaPersonaM); */
     tipoPersonaParent.innerHTML = "";
 
-
-    /* document.addEventListener("DOMContentLoaded", function(event) {
-      solicitaTipoPersonaChange()
-    }); */
-    const solicitaTipoPersonaChange = function (whatRender){
-      if(whatRender=='M'){
-        //hide Fisica
-        //Show moral
-        tipoPersonaParent.innerHTML = "";
-        tipoPersonaParent.appendChild(contTramitaPersonaM);
-      }
-      else if(whatRender=='F'){
-        //show Fisica
-        //hide moral
-        tipoPersonaParent.innerHTML = "";
-        tipoPersonaParent.appendChild(contTramitaPersonaF);
-
-      }else{//initial
-        tipoPersonaParent.innerHTML = "";
-      }
+    const solicitaTipoPersonaChange = function (event){
+      let source = event.target || event.srcElement;
+      let whatRender = source.value;
+      showHideTipoPersona(whatRender);
+      
     }
+
+    const showHideTipoPersona = function (tipoPersona){
+        if(tipoPersona==0){ //Moral
+          //hide Fisica
+          //Show moral
+          tipoPersonaParent.innerHTML = "";
+          tipoPersonaParent.appendChild(contTramitaPersonaM);
+        }
+        else if(tipoPersona==1){ //fisica
+          //show Fisica
+          //hide moral
+          tipoPersonaParent.innerHTML = "";
+          tipoPersonaParent.appendChild(contTramitaPersonaF);
+
+        }else{//initial
+          tipoPersonaParent.innerHTML = "";
+        }
+    }
+
+    showHideTipoPersona('<?= $modelSolicitudGenerica->isSolicitaPersonaFisica ?>');
   </script>
   
   <?php  

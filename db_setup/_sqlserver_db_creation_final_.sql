@@ -1041,6 +1041,7 @@ CREATE TABLE sduma.dbo.SolicitudGenerica(
 
   id INT NOT NULL IDENTITY(1,1),
   statusSolicitud INT NOT NULL DEFAULT 0,
+  isSolicitaPersonaFisica BIT NOT NULL DEFAULT 1,
   superficieTotal INT NOT NULL,
   niveles INT NOT NULL DEFAULT 1,
 
