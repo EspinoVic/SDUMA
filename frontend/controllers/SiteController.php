@@ -160,7 +160,7 @@ class SiteController extends Controller
 
             $modelSolicitudGenerica->load($this->request->post(),"SolicitudGenerica");
             $modelContacto->load($this->request->post(),"Contacto");
-
+            
             $personaSolicita->load($this->request->post("Persona"),"personaF");
             $personaMoralSolicita->load($this->request->post("Persona"),"personaM");
 
@@ -174,7 +174,7 @@ class SiteController extends Controller
 
             $noPropietario =$this->request->post("noPropietarios");
             $modelPropietarios[1]->load($this->request->post("Persona"),"propietario1");
-
+            
             if(is_numeric($noPropietario) && $noPropietario > 1){
                 for ($i=2; $i <=$noPropietario ; $i++) {  //index 1 ya fue asignado afuera 
                     $modelPropietarios[$i] = new Persona();
@@ -281,6 +281,25 @@ class SiteController extends Controller
                     $resultValidation = $resultValidation && $domicilioPredio->validate(); 
                     //Opcional, no requiere validación
                     //$licenciaConstruccionAreaPreexistenteFile->validate();
+                    if($resultValidation)//empieza a guardar archivos y data en DB.
+                        $this->guardarSolicitud(
+                            $modelSolicitudGenerica,
+                            $modelContacto,
+                            $personaSolicita,
+                            $personaMoralSolicita,
+                            $domicilioNotif,
+                            $modelEscritura,
+                            $modelConstanciaEscritura,
+                            $modelConstanciaPosecionEjidal,
+                            $noPropietario,
+                            $modelPropietarios,
+                            //$modelTramiteMotivoCuentaConDoc,
+                            $modelFilesRef_TramiteMotivoCuentaConDoc,
+                            $memoriaCalculoFile,
+                            $mecanicaSuelosFile,
+                            $licenciaConstruccionAreaPreexistenteFile
+
+                        );
                 }    
 
                 
@@ -313,6 +332,45 @@ class SiteController extends Controller
          
 
     }
+
+    public function guardarSolicitud(
+        $modelSolicitudGenerica,
+        $modelContacto,
+        $personaSolicita,
+        $personaMoralSolicita,
+        $domicilioNotif,
+        $modelEscritura,
+        $modelConstanciaEscritura,
+        $modelConstanciaPosecionEjidal,
+        $noPropietario,
+        $modelPropietarios,
+        //$modelTramiteMotivoCuentaConDoc,
+        $modelFilesRef_TramiteMotivoCuentaConDoc,
+        $memoriaCalculoFile,
+        $mecanicaSuelosFile,
+        $licenciaConstruccionAreaPreexistenteFile
+    ){
+
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            foreach ($modelPropietarios as $key => $currPropietario) {
+                $currPropietario->save();                
+            }
+            
+            
+            // ...other DB operations...
+            $transaction->commit();
+        } catch(\Exception $e) {
+            $transaction->rollBack();
+            throw $e;
+        } catch(\Throwable $e) {
+            $transaction->rollBack();
+            throw $e;
+        }
+
+    }
+
 
     /**
      * Logs in a user.
