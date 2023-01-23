@@ -109,6 +109,8 @@ class SiteController extends Controller
     public function actionSegunda(){
 
         $modelSolicitudGenerica = new SolicitudGenerica();
+        $modelSolicitudGenerica->scenario = SolicitudGenerica::SCENARIO_CREATE;
+
         $modelContacto = new Contacto();
         $personaSolicita = new Persona();
         $personaMoralSolicita = new PersonaMoral();
@@ -137,6 +139,7 @@ class SiteController extends Controller
         
         $modelDROList = DirectorResponsableObra::findAll(["isActivo"=>1]);
 
+        $stateRequestVic ="";
         //Por default mostrará, Licencia / Escritura
         if($this->request->isGet){
             $modelTramiteMotivoCuentaConDoc = ConfigTramiteMotivoCuentaconDoc::findAll(
@@ -155,19 +158,19 @@ class SiteController extends Controller
 
         if($this->request->isPost){
 
-            $modelSolicitudGenerica->load($this->request->post());
-            $modelContacto->load($this->request->post());
+            $modelSolicitudGenerica->load($this->request->post(),"SolicitudGenerica");
+            $modelContacto->load($this->request->post(),"Contacto");
 
             $personaSolicita->load($this->request->post("Persona"),"personaF");
-            $personaMoralSolicita->load($this->request->post());
+            $personaMoralSolicita->load($this->request->post("Persona"),"personaM");
 
 
             $domicilioNotif->load($this->request->post("Domicilio2"),"0"); //Domicilio2 tambien funciona xd
             $domicilioPredio->load($this->request->post("Domicilio2"),"1");
             
-            $modelEscritura->load($this->request->post());
-            $modelConstanciaEscritura->load($this->request->post());
-            $modelConstanciaPosecionEjidal->load($this->request->post());
+            $modelEscritura->load($this->request->post(),"Escritura");
+            $modelConstanciaEscritura->load($this->request->post(),"ConstanciaEscritura");
+            $modelConstanciaPosecionEjidal->load($this->request->post(),"ConstanciaPosecionEjidal");
 
             $noPropietario =$this->request->post("noPropietarios");
             $modelPropietarios[1]->load($this->request->post("Persona"),"propietario1");
@@ -178,15 +181,7 @@ class SiteController extends Controller
                     $modelPropietarios[$i]->load($this->request->post("Persona"),"propietario$i");
                 }
             }
-
-            $memoriaCalculoFile->myFile = UploadedFile::getInstance($memoriaCalculoFile,'[memoriaCalculo]myFile');
-            if($memoriaCalculoFile->myFile){
-                
-                $memoriaCalculoFile->myFile->saveAs(
-                    "C:\\sduma_files\\".$memoriaCalculoFile->myFile->baseName . 
-                    "." . $memoriaCalculoFile->myFile->extension
-                    ,false);
-            }
+            
             // extraer vars para archivos
             $modelTramiteMotivoCuentaConDoc = ConfigTramiteMotivoCuentaconDoc::findAll(
                 [
@@ -207,23 +202,89 @@ class SiteController extends Controller
             }
            
 
-
+            $memoriaCalculoFile->myFile = UploadedFile::getInstance($memoriaCalculoFile,'[memoriaCalculo]myFile');
+            /* if($memoriaCalculoFile->myFile){
+                
+                $memoriaCalculoFile->myFile->saveAs(
+                    "C:\\sduma_files\\".$memoriaCalculoFile->myFile->baseName . 
+                    "." . $memoriaCalculoFile->myFile->extension
+                    ,false);
+            } */
             $mecanicaSuelosFile->myFile = UploadedFile::getInstance($mecanicaSuelosFile,'[mecanicaSuelos]myFile');
-            if($mecanicaSuelosFile->myFile){
+            /* if($mecanicaSuelosFile->myFile){
                 
                 $mecanicaSuelosFile->myFile->saveAs(
                     "C:\\sduma_files\\".$mecanicaSuelosFile->myFile->baseName . 
                     "." . $mecanicaSuelosFile->myFile->extension
                     ,false);
-            }
+            } */
 
             $licenciaConstruccionAreaPreexistenteFile->myFile = UploadedFile::getInstance($licenciaConstruccionAreaPreexistenteFile,'["licenciaConstruccionAreaPreexistente"]myFile');
-            if($licenciaConstruccionAreaPreexistenteFile->myFile){
+            /* if($licenciaConstruccionAreaPreexistenteFile->myFile){
                 
                 $licenciaConstruccionAreaPreexistenteFile->myFile->saveAs(
                     "C:\\sduma_files\\".$licenciaConstruccionAreaPreexistenteFile->myFile->baseName . 
                     "." . $licenciaConstruccionAreaPreexistenteFile->myFile->extension
                     ,false);
+            } */
+            
+            //////////////Fin de las cargas de datos a modelo, 
+
+            //si es empty, significa que el estado del formulario cambió
+            //si es "submit", significa que se dió click en enviar, ahi se ejecutará la validación. 
+            $stateRequestVic = $this->request->post("stateRequestVic");
+            if($stateRequestVic == "submit"){
+                //Se corren todas las validaciones, si todo está okay, entonces, se procede al guardado de información
+
+                //Las validaciones dependerán del workflow del formulario
+                $resultValidation = $modelSolicitudGenerica->validate();
+                //otras validaciones son dependientes de esta, asi que si esta falla, sale inemdiatamente
+
+                if($resultValidation){
+
+                    if($modelSolicitudGenerica->isSolicitaPersonaFisica=="1")
+                        $resultValidation = $resultValidation && $personaSolicita->validate();                
+                    else 
+                        $resultValidation = $resultValidation && $personaMoralSolicita->validate();
+
+                    $resultValidation = $resultValidation &&$modelContacto->validate();
+                    $resultValidation = $resultValidation &&$domicilioNotif->validate();
+
+                    if($modelSolicitudGenerica->id_SolicitudGenericaCuentaCon == "1")
+                        $resultValidation = $resultValidation && $modelEscritura->validate();
+                    else if($modelSolicitudGenerica->id_SolicitudGenericaCuentaCon == "2")
+                        $resultValidation = $resultValidation &&  $modelConstanciaEscritura->validate();
+                    else if($modelSolicitudGenerica->id_SolicitudGenericaCuentaCon == "3")
+                        $resultValidation = $resultValidation &&  $modelConstanciaPosecionEjidal->validate();
+                    else{
+                        $resultValidation = $resultValidation && false;
+                    }
+                    foreach ($modelTramiteMotivoCuentaConDoc as $key => $curr) {
+                        if(!$curr->documento->isSoloEntregaFisica){
+                            
+                            $resultValidation = $resultValidation &&  $modelFilesRef_TramiteMotivoCuentaConDoc["entregable$curr->id_Documento"]->validate(); 
+                        
+                        }
+                    }
+
+                    foreach ($modelPropietarios as $key => $currPropietario) {
+                        $resultValidation = $resultValidation && $currPropietario->validate();
+                    }
+
+                    //Solo cuando Superficie por construi > 250
+                    if($modelSolicitudGenerica->superficiePorConstruir>250)
+                        $resultValidation = $resultValidation &&  $memoriaCalculoFile->validate();
+                    //solo cuando niveles > 3
+                    if($modelSolicitudGenerica->niveles>3)
+                        $resultValidation = $resultValidation && $mecanicaSuelosFile->validate();
+                    
+                    $resultValidation = $resultValidation && $domicilioPredio->validate(); 
+                    //Opcional, no requiere validación
+                    //$licenciaConstruccionAreaPreexistenteFile->validate();
+                }    
+
+                
+
             }
 
         }

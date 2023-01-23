@@ -20,7 +20,6 @@ use yii\helpers\ArrayHelper;
                     ['class' => 'col-md-3'],
                     !$idContainer ? [] : ["id" => $idContainer]
                 ) 
-                
         ])
         ->dropDownList(
           $items =  ArrayHelper::merge(
@@ -29,13 +28,13 @@ use yii\helpers\ArrayHelper;
                 $modelDROList,
                 'id' ,
                 function ($currentDRO) {
-                    return $currentDRO[
+                    return 
                         $currentDRO->abreviacion . " " .
                         $currentDRO->persona->apellidoP . " " . 
                         $currentDRO->persona->apellidoM . " " .
                         $currentDRO->persona->nombre . " - ". 
                         $currentDRO->cedula . " "
-                    ]; /* .'-'.$currentDRO['seconde parameter']; */
+                    ; /* .'-'.$currentDRO['seconde parameter']; */
                 }
             )
           )

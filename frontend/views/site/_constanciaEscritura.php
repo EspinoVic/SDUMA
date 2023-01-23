@@ -9,7 +9,11 @@ use yii\bootstrap5\Html;
     <h5><?= Html::encode('Datos de Constancia de Escritura') ?></h5>       
     <?= $form->field($modelConstanciaEscritura, 'noEscritura',['options' => ['class' => 'col-md-4']])?>
     <?= $form->field($modelConstanciaEscritura, 'noNotaria',['options' => ['class' => 'col-md-4']])?>
-    <?= $form->field($modelConstanciaEscritura, 'fechaEmision',['options' => ['class' => 'col-md-4']])?>
+    <?= $form
+    ->field($modelConstanciaEscritura, 'fechaEmision',['options' => ['class' => 'col-md-4']])
+    ->textInput(["type"=>"date"])
+
+    ?>
 
 </div>
 

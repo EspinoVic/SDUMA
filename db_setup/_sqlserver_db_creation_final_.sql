@@ -629,7 +629,7 @@ INSERT INTO [dbo].[Documento]
 		      ----('Fotografías del Inmueble motivo de la Solicitud', 1,0,0),
 
  		   ('Plano técnivo a escala del proyecto pretendiendo hasta 35m2', 1,1,0),
-		   ('Proyecto ejecutivo según reglamento (mayor a 25 m2)', 1,1,0)
+		   ('Proyecto ejecutivo según reglamento (mayor a 35m2)', 1,1,0)
 		   
        /*      
 		   ('Acreditación de personalidad e interé jurídico.', 1,0,0) */

@@ -349,8 +349,20 @@ use yii\web\JsExpression;
     <?= $this->render("_propietarios",["form"=>$form,"modelPropietarios"=>$modelPropietarios])  ?>
 
 <br>
+
+<!-- cambiar a hidden -->
+    <input type="text" name="stateRequestVic" id="stateRequestVic" value="">
+    <script>
+       const stateRequestVic =  document.getElementById("stateRequestVic");
+
+        const preSendForm = function (valu="submit") {
+          stateRequestVic.value = valu;
+        }
+
+
+    </script>
     <div class="form-group">
-        <?= Html::submitButton('Enviar', ['class' => 'btn btn-primary', 'name' => 'submit-button']) ?>
+        <?= Html::submitButton('Enviar', ['class' => 'btn btn-primary', 'name' => 'submit-button', "onclick"=>"preSendForm()"]) ?>
     </div>
 <?php ActiveForm::end(); ?>
  

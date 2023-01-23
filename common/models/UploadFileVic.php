@@ -14,7 +14,7 @@ class UploadFileVic extends Model
     public function rules()
     {
         return [
-            [['myFile'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg, pdf'],
+            [['myFile'], 'file', 'skipOnEmpty' => false, 'extensions' => 'png, jpg,jpeg, pdf','maxSize' => 1024 * 1024 * 4],
         ];
     }
     public const SCENARIO_MANDATORY_FILE = 'MANDATORY SCENARIO';

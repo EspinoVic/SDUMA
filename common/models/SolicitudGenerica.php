@@ -79,7 +79,35 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
     {
         return 'SolicitudGenerica';
     }
+    public const SCENARIO_CREATE = 'CREATE_SOLICITUD_GENERICA';
+    
+    
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
 
+        //$scenarios[self::SCENARIO_MANDATORY_FILE] = ['myFile']; //default scenario defined in rules function
+        $scenarios[self::SCENARIO_CREATE] = 
+        [
+            'fechaPagoAguaOContrato',
+            'isSolicitaPersonaFisica', 
+            'superficieTotal', 'niveles', 'numeroTomaAgua',
+            'numeroReciboAgua', 'subeRecibo', 
+            'numeroPredial','fechaPagoPredial',
+            'id_MetrosLinealesDRO', 'id_AlturaDRO', 
+          
+            'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon',
+
+            'id_TipoPredio', 
+            'id_GeneroConstruccion', 'id_SubGeneroConstruccion',
+            'id_DirectorResponsableObra', 
+
+            'superficiePorConstruir', 'areaPreExistente', 'altura', 'metrosLineales',
+            'tipoTomaAgua',
+        ];
+
+        return $scenarios;
+    }
     /**
      * {@inheritdoc}
      */
@@ -88,6 +116,7 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
         return [
             [['statusSolicitud', 'isSolicitaPersonaFisica', 'superficieTotal', 'niveles', 'numeroTomaAgua', 'numeroReciboAgua', 'subeRecibo', 'numeroPredial', 'id_MetrosLinealesDRO', 'id_AlturaDRO', 'id_PersonaFisica', 'id_PersonaMoral', 'id_Contacto', 'id_DomicilioNotificaciones', 'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon', 'id_Escritura', 'id_ConstanciaEscritura', 'id_ConstanciaPosecionEjidal', 'id_TipoPredio', 'id_GeneroConstruccion', 'id_SubGeneroConstruccion', 'id_DomicilioPredio', 'id_DirectorResponsableObra', 'id_Archivo_MemoriaCalculo', 'id_Archivo_MecanicaSuelos', 'id_Archivo_LicenciaConstruccionAreaPreexistenteFile', 'id_User_CreadoPor', 'id_User_ModificadoPor'], 'integer'],
             [['superficieTotal', 'numeroTomaAgua', 'fechaPagoAguaOContrato', 'id_Contacto', 'id_DomicilioNotificaciones', 'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon', 'id_TipoPredio', 'id_GeneroConstruccion', 'id_SubGeneroConstruccion', 'id_DomicilioPredio', 'id_DirectorResponsableObra', 'id_User_CreadoPor', 'id_User_ModificadoPor', 'fechaCreacion', 'fechaModificacion'], 'required'],
+            [["fechaPagoPredial","numeroPredial"],'required',"on"=>self::SCENARIO_CREATE],
             [['superficiePorConstruir', 'areaPreExistente', 'altura', 'metrosLineales'], 'number'],
             [['fechaPagoAguaOContrato', 'fechaPagoPredial', 'fechaCreacion', 'fechaModificacion'], 'safe'],
             [['tipoTomaAgua'], 'string', 'max' => 255],
