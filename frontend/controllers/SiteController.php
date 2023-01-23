@@ -2,6 +2,7 @@
 
 namespace frontend\controllers;
 
+use common\models\Archivo;
 use common\models\ConfigTramiteMotivoCuentaconDoc;
 use common\models\ConstanciaEscritura;
 use common\models\ConstanciaPosecionEjidal;
@@ -29,6 +30,8 @@ use common\models\Persona;
 use common\models\PersonaMoral;
 use common\models\SolicitudConstruccion;
 use common\models\SolicitudGenerica;
+use common\models\SolicitudGenerica_has_Documento;
+use common\models\SolicitudGenerica_has_Persona;
 use common\models\SolicitudGenericaCuentaCon;
 use common\models\TipoTramite;
 use common\models\UploadFileVic;
@@ -194,9 +197,12 @@ class SiteController extends Controller
             foreach ($modelTramiteMotivoCuentaConDoc as $key => $curr) {
                 if(!$curr->documento->isSoloEntregaFisica){
                     
-                    $modelFilesRef_TramiteMotivoCuentaConDoc["entregable$curr->id_Documento"] =  new UploadFileVic(); 
-                    $modelFilesRef_TramiteMotivoCuentaConDoc["entregable$curr->id_Documento"]->myFile 
-                      = UploadedFile::getInstance($modelFilesRef_TramiteMotivoCuentaConDoc["entregable$curr->id_Documento"],"[entregable$curr->id_Documento]myFile");
+                    $modelFilesRef_TramiteMotivoCuentaConDoc[$curr->id_Documento] =  new UploadFileVic(); 
+                    $modelFilesRef_TramiteMotivoCuentaConDoc[$curr->id_Documento]->myFile 
+                      = UploadedFile::getInstance(//Para extraerlo del $FILES (POST) sí ocupa el name "entregable$key"
+                        $modelFilesRef_TramiteMotivoCuentaConDoc[$curr->id_Documento],
+                      "[entregable$curr->id_Documento]myFile"
+                    );
 
                 }
             }
@@ -207,7 +213,8 @@ class SiteController extends Controller
                 
                 $memoriaCalculoFile->myFile->saveAs(
                     "C:\\sduma_files\\".$memoriaCalculoFile->myFile->baseName . 
-                    "." . $memoriaCalculoFile->myFile->extension
+                    "." .$mem
+                    +oriaCalculoFile->myFile->extension
                     ,false);
             } */
             $mecanicaSuelosFile->myFile = UploadedFile::getInstance($mecanicaSuelosFile,'[mecanicaSuelos]myFile');
@@ -259,10 +266,11 @@ class SiteController extends Controller
                     else{
                         $resultValidation = $resultValidation && false;
                     }
+
                     foreach ($modelTramiteMotivoCuentaConDoc as $key => $curr) {
                         if(!$curr->documento->isSoloEntregaFisica){
                             
-                            $resultValidation = $resultValidation &&  $modelFilesRef_TramiteMotivoCuentaConDoc["entregable$curr->id_Documento"]->validate(); 
+                            $resultValidation = $resultValidation &&  $modelFilesRef_TramiteMotivoCuentaConDoc[$curr->id_Documento]->validate(); 
                         
                         }
                     }
@@ -272,10 +280,10 @@ class SiteController extends Controller
                     }
 
                     //Solo cuando Superficie por construi > 250
-                    if($modelSolicitudGenerica->superficiePorConstruir>250)
+                    if($modelSolicitudGenerica->superficiePorConstruir>=250)
                         $resultValidation = $resultValidation &&  $memoriaCalculoFile->validate();
                     //solo cuando niveles > 3
-                    if($modelSolicitudGenerica->niveles>3)
+                    if($modelSolicitudGenerica->niveles>=3)
                         $resultValidation = $resultValidation && $mecanicaSuelosFile->validate();
                     
                     $resultValidation = $resultValidation && $domicilioPredio->validate(); 
@@ -354,11 +362,120 @@ class SiteController extends Controller
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
+            
+            if($modelSolicitudGenerica-> isSolicitaPersonaFisica == "1"){
+                $personaSolicita->save();
+                $modelSolicitudGenerica->id_PersonaFisica = $personaSolicita->id;
+            }else{                
+                $personaMoralSolicita->save();
+                $modelSolicitudGenerica->id_PersonaMoral = $personaMoralSolicita->id;                
+            }
+
+            $modelContacto->save();
+            $modelSolicitudGenerica->id_Contacto = $modelContacto->id;
+
+            $domicilioNotif->save();
+            $modelSolicitudGenerica->id_DomicilioNotificaciones = $domicilioNotif->id;
+
+            if($modelSolicitudGenerica->id_SolicitudGenericaCuentaCon == "1"){
+                $modelEscritura->save();
+                $modelSolicitudGenerica->id_Escritura = $modelEscritura->id;
+            }
+            else if($modelSolicitudGenerica->id_SolicitudGenericaCuentaCon == "2"){
+                $modelConstanciaEscritura->save();
+                $modelSolicitudGenerica->id_ConstanciaEscritura = $modelConstanciaEscritura->id;
+            }
+            else if($modelSolicitudGenerica->id_SolicitudGenericaCuentaCon == "3"){
+                $modelConstanciaPosecionEjidal->save();
+                $modelSolicitudGenerica->id_ConstanciaPosecionEjidal = $modelConstanciaPosecionEjidal->id;
+
+            }
             foreach ($modelPropietarios as $key => $currPropietario) {
                 $currPropietario->save();                
             }
-            
-            
+
+            $pathFile = "C:\\sduma_files\\".$modelSolicitudGenerica->id."\\" ;
+            mkdir($pathFile);
+            //Solo cuando Superficie por construi > 250
+            if($modelSolicitudGenerica->superficiePorConstruir>250){                 
+                $uuidExpresion = new yii\db\Expression('UUID()');
+
+                //Registro a database
+                $modelArchivo = new Archivo();
+                $modelArchivo->realNombreArchivo = $uuidExpresion . "." . $memoriaCalculoFile->myFile->extension;
+                $modelArchivo->nombreArchivo =
+                    $memoriaCalculoFile->myFile->baseName . "." .
+                     $memoriaCalculoFile->myFile->extension ;
+                $modelArchivo->path = $pathFile ;
+
+
+                $memoriaCalculoFile->myFile->saveAs( $modelArchivo->realNombreArchivo ,false );
+                $modelArchivo->save();
+                //añadir este modelArchivo ID al modelo de la solicitud
+                $modelSolicitudGenerica-> id_Archivo_MemoriaCalculo = $modelArchivo->id;
+
+            }
+            //solo cuando niveles >= 3
+            if($modelSolicitudGenerica->niveles>=3){
+                $modelArchivo = new Archivo();
+                $modelArchivo->realNombreArchivo = $uuidExpresion . "." . $mecanicaSuelosFile->myFile->extension;
+                $modelArchivo->nombreArchivo =
+                    $mecanicaSuelosFile->myFile->baseName . "." .
+                     $mecanicaSuelosFile->myFile->extension ;
+                $modelArchivo->path = $pathFile ;
+
+                $mecanicaSuelosFile->myFile->saveAs( $modelArchivo->realNombreArchivo ,false );
+                $modelArchivo->save();
+                //añadir este modelArchivo ID al modelo de la solicitud
+                $modelSolicitudGenerica-> id_Archivo_MecanicaSuelos = $modelArchivo->id;
+            }
+            if($licenciaConstruccionAreaPreexistenteFile->myFile)
+            {
+                $modelArchivo = new Archivo();
+                $modelArchivo->realNombreArchivo = $uuidExpresion . "." . $licenciaConstruccionAreaPreexistenteFile->myFile->extension;
+                $modelArchivo->nombreArchivo =
+                    $licenciaConstruccionAreaPreexistenteFile->myFile->baseName . "." .
+                     $licenciaConstruccionAreaPreexistenteFile->myFile->extension ;
+                $modelArchivo->path = $pathFile ;
+                
+                $licenciaConstruccionAreaPreexistenteFile->myFile->saveAs( $modelArchivo->realNombreArchivo ,false );
+                $modelArchivo->save();
+                //añadir este modelArchivo ID al modelo de la solicitud
+                $modelSolicitudGenerica->id_Archivo_LicenciaConstruccionAreaPreexistenteFile = $modelArchivo->id;
+            }
+
+
+            $modelSolicitudGenerica->save();
+            //cuando la solicitud se guarde, se puden guardar los propietarios.
+            foreach ($modelPropietarios as $key => $currPropietario) {
+                $currPropietarioRelation = new SolicitudGenerica_has_Persona();
+                $currPropietarioRelation->id_Persona = $currPropietario->id;
+                $currPropietarioRelation->id_SolicitudGenerica = $modelSolicitudGenerica->id;
+                $currPropietarioRelation->save();
+            }
+           
+            //Archivos registrados en DB
+            //UploadedFileVic array
+            foreach ($modelFilesRef_TramiteMotivoCuentaConDoc as $id_Documento/* key */ => $currFileToWrite) {
+                
+                $modelArchivo = new Archivo();
+                $modelArchivo->realNombreArchivo = $uuidExpresion . "." . $currFileToWrite->myFile->extension;
+                $modelArchivo->nombreArchivo =
+                    $currFileToWrite->myFile->baseName . "." .
+                     $currFileToWrite->myFile->extension ;
+                $modelArchivo->path = $pathFile ;
+
+                $currFileToWrite->myFile->saveAs( $modelArchivo->realNombreArchivo ,false );
+                $modelArchivo->save();
+
+                $currSolicitudGeericaHasDoc = new SolicitudGenerica_has_Documento();
+                $currSolicitudGeericaHasDoc->id_SolicitudGenerica = $modelSolicitudGenerica->id;
+                $currSolicitudGeericaHasDoc->id_Documento = $id_Documento;
+                $currSolicitudGeericaHasDoc->id_Archivo = $modelArchivo->id;
+                $currSolicitudGeericaHasDoc->id_Archivo = 1;
+                $currSolicitudGeericaHasDoc->save();
+
+            }                                
             // ...other DB operations...
             $transaction->commit();
         } catch(\Exception $e) {

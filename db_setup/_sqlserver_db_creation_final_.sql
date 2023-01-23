@@ -1352,7 +1352,24 @@ CREATE TABLE sduma.dbo.SolicitudConstruccion_has_Persona (
     ON UPDATE NO ACTION
 );
 
-
+/* Propietarios  x2*/
+CREATE TABLE sduma.dbo.SolicitudGenerica_has_Persona (
+  id_SolicitudGenerica INT NOT NULL,
+  id_Persona INT NOT NULL,
+  PRIMARY KEY (id_SolicitudGenerica, id_Persona),
+  INDEX fk_SolicitudGenerica_has_Persona_Persona_idx (id_Persona ASC)  ,
+  INDEX fk_SolicitudGenerica_has_Persona_SolicitudGenerica_idx (id_SolicitudGenerica ASC)  ,
+  CONSTRAINT fk_SolicitudGenerica_has_Persona_SolicitudGenerica1
+    FOREIGN KEY (id_SolicitudGenerica)
+    REFERENCES sduma.dbo.SolicitudGenerica (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_SolicitudGenerica_has_Persona_Persona1
+    FOREIGN KEY (id_Persona)
+    REFERENCES sduma.dbo.Persona (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+);
 
 CREATE TABLE  sduma.dbo.SolicitudGenerica_has_Documento (
   id_SolicitudGenerica INT NOT NULL,
