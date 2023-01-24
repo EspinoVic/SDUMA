@@ -573,7 +573,7 @@ class SiteController extends Controller
      *
      * @return mixed
      */
-    public function actionAbout()
+    private function actionAbout()
     {
         return $this->render('about');
     }

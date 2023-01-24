@@ -80,6 +80,17 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
         return 'SolicitudGenerica';
     }
     public const SCENARIO_CREATE = 'CREATE_SOLICITUD_GENERICA';
+    public const STATUS_SOLICITUD = 
+    [
+        //"EN CAPTURA",
+        "ESPERANDO VALIDACIÓN DE SOLICITUD",
+        //"VALIDANDO SOLICITUD",
+        "SOLICITUD VALIDADA",
+        "REVISIÓN DEL PREDIO",
+        
+
+
+    ];
     
     
     public function scenarios()
