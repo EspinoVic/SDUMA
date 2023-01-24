@@ -430,7 +430,7 @@ class SiteController extends Controller
 
                 //Registro a database
                 $modelArchivo = new Archivo();
-                $modelArchivo->realNombreArchivo = "superficiePorConstruir" . "." . $memoriaCalculoFile->myFile->extension;
+                $modelArchivo->realNombreArchivo = "memoriaCalculoFile" . "." . $memoriaCalculoFile->myFile->extension;
                 $modelArchivo->nombreArchivo =
                     $memoriaCalculoFile->myFile->baseName . "." .
                         $memoriaCalculoFile->myFile->extension ;
@@ -447,7 +447,7 @@ class SiteController extends Controller
             if($modelSolicitudGenerica->niveles>=3){
 
                 $modelArchivo = new Archivo();
-                $modelArchivo->realNombreArchivo = "niveles" . "." . $mecanicaSuelosFile->myFile->extension;
+                $modelArchivo->realNombreArchivo = "mecanicaSuelosFile" . "." . $mecanicaSuelosFile->myFile->extension;
                 $modelArchivo->nombreArchivo =
                     $mecanicaSuelosFile->myFile->baseName . "." .
                         $mecanicaSuelosFile->myFile->extension ;
