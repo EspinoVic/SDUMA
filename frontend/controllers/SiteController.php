@@ -35,6 +35,7 @@ use common\models\SolicitudGenerica_has_Persona;
 use common\models\SolicitudGenericaCuentaCon;
 use common\models\TipoTramite;
 use common\models\UploadFileVic;
+use yii\db\Expression;
 use yii\web\UploadedFile;
 
 /**
@@ -50,19 +51,24 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['logout', 'signup','about'],
+                'only' => ['logout', 'signup','about','segunda'],
                 'rules' => [
                     [
                         'actions' => ['signup'],
                         'allow' => true,
                         'roles' => ['?'],
                     ],
+                    /* [
+                        'actions' => ['view','create','update','delete', 'index'],
+                        'allow' => true,
+                        'roles' => ['@'],//autenticados //no importa el nivel, 
+                    ], */
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout','segunda'],
                         'allow' => true,
                         'roles' => ['@'],
                     ]
-                    ,
+                    /* ,
                     [
                         'actions' => ['about'],
                         'allow' => true,
@@ -70,7 +76,7 @@ class SiteController extends Controller
                         'matchCallback' => function ($rule, $action) {
                             return User::isUserAdmin(Yii::$app->user->identity->username);
                         }
-                    ],
+                    ], */
                      
                 ],
             ],
@@ -109,6 +115,7 @@ class SiteController extends Controller
         return $this->render('index');
     }
 
+    
     public function actionSegunda(){
 
         $modelSolicitudGenerica = new SolicitudGenerica();
@@ -154,7 +161,7 @@ class SiteController extends Controller
                 ]
             );
             foreach ($modelTramiteMotivoCuentaConDoc as $key => $curr) {
-                $modelFilesRef_TramiteMotivoCuentaConDoc["entregable$curr->id_Documento"] =  new UploadFileVic(); 
+                $modelFilesRef_TramiteMotivoCuentaConDoc["$curr->id_Documento"] =  new UploadFileVic(); 
             }
         }
 
@@ -199,9 +206,9 @@ class SiteController extends Controller
                     
                     $modelFilesRef_TramiteMotivoCuentaConDoc[$curr->id_Documento] =  new UploadFileVic(); 
                     $modelFilesRef_TramiteMotivoCuentaConDoc[$curr->id_Documento]->myFile 
-                      = UploadedFile::getInstance(//Para extraerlo del $FILES (POST) sí ocupa el name "entregable$key"
+                      = UploadedFile::getInstance(
                         $modelFilesRef_TramiteMotivoCuentaConDoc[$curr->id_Documento],
-                      "[entregable$curr->id_Documento]myFile"
+                      "[$curr->id_Documento]myFile"
                     );
 
                 }
@@ -296,6 +303,7 @@ class SiteController extends Controller
                             $personaSolicita,
                             $personaMoralSolicita,
                             $domicilioNotif,
+                            $domicilioPredio,
                             $modelEscritura,
                             $modelConstanciaEscritura,
                             $modelConstanciaPosecionEjidal,
@@ -347,6 +355,7 @@ class SiteController extends Controller
         $personaSolicita,
         $personaMoralSolicita,
         $domicilioNotif,
+        $domicilioPredio,
         $modelEscritura,
         $modelConstanciaEscritura,
         $modelConstanciaPosecionEjidal,
@@ -358,7 +367,6 @@ class SiteController extends Controller
         $mecanicaSuelosFile,
         $licenciaConstruccionAreaPreexistenteFile
     ){
-
         $transaction = Yii::$app->db->beginTransaction();
 
         try {
@@ -393,57 +401,15 @@ class SiteController extends Controller
             foreach ($modelPropietarios as $key => $currPropietario) {
                 $currPropietario->save();                
             }
+            
 
-            $pathFile = "C:\\sduma_files\\".$modelSolicitudGenerica->id."\\" ;
-            mkdir($pathFile);
-            //Solo cuando Superficie por construi > 250
-            if($modelSolicitudGenerica->superficiePorConstruir>250){                 
-                $uuidExpresion = new yii\db\Expression('UUID()');
+            $domicilioPredio->save();
+            $modelSolicitudGenerica->id_DomicilioPredio = $domicilioPredio->id;
 
-                //Registro a database
-                $modelArchivo = new Archivo();
-                $modelArchivo->realNombreArchivo = $uuidExpresion . "." . $memoriaCalculoFile->myFile->extension;
-                $modelArchivo->nombreArchivo =
-                    $memoriaCalculoFile->myFile->baseName . "." .
-                     $memoriaCalculoFile->myFile->extension ;
-                $modelArchivo->path = $pathFile ;
-
-
-                $memoriaCalculoFile->myFile->saveAs( $modelArchivo->realNombreArchivo ,false );
-                $modelArchivo->save();
-                //añadir este modelArchivo ID al modelo de la solicitud
-                $modelSolicitudGenerica-> id_Archivo_MemoriaCalculo = $modelArchivo->id;
-
-            }
-            //solo cuando niveles >= 3
-            if($modelSolicitudGenerica->niveles>=3){
-                $modelArchivo = new Archivo();
-                $modelArchivo->realNombreArchivo = $uuidExpresion . "." . $mecanicaSuelosFile->myFile->extension;
-                $modelArchivo->nombreArchivo =
-                    $mecanicaSuelosFile->myFile->baseName . "." .
-                     $mecanicaSuelosFile->myFile->extension ;
-                $modelArchivo->path = $pathFile ;
-
-                $mecanicaSuelosFile->myFile->saveAs( $modelArchivo->realNombreArchivo ,false );
-                $modelArchivo->save();
-                //añadir este modelArchivo ID al modelo de la solicitud
-                $modelSolicitudGenerica-> id_Archivo_MecanicaSuelos = $modelArchivo->id;
-            }
-            if($licenciaConstruccionAreaPreexistenteFile->myFile)
-            {
-                $modelArchivo = new Archivo();
-                $modelArchivo->realNombreArchivo = $uuidExpresion . "." . $licenciaConstruccionAreaPreexistenteFile->myFile->extension;
-                $modelArchivo->nombreArchivo =
-                    $licenciaConstruccionAreaPreexistenteFile->myFile->baseName . "." .
-                     $licenciaConstruccionAreaPreexistenteFile->myFile->extension ;
-                $modelArchivo->path = $pathFile ;
-                
-                $licenciaConstruccionAreaPreexistenteFile->myFile->saveAs( $modelArchivo->realNombreArchivo ,false );
-                $modelArchivo->save();
-                //añadir este modelArchivo ID al modelo de la solicitud
-                $modelSolicitudGenerica->id_Archivo_LicenciaConstruccionAreaPreexistenteFile = $modelArchivo->id;
-            }
-
+            $modelSolicitudGenerica->fechaCreacion = date('Y-m-d h:m:s');
+            $modelSolicitudGenerica->fechaModificacion = date('Y-m-d h:m:s');
+            $modelSolicitudGenerica->id_User_CreadoPor = Yii::$app->user->identity->id;
+            $modelSolicitudGenerica->id_User_ModificadoPor = Yii::$app->user->identity->id;
 
             $modelSolicitudGenerica->save();
             //cuando la solicitud se guarde, se puden guardar los propietarios.
@@ -453,26 +419,81 @@ class SiteController extends Controller
                 $currPropietarioRelation->id_SolicitudGenerica = $modelSolicitudGenerica->id;
                 $currPropietarioRelation->save();
             }
-           
-            //Archivos registrados en DB
-            //UploadedFileVic array
-            foreach ($modelFilesRef_TramiteMotivoCuentaConDoc as $id_Documento/* key */ => $currFileToWrite) {
-                
+            //directorio con el id del usuario
+            $pathFile = "C:\\sduma_files\\".Yii::$app->user->identity->id."\\".$modelSolicitudGenerica->id."\\" ;
+            if(!is_dir($pathFile) ){                
+                mkdir($pathFile,0,true);
+            }
+            
+            //Solo cuando Superficie por construi > 250
+            if($modelSolicitudGenerica->superficiePorConstruir>250){                 
+
+                //Registro a database
                 $modelArchivo = new Archivo();
-                $modelArchivo->realNombreArchivo = $uuidExpresion . "." . $currFileToWrite->myFile->extension;
+                $modelArchivo->realNombreArchivo = "superficiePorConstruir" . "." . $memoriaCalculoFile->myFile->extension;
+                $modelArchivo->nombreArchivo =
+                    $memoriaCalculoFile->myFile->baseName . "." .
+                        $memoriaCalculoFile->myFile->extension ;
+                $modelArchivo->path = $pathFile ;
+
+
+                $memoriaCalculoFile->myFile->saveAs($modelArchivo->path. $modelArchivo->realNombreArchivo );
+                $modelArchivo->save();
+                //añadir este modelArchivo ID al modelo de la solicitud
+                $modelSolicitudGenerica-> id_Archivo_MemoriaCalculo = $modelArchivo->id;
+                $modelSolicitudGenerica->update();
+            }
+            //solo cuando niveles >= 3
+            if($modelSolicitudGenerica->niveles>=3){
+
+                $modelArchivo = new Archivo();
+                $modelArchivo->realNombreArchivo = "niveles" . "." . $mecanicaSuelosFile->myFile->extension;
+                $modelArchivo->nombreArchivo =
+                    $mecanicaSuelosFile->myFile->baseName . "." .
+                        $mecanicaSuelosFile->myFile->extension ;
+                $modelArchivo->path = $pathFile ;
+
+                $mecanicaSuelosFile->myFile->saveAs($modelArchivo->path. $modelArchivo->realNombreArchivo );
+                $modelArchivo->save();
+                //añadir este modelArchivo ID al modelo de la solicitud
+                $modelSolicitudGenerica-> id_Archivo_MecanicaSuelos = $modelArchivo->id;
+                $modelSolicitudGenerica->update();
+            }
+            if($licenciaConstruccionAreaPreexistenteFile->myFile)
+            {
+                $modelArchivo = new Archivo();
+                $modelArchivo->realNombreArchivo = "licenciaConstruccionAreaPreexistente" . "." . $licenciaConstruccionAreaPreexistenteFile->myFile->extension;
+                $modelArchivo->nombreArchivo =
+                    $licenciaConstruccionAreaPreexistenteFile->myFile->baseName . "." .
+                        $licenciaConstruccionAreaPreexistenteFile->myFile->extension ;
+                $modelArchivo->path = $pathFile ;
+                
+                $licenciaConstruccionAreaPreexistenteFile->myFile->saveAs($modelArchivo->path. $modelArchivo->realNombreArchivo );
+                $modelArchivo->save();
+                //añadir este modelArchivo ID al modelo de la solicitud
+                $modelSolicitudGenerica->id_Archivo_LicenciaConstruccionAreaPreexistenteFile = $modelArchivo->id;
+                $modelSolicitudGenerica->update();
+            }
+            //Archivos registrados en DB
+            //UploadedFileVic array           
+            foreach ($modelFilesRef_TramiteMotivoCuentaConDoc as $id_Documento/* key */ => $currFileToWrite) {
+
+                $modelArchivo = new Archivo();
+                $modelArchivo->realNombreArchivo = $id_Documento . "." . $currFileToWrite->myFile->extension;
                 $modelArchivo->nombreArchivo =
                     $currFileToWrite->myFile->baseName . "." .
                      $currFileToWrite->myFile->extension ;
                 $modelArchivo->path = $pathFile ;
 
-                $currFileToWrite->myFile->saveAs( $modelArchivo->realNombreArchivo ,false );
+                $resultSaveFile =  $currFileToWrite->myFile->saveAs($modelArchivo->path. $modelArchivo->realNombreArchivo );
                 $modelArchivo->save();
 
                 $currSolicitudGeericaHasDoc = new SolicitudGenerica_has_Documento();
                 $currSolicitudGeericaHasDoc->id_SolicitudGenerica = $modelSolicitudGenerica->id;
                 $currSolicitudGeericaHasDoc->id_Documento = $id_Documento;
                 $currSolicitudGeericaHasDoc->id_Archivo = $modelArchivo->id;
-                $currSolicitudGeericaHasDoc->id_Archivo = 1;
+                $currSolicitudGeericaHasDoc->isEntregado = 1;
+
                 $currSolicitudGeericaHasDoc->save();
 
             }                                
@@ -552,7 +573,7 @@ class SiteController extends Controller
      *
      * @return mixed
      */
-    private function actionAbout()
+    public function actionAbout()
     {
         return $this->render('about');
     }

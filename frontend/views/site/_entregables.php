@@ -38,8 +38,8 @@ use common\models\Documento;
                         <?php else:  ?> 
 
                             <?= $form
-                                ->field($modelFilesRef_TramiteMotivoCuentaConDoc["entregable$currEntregable->id_Documento"], 
-                                    "[entregable$currEntregable->id_Documento]myFile",
+                                ->field($modelFilesRef_TramiteMotivoCuentaConDoc["$currEntregable->id_Documento"], 
+                                    "[$currEntregable->id_Documento]myFile",
                                     //['options' => ['class' => 'form-control ',]]
                                 )
                                 ->fileInput([/* 'multiple' => true,  */'accept' => '.pdf,.jpeg,.jpg,.png']) 

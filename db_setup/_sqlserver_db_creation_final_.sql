@@ -1136,7 +1136,7 @@ CREATE TABLE sduma.dbo.SolicitudGenerica(
     ON UPDATE NO ACTION,
   CONSTRAINT fk_SolicitudGenerica_DomicilioNotif
     FOREIGN KEY (id_DomicilioNotificaciones)
-    REFERENCES sduma.dbo.Domicilio (id)
+    REFERENCES sduma.dbo.Domicilio2 (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT fk_SolicitudGenerica_MotivoConstruccion
@@ -1181,7 +1181,7 @@ CREATE TABLE sduma.dbo.SolicitudGenerica(
     ON UPDATE NO ACTION,
  CONSTRAINT fk_SolicitudGenerica_DomicilioPredio
     FOREIGN KEY (id_DomicilioPredio)
-    REFERENCES sduma.dbo.Domicilio (id)
+    REFERENCES sduma.dbo.Domicilio2 (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT fk_SolicitudGenerica_DirectorResponsableObra
