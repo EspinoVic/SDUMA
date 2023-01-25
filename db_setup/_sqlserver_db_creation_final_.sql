@@ -1110,7 +1110,7 @@ CREATE TABLE sduma.dbo.SolicitudGenerica(
 --SOLO CONSTRAINTS FK
 
   CONSTRAINT fk_SolicitudGenerica_MetrosLineales__DirectorResponsableObra
-    FOREIGN KEY (id_DirectorResponsableObra)
+    FOREIGN KEY (id_MetrosLinealesDRO)
     REFERENCES sduma.dbo.DirectorResponsableObra (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,

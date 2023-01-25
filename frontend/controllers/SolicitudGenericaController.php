@@ -67,12 +67,18 @@ class SolicitudGenericaController extends Controller
         ]);
     }
 
+    /* 
+        $id -> id SolicitudGenerica
+    */  
+    public function actionImprimirSolicitud($id){
+        return $this->render("_printsolicitud");
+    }
     /**
      * Creates a new SolicitudGenerica model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
-    public function actionCreate()
+    private function actionCreate()
     {
         $model = new SolicitudGenerica();
 
@@ -96,7 +102,7 @@ class SolicitudGenericaController extends Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    private function actionUpdate($id)
     {
         $model = $this->findModel($id);
 
@@ -116,7 +122,7 @@ class SolicitudGenericaController extends Controller
      * @return \yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    private function actionDelete($id)
     {
         $this->findModel($id)->delete();
 

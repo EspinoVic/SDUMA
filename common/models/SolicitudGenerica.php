@@ -3,7 +3,6 @@
 namespace common\models;
 
 use Yii;
-
 /**
  * This is the model class for table "SolicitudGenerica".
  *
@@ -55,16 +54,18 @@ use Yii;
  * @property ConstanciaPosecionEjidal $constanciaPosecionEjidal
  * @property Contacto $contacto
  * @property DirectorResponsableObra $directorResponsableObra
- * @property DirectorResponsableObra $directorResponsableObra0
- * @property Domicilio $domicilioNotificaciones
- * @property Domicilio $domicilioPredio
+ * @property Domicilio2 $domicilioNotificaciones
+ * @property Domicilio2 $domicilioPredio
  * @property Escritura $escritura
  * @property GeneroConstruccion $generoConstruccion
+ * @property DirectorResponsableObra $metrosLinealesDRO
  * @property MotivoConstruccion $motivoConstruccion
  * @property Persona $personaFisica
  * @property PersonaMoral $personaMoral
+ * @property Persona[] $personas
  * @property SolicitudGenericaCuentaCon $solicitudGenericaCuentaCon
  * @property SolicitudGenericaHasDocumento[] $solicitudGenericaHasDocumentos
+ * @property SolicitudGenericaHasPersona[] $solicitudGenericaHasPersonas
  * @property SubGeneroConstruccion $subGeneroConstruccion
  * @property TipoPredio $tipoPredio
  * @property User $userCreadoPor
@@ -137,8 +138,8 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
             [['id_User_CreadoPor'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['id_User_CreadoPor' => 'id']],
             [['id_User_ModificadoPor'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['id_User_ModificadoPor' => 'id']],
             [['id_MotivoConstruccion'], 'exist', 'skipOnError' => true, 'targetClass' => MotivoConstruccion::class, 'targetAttribute' => ['id_MotivoConstruccion' => 'id']],
-            [['id_DomicilioNotificaciones'], 'exist', 'skipOnError' => true, 'targetClass' => Domicilio::class, 'targetAttribute' => ['id_DomicilioNotificaciones' => 'id']],
-            [['id_DomicilioPredio'], 'exist', 'skipOnError' => true, 'targetClass' => Domicilio::class, 'targetAttribute' => ['id_DomicilioPredio' => 'id']],
+            [['id_DomicilioNotificaciones'], 'exist', 'skipOnError' => true, 'targetClass' => Domicilio2::class, 'targetAttribute' => ['id_DomicilioNotificaciones' => 'id']],
+            [['id_DomicilioPredio'], 'exist', 'skipOnError' => true, 'targetClass' => Domicilio2::class, 'targetAttribute' => ['id_DomicilioPredio' => 'id']],
             [['id_TipoPredio'], 'exist', 'skipOnError' => true, 'targetClass' => TipoPredio::class, 'targetAttribute' => ['id_TipoPredio' => 'id']],
             [['id_Contacto'], 'exist', 'skipOnError' => true, 'targetClass' => Contacto::class, 'targetAttribute' => ['id_Contacto' => 'id']],
             [['id_GeneroConstruccion'], 'exist', 'skipOnError' => true, 'targetClass' => GeneroConstruccion::class, 'targetAttribute' => ['id_GeneroConstruccion' => 'id']],
@@ -211,6 +212,16 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
     public function getAlturaDRO()
     {
         return $this->hasOne(DirectorResponsableObra::class, ['id' => 'id_AlturaDRO']);
+    }
+    
+   /**
+     * Gets query for [[MetrosLinealesDRO]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getMetrosLinealesDRO()
+    {
+        return $this->hasOne(DirectorResponsableObra::class, ['id' => 'id_MetrosLinealesDRO']);
     }
 
     /**
@@ -300,7 +311,7 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
      */
     public function getDomicilioNotificaciones()
     {
-        return $this->hasOne(Domicilio::class, ['id' => 'id_DomicilioNotificaciones']);
+        return $this->hasOne(Domicilio2::class, ['id' => 'id_DomicilioNotificaciones']);
     }
 
     /**
@@ -310,7 +321,7 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
      */
     public function getDomicilioPredio()
     {
-        return $this->hasOne(Domicilio::class, ['id' => 'id_DomicilioPredio']);
+        return $this->hasOne(Domicilio2::class, ['id' => 'id_DomicilioPredio']);
     }
 
     /**
