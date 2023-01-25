@@ -6,14 +6,50 @@ use yii\helpers\Url;
 /* 
 * $expediente common\models\Expediente
 * $solicitudConstruccion common\models\SolicitudConstruccion
-* $soliHasDocuments common\models\SolicitudConstruccionHasDocumento
-*
-*
+* $soliHasDocuments common\models\SolicitudConstruccionHasDocumento  
 */
+/** @var common\models\SolicitudGenerica $solicitudAImprimir  */
+
 
 $this->registerCss("
+ 
+@media print{ 
+   /*  @page {
+        size: 7in 9.25in;
+        margin: 0 0 0 0;
+        min-width: 100%;
+
+    } */
     
-/* @media print{ */
+    @page {
+        size: 7in 9.25in;
+    }
+    @page :left {
+        margin-left: 0;
+    }
+    
+    @page :right {
+        margin-left: 0;
+    }
+    @page :bottom {
+        margin-bottom: 0;
+    }
+}
+@page {
+    /* size: 7in 9.25in;
+    margin: 0 0 0 0; */
+    min-width: 100%;
+
+}
+    body, main {
+        padding: 0;
+    }
+    body > main {
+        width: 100%;
+        max-width: 100%;
+        min-width: 100%;
+        padding: 0;
+    }
     nav,.navbar,header, footer{
         display:none;
         visibility: hidden;
@@ -36,7 +72,9 @@ $this->registerCss("
     }
 /* }  */
   
-   .print-soli-cont{       
+   .print-soli-cont{    
+        min-width: A4;
+   
        font-size: 12pt;
    }
     .title-secretary{
@@ -55,6 +93,7 @@ $this->registerCss("
         
     }
 
+    
     
     ");
 
@@ -78,7 +117,6 @@ $this->registerCss("
             <?php 
                 $img = Url:: to('@web/images/logourupan.png')  ;                 
                 echo Html::img($img , ['class' => 'col-1'/* 'pull-left img-responsive' */]);  
-
             ?> 
         
     
@@ -96,51 +134,41 @@ $this->registerCss("
     </div>
 
     <div class="container-xl p-1 m-1 d-flex justify-content-center inverted-colors">
-        <b>  SOLICITUD DE <?= strtoupper($solicitudConstruccion->motivoConstruccion->nombre)?>  DE CONSTRUCCIÓN </b>
+        <b>  SOLICITUD DE <?= strtoupper($solicitudAImprimir->motivoConstruccion->nombre)?>  DE CONSTRUCCIÓN </b>
     </div>
     
 
-    <div class="container-xl outlined-box p-1 m-1 ">
-        <div class="row  ">
-            <div class="col" ><b>Nombre del propietario:</b>
-             <?=
-               $solicitudConstruccion->solicitudConstruccionHasPersonas[0]->persona->nombre." ".
-               $solicitudConstruccion->solicitudConstruccionHasPersonas[0]->persona->apellidoP." ".
-               $solicitudConstruccion->solicitudConstruccionHasPersonas[0]->persona->apellidoM;
-            
-            ?> </div>   
-        </div>
-    </div>
 
     <div class="container-xl outlined-box p-1 m-1 ">
         <div class="row  ">
-            <div class="col-8" ><b>Domicilio para notificaciones:</b> 
+            <div class="col-8" ><b>Domicilio para notificaciones en Uruapan:</b> 
                 <?=
-                    $solicitudConstruccion->domicilioNotificaciones->calle." #Ext".  
-                    $solicitudConstruccion->domicilioNotificaciones->numExt ." #Int:".  
-                    $solicitudConstruccion->domicilioNotificaciones->numInt." "  
+                    $solicitudAImprimir->domicilioNotificaciones->calle." #Ext".  
+                    $solicitudAImprimir->domicilioNotificaciones->numExt ." #Int:".  
+                    $solicitudAImprimir->domicilioNotificaciones->numInt." "  
                 ?> 
             </div>  
-            <div class="col-4" ><b> Email:</b> <?= $solicitudConstruccion->contacto->email  ?> </div>   
+            <div class="col-4" ><b> Email:</b> <?= $solicitudAImprimir->contacto->email  ?> </div>   
         </div>
         <div class="row  ">
-            <div class="col-8" ><b> Colonia/Fracc/Barrio:</b> <?= $solicitudConstruccion->domicilioNotificaciones->coloniaFraccBarrio." CP: ". $solicitudConstruccion->domicilioNotificaciones->cp  ?> </div>  <div class="col-3" > <b>Telefono:</b> <?= "1234567789"  ?> </div>   
-        </div>
-    </div>
-
-
-    <div class="container-xl outlined-box p-1 m-1 ">
-        <div class="row  ">
-            <div class="col" ><b>Motivo de la solicitud:</b> <?= $solicitudConstruccion->motivoConstruccion->nombre  ?>   </div>   
+            <div class="col-8" ><b> Colonia/Fracc/Barrio:</b> <?= $solicitudAImprimir->domicilioNotificaciones->coloniaFraccBarrio." CP: ". $solicitudAImprimir->domicilioNotificaciones->cp  ?> </div> 
+            <div class="col-3" > <b>Telefono:</b> <?= $solicitudAImprimir->contacto->telefono  ?> </div>   
         </div>
     </div>
 
 
     <div class="container-xl outlined-box p-1 m-1 ">
         <div class="row  ">
-            <div class="col" ><b>Tipo de predio:</b>  <?= $solicitudConstruccion->tipoPredio->nombre  ?>    </div>  
-            <div class="col" ><b>Superficie total:</b>  <?= $solicitudConstruccion->superficieTotal  ?>   </div>  
-            <div class="col" ><b>Superficie por construir:</b>    <?= $solicitudConstruccion->superficiePorConstruir  ?>  </div>   
+            <div class="col" ><b>Motivo de la solicitud:</b> <?= $solicitudAImprimir->motivoConstruccion->nombre  ?>   </div>   
+        </div>
+    </div>
+
+
+    <div class="container-xl outlined-box p-1 m-1 ">
+        <div class="row  ">
+            <div class="col" ><b>Tipo de predio:</b>  <?= $solicitudAImprimir->tipoPredio->nombre  ?>    </div>  
+            <div class="col" ><b>Superficie total:</b>  <?= $solicitudAImprimir->superficieTotal  ?>   </div>  
+            <div class="col" ><b>Superficie por construir:</b>    <?= $solicitudAImprimir->superficiePorConstruir  ?>  </div>   
         </div>
     </div>
 
@@ -150,53 +178,47 @@ $this->registerCss("
         <div class="row  ">
             <div class="col " ><b>Ubicación del predio:</b> 
                 <?=
-                 $solicitudConstruccion->domicilioPredio->calle.
-                 " #Ext: ".$solicitudConstruccion->domicilioPredio->numExt .
-                 " #Int: ".$solicitudConstruccion->domicilioPredio->numInt." "  
+                 $solicitudAImprimir->domicilioPredio->calle.
+                 " #Ext: ".$solicitudAImprimir->domicilioPredio->numExt .
+                 " #Int: ".$solicitudAImprimir->domicilioPredio->numInt." "  
                 ?> 
             </div>  
         </div>
         <div class="row  ">
             <div class="col " > <b>Entre calles:</b> 
                 <?=
-                  $solicitudConstruccion->domicilioPredio->entreCallesH." Y ".
-                  $solicitudConstruccion->domicilioPredio->entreCallesV
+                  " Calle Norte y Sur".$solicitudAImprimir->domicilioPredio->calleNorte." - ".$solicitudAImprimir->domicilioPredio->calleSur.
+                  " Calle Oriente y Poniente". $solicitudAImprimir->domicilioPredio->calleOriente." - ".$solicitudAImprimir->domicilioPredio->callePoniente
                 ?> 
             </div> 
             <div class="col " ><b> Colonia/Fracc/Barrio:</b>
-                <?= $solicitudConstruccion->domicilioPredio->coloniaFraccBarrio  ?> 
+                <?= $solicitudAImprimir->domicilioPredio->coloniaFraccBarrio  ?> 
             </div>             
         </div>
 
         <div class="row">
-            <div class="col " ><b> CP:</b> <?= $solicitudConstruccion->domicilioPredio->cp  ?> </div>  
+            <div class="col " ><b> CP:</b> <?= $solicitudAImprimir->domicilioPredio->cp  ?> </div>  
         </div>
     </div>
 
     <div class="container-xl outlined-box p-1 m-1 ">
         <div class="row  ">
-            <div class="col" ><b>Genero: </b>  <?= $solicitudConstruccion->generoConstruccion->nombre ?>   </div>  
-            <div class="col" ><b>TIPO: </b>  <?= $solicitudConstruccion->tipoConstruccion->nombre.";;;Popular/Residencial//Comercial..etc???"  ?>   </div>           
+            <div class="col" ><b>Genero: </b>  <?= $solicitudAImprimir->generoConstruccion->nombre ?>   </div>  
+            <div class="col" ><b>Sub-genero/clasificación: </b>  <?= $solicitudAImprimir->subGeneroConstruccion->nombre ?>   </div>  
         </div>
     </div>
 
     <div class="container-xl outlined-box p-1 m-1 ">
         <div class="row  ">
-            <div class="col" ><b>Niveles: </b>  <?= $solicitudConstruccion->niveles  ?>   </div>  
-            <div class="col" ><b>Cajones: </b>  <?= $solicitudConstruccion->cajones  ?>   </div>           
-            <div class="col" ><b>COS: </b>  <?= $solicitudConstruccion->COS  ?>   </div>  
-            <div class="col" ><b>CUS: </b>  <?= $solicitudConstruccion->CUS ?>   </div>           
-            <div class="col" ><b>M2 Preexistentes: </b>  <?= $solicitudConstruccion->superficiePreexistente ?>   </div>          
+            <div class="col" ><b>Niveles: </b>  <?= $solicitudAImprimir->niveles  ?>   </div>                    
+            <div class="col" ><b>M2 Preexistentes: </b>  <?= $solicitudAImprimir->areaPreExistente ?>   </div>          
         </div>
     </div>
 
     <div class="container-xl outlined-box p-1 m-1 ">
         <div class="row  ">
-            <div class="col" ><b>Titulo de propiedad: </b>  <?="Pendiente de agregar a DB" /* $solicitudConstruccion->tituloPropiedad */  ?>   </div>  
-            <div class="col" ><b>RPP: </b>  <?= $solicitudConstruccion->RPP  ?>   </div>           
-            <div class="col" ><b>Tomo: </b>  <?= $solicitudConstruccion->tomo  ?>   </div>  
-            <div class="col" ><b>Folio electrónico: </b>  <?= $solicitudConstruccion->folioElec ?>   </div>           
-            <div class="col" ><b>Clave/Cuenta catastral: </b>  <?= $solicitudConstruccion->cuentaCatastral  ?>   </div>  
+
+                
          </div>
     </div>
     <div class="container-xl outlined-box p-1 m-1">
@@ -209,17 +231,14 @@ $this->registerCss("
                         <b> El solicitante integra la siguiente información documental:</b> 
                     </div>
                 </div>
-                <?php foreach ($soliHasDocuments as $key => $soliHasDocument ) { ?>
+                <?php foreach ($solicitudAImprimir->solicitudGenericaHasDocumentos as $key => $curr ) { ?>
                             
                     <div class="row ">
                             <div class="col text-break" >
-                                <?= Html::checkbox("[$key]id_Documento",$soliHasDocument->isEntregado,
-                                    /* [
-                                        'options' => ['class' => 'col-md-1', 'display' => 'none'],
-                                    ] */);
+                                <?= Html::checkbox("[$key]id_Documento",$curr->isEntregado,);
                                 ?>   
                                 <span >                                
-                                    <?=  (Documento::findOne( ["id"=>$soliHasDocument->id_Documento/* /84 */]) -> nombre )  ?>            
+                                    <?=  (Documento::findOne( ["id"=>$curr->id_Documento/* /84 */]) -> nombre )  ?>            
                                 </span>                                                    
                             </div>
 
@@ -229,7 +248,7 @@ $this->registerCss("
                 <?php }  ?> 
                 <div class="row  ">
                     <div class="col">
-                        <b>Nota:</b> La receipción de la solicitud no implica su aprobación o procedencia; pudiendo resultar en positiva o negativa, en su caso podrá requerirse información complementaria.
+                        <b>Nota:</b> La recepción de la solicitud no implica su aprobación o procedencia; pudiendo resultar en positiva o negativa, en su caso podrá requerirse información complementaria.
                     </div>
                 </div>
             </div>
@@ -238,7 +257,7 @@ $this->registerCss("
             <div className="viewport-canvas" class="  col-6 d-flex align-items-stretch ">
                  
                     <canvas id="canvasCroquis" class="d-block "  >
-                        Your browser does not support the HTML5 canvas tag.
+                       Su navegador no soporta canvas.
                     </canvas>
                 
             </div>    
@@ -247,8 +266,17 @@ $this->registerCss("
     </div>   
     <div class="container-xl outlined-box p-1 m-1 ">
         <div class="row mb-5 ">
-            <div class="col mb-5" ><b>Nombre y firma del propietario(s) o apoderado: </b>  <?= " "  ?>   </div>  
-            <div class="col mb-5" ><b>Director responsable de obra (nombre, registro y firma): </b>    </div>           
+            <div class="col-5 " ><b>Nombre y firma del propietario(s) o apoderado: </b>
+                 <?php foreach ( $solicitudAImprimir->solicitudGenericaHasPersonas as $id => $curr) { ?>            
+                    <?= Html::tag("span",$curr->persona->nombre . " " . $curr->persona->apellidoP. " " . $curr->persona->apellidoM,["class"=>"list-group-item"])  ?>
+                <?php } ?>
+                
+                </div>  
+            <div class="col-5" ><b>Director responsable de obra (nombre, registro y firma): </b>
+            <?= Html::tag("span",$solicitudAImprimir->directorResponsableObra->abreviacion . " ". $solicitudAImprimir->directorResponsableObra->persona->nombre . " " .$solicitudAImprimir->directorResponsableObra->persona->apellidoP . " " .$solicitudAImprimir->directorResponsableObra->persona->apellidoM,["class"=>"list-group-item"])  ?>
+
+
+           </div>           
            
          </div>
     </div>
@@ -256,10 +284,8 @@ $this->registerCss("
 
     <div class="container-xl outlined-box p-1 m-1">
         <div class="row  ">
-            <div class="col " ><b>Expediente: </b>  <?= $expediente->idAnual."/".$expediente->anio ?>   </div>  
-            <div class="col" ><b> Fecha Ingreso: </b> <?= date("d/m/Y - h:i a", strtotime($expediente->fechaCreacion) ) ?>   </div>           
-            <div class="col" ><b> Fecha Notificación: </b>    </div>           
-            <div class="col" ><b> Fecha Reingreso: </b>    </div>           
+            <div class="col " ><b>Expediente: </b>  <?=/*  $expediente->idAnual. */"/"/* .$expediente->anio */ ?>   </div>  
+            <div class="col" ><b> Fecha Ingreso: </b> <?= date("d/m/Y - h:i a"/* , strtotime($expediente->fechaCreacion) */ ) ?>   </div>           
             <div class="col" ><b> Fecha Entrega: </b> <?=  date("d/m/Y - h:i a") ?>   </div>           
            
          </div>
@@ -327,7 +353,7 @@ $this->registerCss("
             ctx.translate( origX,origY )
             
 
-            ctx.font = `${18}px sans-serif`;
+            ctx.font = `${16}px sans-serif`;
             let calles = callesH.split(",")
             ctx.fillText(calles[0],0 , 0);
             
@@ -351,7 +377,7 @@ $this->registerCss("
             ctx.rotate( (90 * Math.PI / 180) );
 
  
-            ctx.font = `${18}px sans-serif`;
+            ctx.font = `${16}px sans-serif`;
             let calles = callesV.split(",")
             
             ctx.fillText(calles[0],0 , 0);
@@ -405,8 +431,8 @@ $this->registerCss("
             ctx.save()
         }
 
-        drawCallesH("<?= $solicitudConstruccion->domicilioPredio->entreCallesH  ?>");
-        drawCallesV("<?= $solicitudConstruccion->domicilioPredio->entreCallesV  ?>");
+        drawCallesH("<?= $solicitudAImprimir->domicilioPredio->calleOriente . "," .  $solicitudAImprimir->domicilioPredio->callePoniente  ?>");
+        drawCallesV("<?= $solicitudAImprimir->domicilioPredio->calleNorte . ",". $solicitudAImprimir->domicilioPredio->calleSur  ?>");
 
 
     </script> 

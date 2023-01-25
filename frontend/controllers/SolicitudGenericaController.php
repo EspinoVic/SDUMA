@@ -71,7 +71,15 @@ class SolicitudGenericaController extends Controller
         $id -> id SolicitudGenerica
     */  
     public function actionImprimirSolicitud($id){
-        return $this->render("_printsolicitud");
+
+        /* Checar que current usser tenga acceso a esa solicitud */
+        /* Checar horario? Creo no */
+
+
+        $solicitudAImprimir = SolicitudGenerica::findOne(["id"=>$id,]);
+        return $this->render("_printsolicitud",
+            ["solicitudAImprimir"=>$solicitudAImprimir]
+        );
     }
     /**
      * Creates a new SolicitudGenerica model.

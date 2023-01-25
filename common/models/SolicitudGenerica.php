@@ -391,7 +391,17 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
      */
     public function getSolicitudGenericaHasDocumentos()
     {
-        return $this->hasMany(SolicitudGenericaHasDocumento::class, ['id_SolicitudGenerica' => 'id']);
+        return $this->hasMany(SolicitudGenerica_has_Documento::class, ['id_SolicitudGenerica' => 'id']);
+    }
+
+   /**
+     * Gets query for [[SolicitudGenericaHasPersonas]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getSolicitudGenericaHasPersonas()
+    {
+        return $this->hasMany(SolicitudGenerica_has_Persona::class, ['id_SolicitudGenerica' => 'id']);
     }
 
     /**
