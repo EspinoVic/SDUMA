@@ -4,6 +4,7 @@ namespace frontend\controllers;
 
 use common\models\SolicitudGenerica;
 use common\models\SolicitudGenericaSearch;
+use common\models\User;
 use Yii;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -27,6 +28,7 @@ class SolicitudGenericaController extends Controller
                     'class' => VerbFilter::className(),
                     'actions' => [
                         'delete' => ['POST'],
+                        'changestate' => ['POST']
                     ],
                 ],
             ]
@@ -62,9 +64,86 @@ class SolicitudGenericaController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        $availableStates = $this->isEmployee() ?
+             SolicitudGenerica::STATUS_SOLICITUD:
+             [$model->statusSolicitud=> SolicitudGenerica::STATUS_SOLICITUD[$model->statusSolicitud]]
+             ;
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            "availableStates"=> $availableStates,
         ]);
+    }
+
+    /* Id de solicitud */
+    public function actionChangestate(){
+        
+        $id = $this->request->post("id");
+        if(!$id) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
+
+        $canChangeState = $this->isEmployee($id);
+        if(!$canChangeState) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
+        
+        $solicitud = SolicitudGenerica::findOne(["id" => $id]);
+        if(!$solicitud) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
+
+        $newState = $this->request->post("newState");
+
+        $solicitud->statusSolicitud = $newState;
+        $updateResult = $solicitud->update();
+        if( $updateResult!= "1" && $updateResult != 1){
+            Yii::$app->session->setFlash( 'danger',   "Error al cambiar el estado, intente más tarde." );
+        }
+                        
+        return $this->redirect(['solicitud-generica/view',"id"=>$id]);
+
+
+    }
+
+    protected static function isEmployee(){        
+        $user =Yii::$app->user->identity;
+
+        //si no hay sesión, automaticamente false.
+        if(!$user) return false;
+        $userSrc = User::getUserSrcTruth($user->username);
+
+
+        switch ($userSrc->id_UserLevel) {
+            case User::USER_LEVEL_ADMIN:
+            case User::USER_LEVEL_INTERNO:
+                    return true;
+                break;
+            default:
+                return false;
+                break;
+        }
+
+    }
+
+    private function checkAccessSolicitud($idSolicitud){        
+        $user =Yii::$app->user->identity;
+
+        //si no hay sesión, automaticamente false.
+        if(!$user) return false;
+
+        $userSrc = User::getUserSrcTruth($user->username);
+
+        switch ($userSrc->id_UserLevel) {
+            case User::USER_LEVEL_ADMIN:
+            case User::USER_LEVEL_INTERNO:
+                    return true;
+                break;
+                
+            case User::USER_LEVEL_EXTERNO:
+                //Si es el propietario del expediente, -> true
+                return SolicitudGenerica::findOne(["id_User_CreadoPor"=> $userSrc->id])?true:false;
+                break;
+            default:
+                return false;
+                break;
+        }
+
     }
 
     /* 

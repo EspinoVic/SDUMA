@@ -14,7 +14,9 @@ $this->title = 'My Yii Application';
                     echo "Gracias por usar el portal de ".   Yii::$app->name   .", inicie sesión o registese para iniciar algún trámite.";
                 }
                 else{
-                    echo "Haga click en el menú 'Expedientes' en la parte superior de la pantalla.";
+                    echo "Haga click en el menú 'Solicitudes' en la parte superior de la pantalla para listar las solicitudes existentes.";
+                    echo "<br>";
+                    echo "O menú 'Expedientes' para listar las solicitudes aprobadas.";
                 }
                 ?>
 

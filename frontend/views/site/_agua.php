@@ -17,7 +17,7 @@ use yii\bootstrap5\Html;
     ->label("Número de toma de agua")
     ?>
     <?= $form->field($modelSolicitudGenerica,"numeroReciboAgua",['options' => ['class' => 'col-md-3'],])
-    ->label("Número de recibo de agua o contrato")
+    ->label("Número de recibo de agua (si entrega recibo)")
     ?>
 
 <!-- SOLAMENTE SI ES EJIDAL, PODRÄ ELEJIR ENTRE CONTRATO O RECIBO -->

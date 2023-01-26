@@ -120,7 +120,7 @@ class SiteController extends Controller
 
         $modelSolicitudGenerica = new SolicitudGenerica();
         $modelSolicitudGenerica->scenario = SolicitudGenerica::SCENARIO_CREATE;
-
+        $modelSolicitudGenerica->id_SolicitudGenericaCuentaCon = 1 ;
         $modelContacto = new Contacto();
         $personaSolicita = new Persona();
         $personaMoralSolicita = new PersonaMoral();

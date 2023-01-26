@@ -10,18 +10,34 @@ use yii\grid\GridView;
 /** @var common\models\SolicitudGenericaSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Solicitud Genericas';
+$this->title = 'Solicitudes';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="solicitud-generica-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
+   
 
-    <p>
-        <?= Html::a('Create Solicitud', ["site/segunda"/* 'create' */], ['class' => 'btn btn-success']) ?>
-    </p>
+<div class="modal fade  " id="exampleModal2" tabindex="-1" aria-labelledby="exampleModal2Label" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModal2Label">Filtrar</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <?php echo $this->render('_search', ['model' => $searchModel]); ?>
+      </div>       
+    </div>
+  </div>
+</div>
 
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+<p>
+    <?= Html::a('Crear Solicitud', ["site/segunda"/* 'create' */], ['class' => 'btn btn-success']) ?>
+</p>
+
+<button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal2">Filtrar</button>
+
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

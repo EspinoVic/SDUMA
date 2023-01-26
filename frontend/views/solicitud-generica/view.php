@@ -1,9 +1,11 @@
 <?php
 
 use common\models\GeneroConstruccion;
+use common\models\SolicitudGenerica;
 use common\models\SolicitudGenerica_has_Documento;
 use common\models\SolicitudGenerica_has_Persona;
-use yii\helpers\Html;
+use yii\bootstrap5\ActiveForm;
+use yii\bootstrap5\Html;
 use yii\widgets\DetailView;
 
 /** @var yii\web\View $this */
@@ -27,6 +29,28 @@ $this->params['breadcrumbs'][] = $this->title;
         </a>
     </p>    
 
+    <?php $form = ActiveForm::begin([
+        'action' => ['/solicitud-generica/changestate'],
+        'method' => 'post',
+    ]); ?>
+
+        <div class="container">
+            <input type="hidden" name="id" value="<?=$model->id?>" />
+            <div class="  row ">
+                <p class="col-5">
+                    <?= Html::dropDownList("newState",$model->statusSolicitud,$availableStates,["class"=>"form-select "])  ?> 
+                </p>
+                <?php if( count( $availableStates) > 1 )  ?> <!-- Significa que la sesión es de un empleado, por tanto puede editar -->
+
+                <p class="col-3">
+                    <?= Html::submitButton("Cambiar estado de solicitud",["class"=>"btn btn-success "])  ?> 
+                </p>
+    
+            </div>
+        </div>
+
+    <?php ActiveForm::end(); ?>
+
     <h2><?= Html::encode('Resúmen de solicitud') ?></h2>    
 
     <h4><?= Html::encode("") ?></h4> 
@@ -49,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <h5> <b> Fecha de emisión: </b> <?= Html::encode($model->constanciaEscritura->fechaEmision )  ?> </h5>
         <h5> <b> No. Escritura: </b> <?= Html::encode($model->constanciaEscritura->noEscritura)  ?> </h5>
-        <h5> <b> No. de Notaria: </b> <?= Html::encode($model->constanciaEscritura->noRegistro )  ?> </h5>
+        <h5> <b> No. de Notaria: </b> <?= Html::encode($model->constanciaEscritura->noNotaria )  ?> </h5>
 
 
     <?php }else if($model-> id_SolicitudGenericaCuentaCon =="3"){ ?> 

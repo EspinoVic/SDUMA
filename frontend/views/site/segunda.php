@@ -239,13 +239,7 @@ use yii\web\JsExpression;
 
   </script>
 
-  <?= $this->render("_entregables",
-    [
-      "modelTramiteMotivoCuentaConDoc"=>$modelTramiteMotivoCuentaConDoc,
-      "modelFilesRef_TramiteMotivoCuentaConDoc"=>$modelFilesRef_TramiteMotivoCuentaConDoc,
-      "form"=>$form
-    ]
-  )  ?>
+ 
   
   <br>
   <div class="row g3 border rounded-3  p-3">
@@ -328,6 +322,7 @@ use yii\web\JsExpression;
       <?php endif;  ?> 
 
     </div>
+    
     <br>
       <?= $this->render('_domicilio_fields', [
             'domicilio' => $domicilioPredio,
@@ -335,6 +330,15 @@ use yii\web\JsExpression;
             'tipoDomicilio'=> "Domicilio de predio"
         ]) ?>  
     <br>
+
+    <?= $this->render("_entregables",
+    [
+      "modelTramiteMotivoCuentaConDoc"=>$modelTramiteMotivoCuentaConDoc,
+      "modelFilesRef_TramiteMotivoCuentaConDoc"=>$modelFilesRef_TramiteMotivoCuentaConDoc,
+      "form"=>$form
+    ]
+  )  ?>
+
     <?= $this->render("_dro_dropdown",
     ["form"=>$form,
     "modelDROList"=>$modelDROList,

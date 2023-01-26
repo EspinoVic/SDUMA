@@ -88,9 +88,7 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
         //"VALIDANDO SOLICITUD",
         "SOLICITUD VALIDADA",
         "REVISIÓN DEL PREDIO",
-        
-
-
+        "CANCELADA",
     ];
     
     

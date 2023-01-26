@@ -20,6 +20,7 @@ if (Yii::$app->user->isGuest) {
     $menuItems[] = ['label' => 'Registrarse', 'url' => ['/site/signup']];
 }
 else{
+    $menuItems[] = ['label' => 'Solicitudes', 'url' => ['/solicitud-generica/index']];
     $menuItems[] = ['label' => 'Expedientes', 'url' => ['/expedientes/index']];
 }
 
