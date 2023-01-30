@@ -734,6 +734,8 @@ CREATE TABLE sduma.dbo.Archivo(
   PRIMARY KEY(ID)
 );
 
+INSERT INTO [dbo].[Archivo]  ([nombreArchivo]  ,[path]  ,[realNombreArchivo]) VALUES  ('Archivo fisico','','No name');
+
 
 --la relación de configuración de documentos
 --Cada trámite tiene X motivo y a su vez tiene cierto "CuentaCon" (ver tabla) y tiene cierto documento (por año)

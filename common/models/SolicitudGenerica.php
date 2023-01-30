@@ -89,7 +89,11 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
         "SOLICITUD VALIDADA",
         "REVISIÓN DEL PREDIO",
         "CANCELADA",
+        200 =>"APROBADA"
+
     ];
+
+    public const STATUS_VALID = 200;
     
     
     public function scenarios()

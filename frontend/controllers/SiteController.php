@@ -163,12 +163,24 @@ class SiteController extends Controller
             foreach ($modelTramiteMotivoCuentaConDoc as $key => $curr) {
                 $modelFilesRef_TramiteMotivoCuentaConDoc["$curr->id_Documento"] =  new UploadFileVic(); 
             }
-        }
 
+            $modelSolicitudGenericaCuentaConAvailables = SolicitudGenericaCuentacon::findAll(["isActivo"=>"1"]);
+
+        }
 
         if($this->request->isPost){
 
             $modelSolicitudGenerica->load($this->request->post(),"SolicitudGenerica");
+            $modelSolicitudGenericaCuentaConAvailables = 
+                ($modelSolicitudGenerica->id_MotivoConstruccion == 2) ? //Si selecciona Registro
+                SolicitudGenericaCuentacon::findAll(["id"=>"3"])  //CONSTANCIA POSECIÖN EJIDAL
+                :
+                SolicitudGenericaCuentacon::findAll(["isActivo"=>"1"]);
+
+
+
+
+            /* IF MOTIVO = REGISTRO -> CUENTA CON EJIDAL */
             $modelContacto->load($this->request->post(),"Contacto");
             
             $personaSolicita->load($this->request->post("Persona"),"personaF");
@@ -336,6 +348,7 @@ class SiteController extends Controller
             'modelConstanciaEscritura' => $modelConstanciaEscritura,
             'modelConstanciaPosecionEjidal' => $modelConstanciaPosecionEjidal,            
             'modelSolicitudGenerica' => $modelSolicitudGenerica,
+            'modelSolicitudGenericaCuentaConAvailables' => $modelSolicitudGenericaCuentaConAvailables,
             'modelTramiteMotivoCuentaConDoc'=> $modelTramiteMotivoCuentaConDoc,
             'modelFilesRef_TramiteMotivoCuentaConDoc'=> $modelFilesRef_TramiteMotivoCuentaConDoc,
             'memoriaCalculoFile' =>$memoriaCalculoFile,

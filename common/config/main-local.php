@@ -16,6 +16,7 @@ return [
             //'dsn' => 'sqlsrv:Server=localhost\\SDUMA_DB;database=sduma',
             //'dsn' => 'mssql:host=localhost\\SDUMA_DB;dbname=sduma',
             'dsn' => 'sqlsrv:Server=localhost\\SDUMA_DB;Database=sduma', // MS SQL Server, sqlsrv driver
+            //'dsn' => 'sqlsrv:Server=192.168.18.37\\SDUMA_DB,1433;Database=sduma', // MS SQL Server, sqlsrv driver
             'username' => 'sa',
             'password' => 'vic',
             'charset' => 'utf8',

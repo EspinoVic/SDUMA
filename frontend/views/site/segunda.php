@@ -6,6 +6,9 @@
 /** @var common\models\PersonaMoral $personaMoralSolicita */
 /** @var common\models\SolicitudGenerica $modelSolicitudGenerica */
 /** @var common\models\ConfigTramiteMotivoCuentaconDoc $modelTramiteMotivoCuentaConDoc[] */
+/** @var common\models\ConfigTramiteMotivoCuentaconDoc $modelTramiteMotivoCuentaConDoc[] */
+/** @var common\models\SolicitudGenericaCuentaCon $modelSolicitudGenericaCuentaConAvailables[] */
+
 /** @var common\models\UploadFileVic $modelFilesRef_TramiteMotivoCuentaConDoc[] */
 /** @var file $licenciaConstruccionAreaPreexistenteFile */
 /** @var common\models\Contacto $modelContacto */
@@ -115,19 +118,18 @@ use yii\web\JsExpression;
       <?= $form
         ->field($modelSolicitudGenerica, 'id_MotivoConstruccion',['options' => ['class' => 'col-md-4']])
         ->dropDownList(
-            $items = 
-           /*  ArrayHelper::merge(
-              ["-1"=>"Seleccione"],   */                      
+            $items =                    
               ArrayHelper::map(
                   MotivoConstruccion::findAll(['isActivo' => 1]),
-                  'id' /* closure too */,
+                  'id',
                   function ($currentTipoTramite) {
                       return $currentTipoTramite[
                           'nombre'
-                      ]; /* .'-'.$currentTipoTramite['seconde parameter']; */
+                      ]; 
                   }
               )
-           /*  ) */
+              ,['onchange'=> new JsExpression("this.form.submit(); ")  ]
+
         )
         ->label('Motivo de solicitud') 
         ?>
@@ -135,20 +137,17 @@ use yii\web\JsExpression;
         <?= $form
               ->field($modelSolicitudGenerica, 'id_SolicitudGenericaCuentaCon',['options' => ['class' => 'col-md-4']])
               ->dropDownList(
-                  $items = 
-                 /*  ArrayHelper::merge(
-                      ["null"=>"Seleccione"],   */                      
+                  $items =                  
                       ArrayHelper::map(
-                          SolicitudGenericaCuentaCon::findAll(['isActivo' => 1]),
-                          'id' /* closure too */,
-                          function ($currentSolicitudGenericaCuentaCon) {
-                              return $currentSolicitudGenericaCuentaCon[
-                                  'nombre'
-                              ]; /* .'-'.$currentSolicitudGenericaCuentaCon['seconde parameter']; */
+                          $modelSolicitudGenericaCuentaConAvailables,
+                          'id',
+                          function ($curr) {
+                            return $curr[
+                                'nombre'
+                            ]; 
                           }
                       )
-                    /* ) */,
-                    /* ['onchange'=> new JsExpression('cuentaConChange(event)'  )] */ //ahora controlado por ssr
+                    ,
                     ['onchange'=> 'this.form.submit()' ]
               )
               ->label('Cuenta con') 
