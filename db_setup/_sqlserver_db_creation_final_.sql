@@ -721,7 +721,7 @@ INSERT INTO sduma.[dbo].[SolicitudGenericaCuentaCon] ([nombre] ,[isActivo])
      VALUES 
      ('ESCRITURA',1),
 	   ('CONSTANCIA DE ESCRITURA',1),
-	   ('CONSTANCIA DE POSECIÖN EJIDAL',1)
+	   ('CONSTANCIA DE POSECIÓN EJIDAL',1)
 GO
 
 
@@ -1037,6 +1037,10 @@ CREATE TABLE sduma.dbo.Expediente (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 	);
+
+
+INSERT INTO [dbo].[DirectorResponsableObra] ([titulo] ,[abreviacion],[cedula] ,[isActivo] ,[id_Persona])
+     VALUES ('Ingeniero' ,'Ing.' ,'LOL-GOLD4-WIN' ,'1' ,'1');
 
 
 CREATE TABLE sduma.dbo.SolicitudGenerica(

@@ -80,20 +80,22 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
     {
         return 'SolicitudGenerica';
     }
-    public const SCENARIO_CREATE = 'CREATE_SOLICITUD_GENERICA';
+    public const SCENARIO_CREATE_ESCRITURA_CONSTANCIA = 'CREATE_SOLICITUD_GENERICA';
+    public const SCENARIO_CREATE_EJIDAL = 'CREATE_SOLICITUD_GENERICA';
     public const STATUS_SOLICITUD = 
     [
         //"EN CAPTURA",
         "ESPERANDO VALIDACIÓN DE SOLICITUD",
         //"VALIDANDO SOLICITUD",
-        "SOLICITUD VALIDADA",
+        201 => "SOLICITUD VALIDADA",
         "REVISIÓN DEL PREDIO",
         "CANCELADA",
-        200 =>"APROBADA"
+        200 => "APROBADA"
 
     ];
 
-    public const STATUS_VALID = 200;
+    public const STATUS_APROBADA = 200;
+    public const STATUS_VALIDADA = 201;
     
     
     public function scenarios()
@@ -101,21 +103,32 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
         $scenarios = parent::scenarios();
 
         //$scenarios[self::SCENARIO_MANDATORY_FILE] = ['myFile']; //default scenario defined in rules function
-        $scenarios[self::SCENARIO_CREATE] = 
+        $scenarios[self::SCENARIO_CREATE_ESCRITURA_CONSTANCIA] = 
         [
             'fechaPagoAguaOContrato',
             'isSolicitaPersonaFisica', 
             'superficieTotal', 'niveles', 'numeroTomaAgua',
             'numeroReciboAgua', 'subeRecibo', 
             'numeroPredial','fechaPagoPredial',
-            'id_MetrosLinealesDRO', 'id_AlturaDRO', 
-          
+            'id_MetrosLinealesDRO', 'id_AlturaDRO',           
             'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon',
-
             'id_TipoPredio', 
             'id_GeneroConstruccion', 'id_SubGeneroConstruccion',
             'id_DirectorResponsableObra', 
-
+            'superficiePorConstruir', 'areaPreExistente', 'altura', 'metrosLineales',
+            'tipoTomaAgua',
+        ];
+        $scenarios[self::SCENARIO_CREATE_EJIDAL] = 
+        [
+            'fechaPagoAguaOContrato',
+            'isSolicitaPersonaFisica', 
+            'superficieTotal', 'niveles', 'numeroTomaAgua',
+            'numeroReciboAgua', 'subeRecibo', 
+            'id_MetrosLinealesDRO', 'id_AlturaDRO',           
+            'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon',
+            'id_TipoPredio', 
+            'id_GeneroConstruccion', 'id_SubGeneroConstruccion',
+            'id_DirectorResponsableObra', 
             'superficiePorConstruir', 'areaPreExistente', 'altura', 'metrosLineales',
             'tipoTomaAgua',
         ];
@@ -130,7 +143,7 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
         return [
             [['statusSolicitud', 'isSolicitaPersonaFisica', 'superficieTotal', 'niveles', 'numeroTomaAgua', 'numeroReciboAgua', 'subeRecibo', 'numeroPredial', 'id_MetrosLinealesDRO', 'id_AlturaDRO', 'id_PersonaFisica', 'id_PersonaMoral', 'id_Contacto', 'id_DomicilioNotificaciones', 'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon', 'id_Escritura', 'id_ConstanciaEscritura', 'id_ConstanciaPosecionEjidal', 'id_TipoPredio', 'id_GeneroConstruccion', 'id_SubGeneroConstruccion', 'id_DomicilioPredio', 'id_DirectorResponsableObra', 'id_Archivo_MemoriaCalculo', 'id_Archivo_MecanicaSuelos', 'id_Archivo_LicenciaConstruccionAreaPreexistenteFile', 'id_User_CreadoPor', 'id_User_ModificadoPor'], 'integer'],
             [['superficieTotal', 'numeroTomaAgua', 'fechaPagoAguaOContrato', 'id_Contacto', 'id_DomicilioNotificaciones', 'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon', 'id_TipoPredio', 'id_GeneroConstruccion', 'id_SubGeneroConstruccion', 'id_DomicilioPredio', 'id_DirectorResponsableObra', 'id_User_CreadoPor', 'id_User_ModificadoPor', 'fechaCreacion', 'fechaModificacion'], 'required'],
-            [["fechaPagoPredial","numeroPredial"],'required',"on"=>self::SCENARIO_CREATE],
+            [["fechaPagoPredial","numeroPredial"],'required',"on"=>self::SCENARIO_CREATE_ESCRITURA_CONSTANCIA],
             [['superficiePorConstruir', 'areaPreExistente', 'altura', 'metrosLineales'], 'number'],
             [['fechaPagoAguaOContrato', 'fechaPagoPredial', 'fechaCreacion', 'fechaModificacion'], 'safe'],
             [['tipoTomaAgua'], 'string', 'max' => 255],

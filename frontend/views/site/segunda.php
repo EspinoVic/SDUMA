@@ -328,16 +328,10 @@ use yii\web\JsExpression;
             'form' => $form,'id' => '1',//index del objeto domicilio
             'tipoDomicilio'=> "Domicilio de predio"
         ]) ?>  
-    <br>
+   
+   <br>
 
-    <?= $this->render("_entregables",
-    [
-      "modelTramiteMotivoCuentaConDoc"=>$modelTramiteMotivoCuentaConDoc,
-      "modelFilesRef_TramiteMotivoCuentaConDoc"=>$modelFilesRef_TramiteMotivoCuentaConDoc,
-      "form"=>$form
-    ]
-  )  ?>
-
+    
     <?= $this->render("_dro_dropdown",
     ["form"=>$form,
     "modelDROList"=>$modelDROList,
@@ -350,6 +344,16 @@ use yii\web\JsExpression;
     <br>
       
     <?= $this->render("_propietarios",["form"=>$form,"modelPropietarios"=>$modelPropietarios])  ?>
+    <br>
+
+
+    <?= $this->render("_entregables",
+    [
+      "modelTramiteMotivoCuentaConDoc"=>$modelTramiteMotivoCuentaConDoc,
+      "modelFilesRef_TramiteMotivoCuentaConDoc"=>$modelFilesRef_TramiteMotivoCuentaConDoc,
+      "form"=>$form
+    ]
+  )  ?>
 
 <br>
 

@@ -119,7 +119,7 @@ class SiteController extends Controller
     public function actionSegunda(){
 
         $modelSolicitudGenerica = new SolicitudGenerica();
-        $modelSolicitudGenerica->scenario = SolicitudGenerica::SCENARIO_CREATE;
+        $modelSolicitudGenerica->scenario = SolicitudGenerica::SCENARIO_CREATE_ESCRITURA_CONSTANCIA;
         $modelSolicitudGenerica->id_SolicitudGenericaCuentaCon = 1 ;
         $modelContacto = new Contacto();
         $personaSolicita = new Persona();
@@ -175,11 +175,15 @@ class SiteController extends Controller
                 $modelSolicitudGenericaCuentaConAvailables = SolicitudGenericaCuentacon::findAll(["id"=>"3","isActivo"=>"1"]);
             $modelSolicitudGenerica->id_SolicitudGenericaCuentaCon = 3;
             }else{
-
                 //CONSTANCIA POSECIÖN EJIDAL
                 $modelSolicitudGenericaCuentaConAvailables = SolicitudGenericaCuentacon::findAll(["isActivo"=>"1"]);
             }
+            
+            if($modelSolicitudGenerica->id_SolicitudGenericaCuentaCon == 3 ){
+                $modelSolicitudGenerica->scenario = SolicitudGenerica::SCENARIO_CREATE_EJIDAL;
+            }
 
+            
 
 
 
@@ -313,6 +317,7 @@ class SiteController extends Controller
                     //Opcional, no requiere validación
                     //$licenciaConstruccionAreaPreexistenteFile->validate();
                     if($resultValidation)//empieza a guardar archivos y data en DB.
+                    {
                         $this->guardarSolicitud(
                             $modelSolicitudGenerica,
                             $modelContacto,
@@ -332,6 +337,8 @@ class SiteController extends Controller
                             $licenciaConstruccionAreaPreexistenteFile
 
                         );
+                        return $this->redirect(['solicitud-generica/index']); 
+                    }
                 }    
 
                 

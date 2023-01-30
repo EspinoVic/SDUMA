@@ -18,16 +18,20 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="solicitud-generica-view">
 
-    <p>
-         
-        <a href=<?= "imprimir-solicitud?id=$model->id" ?>  target="_blank" rel="noopener noreferrer" class="btn btn-success m-1" onclick="window.location() ">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
-        <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
-        <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
-        </svg> 
-        Imprimir Solicitud
-        </a>
-    </p>    
+    <?php if($model->statusSolicitud == SolicitudGenerica::STATUS_VALIDADA){ ?>
+
+        <p>         
+            <a href=<?= "imprimir-solicitud?id=$model->id" ?>  target="_blank" rel="noopener noreferrer" class="btn btn-success m-1" onclick="window.location() ">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
+            <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+            <path d="M5 1a2 2 0 0 0-2 2v2H2a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h1v1a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1h1a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-1V3a2 2 0 0 0-2-2H5zM4 3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2H4V3zm1 5a2 2 0 0 0-2 2v1H2a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1v-1a2 2 0 0 0-2-2H5zm7 2v3a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1z"/>
+            </svg> 
+            Imprimir Solicitud
+            </a>
+        </p>    
+
+    <?php } ?>
+
 
     <?php $form = ActiveForm::begin([
         'action' => ['/solicitud-generica/changestate'],
@@ -71,17 +75,16 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php }else if($model-> id_SolicitudGenericaCuentaCon =="2"){ ?> 
 
-        <h5> <b> Fecha de emisión: </b> <?= Html::encode($model->constanciaEscritura->fechaEmision )  ?> </h5>
+        <h5> <b> Fecha de emisión: </b> <?= Html::encode(date("d-m-Y",strtotime( $model->constanciaEscritura->fechaEmision) ) )  ?> </h5>
         <h5> <b> No. Escritura: </b> <?= Html::encode($model->constanciaEscritura->noEscritura)  ?> </h5>
         <h5> <b> No. de Notaria: </b> <?= Html::encode($model->constanciaEscritura->noNotaria )  ?> </h5>
 
 
     <?php }else if($model-> id_SolicitudGenericaCuentaCon =="3"){ ?> 
-        <h5> <b> Fecha de emisión: </b> <?= Html::encode($model->constanciaPosecionEjidal->fechaEmision )  ?> </h5>
+        <h5> <b> Fecha de emisión: </b> <?= Html::encode(date("d-m-Y",strtotime($model->constanciaPosecionEjidal->fechaEmision ) ))  ?> </h5>
         <h5> <b> No. Constancia: </b> <?= Html::encode($model->constanciaPosecionEjidal->noConstanciaPosEjidal )  ?> </h5>
         <h5> <b> Emitió: </b> <?= Html::encode($model->constanciaPosecionEjidal->nombreQuienEmitio)  ?> </h5>
 
-        <? $this->render("_constanciaPosecionEjidal",['modelConstanciaPosecionEjidal'=>$modelConstanciaPosecionEjidal,'form'=>$form, 'idContainer'=>"contConstanciaPosecionEjidalFields"])  ?>
 
     <?php }  ?> 
     <br>
