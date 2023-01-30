@@ -55,12 +55,7 @@
        'url' => ['/documento/index'],
        'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ],
        /* 'active' => true */
-     ],
-     [
-       'label'=> 'Documento por trámite',
-       'url' => ['/tipo-tramite-has-documento/index'],
-       'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ]
-     ],
+     ], 
      [
        'label'=> 'Configuración de documentos',
        'url' => ['/config-tramite-motivo-cuentacon-doc/index'],

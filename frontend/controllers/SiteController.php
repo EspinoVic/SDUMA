@@ -171,11 +171,15 @@ class SiteController extends Controller
         if($this->request->isPost){
 
             $modelSolicitudGenerica->load($this->request->post(),"SolicitudGenerica");
-            $modelSolicitudGenericaCuentaConAvailables = 
-                ($modelSolicitudGenerica->id_MotivoConstruccion == 2) ? //Si selecciona Registro
-                SolicitudGenericaCuentacon::findAll(["id"=>"3"])  //CONSTANCIA POSECIÖN EJIDAL
-                :
-                SolicitudGenericaCuentacon::findAll(["isActivo"=>"1"]);
+            if($modelSolicitudGenerica->id_MotivoConstruccion == 2){//Si selecciona Registro
+                $modelSolicitudGenericaCuentaConAvailables = SolicitudGenericaCuentacon::findAll(["id"=>"3","isActivo"=>"1"]);
+            $modelSolicitudGenerica->id_SolicitudGenericaCuentaCon = 3;
+            }else{
+
+                //CONSTANCIA POSECIÖN EJIDAL
+                $modelSolicitudGenericaCuentaConAvailables = SolicitudGenericaCuentacon::findAll(["isActivo"=>"1"]);
+            }
+
 
 
 
