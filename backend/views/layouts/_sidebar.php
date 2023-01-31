@@ -37,13 +37,6 @@
        'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ],
        /* 'active' => true */
      ],
-
-     [
-       'label'=> 'Tipo Construccion',
-       'url' => ['/tipo-construccion/index'],
-       'linkOptions' =>['class'=> 'list-group-item list-group-item-action' ],
-       /* 'active' => true */
-     ],
      [
        'label'=> 'Tipo Trámite',
        'url' => ['/tipo-tramite/index'],

@@ -178,7 +178,7 @@ class SiteController extends Controller
                 //CONSTANCIA POSECIÖN EJIDAL
                 $modelSolicitudGenericaCuentaConAvailables = SolicitudGenericaCuentacon::findAll(["isActivo"=>"1"]);
             }
-            
+
             if($modelSolicitudGenerica->id_SolicitudGenericaCuentaCon == 3 ){
                 $modelSolicitudGenerica->scenario = SolicitudGenerica::SCENARIO_CREATE_EJIDAL;
             }
