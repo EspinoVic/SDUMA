@@ -154,12 +154,40 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <!-- No pide datos de predial cuando trae Constancia ejidal  -->
     <br>
-    <h4><?= Html::encode("Documentos entregados") ?></h4>       
-    <ul class="list-group">
-        <?php foreach ( SolicitudGenerica_has_Documento::findAll(["id_SolicitudGenerica"=>$model->id]) as $id => $curr) { ?>            
-            <?= Html::tag("li",$curr->documento->nombre,["class"=>"list-group-item"])  ?>        
-        <?php } ?>
-    </ul>
+    <h4><?= Html::encode("Documentos entregados") ?></h4>
+    <table id="tableEntregables" class="table table-hover  ">
+        <thead>
+            <tr>                                   
+                <th scope="col">Entregable</th>
+                <th scope="col">Entregado</th>
+                <th scope="col">Descarga</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($model->solicitudGenericaHasDocumentos as $id => $currEntregable) { ?>
+                <tr <?php echo "id = 'docRow$id' "  ?> >
+                    <td><?=$currEntregable->documento->nombre ?> </td>
+                    <td><?=$currEntregable->isEntregado =="1"?"SI":"NO" ?> </td>
+                    <td>
+                        <?php if(!$currEntregable->documento->isSoloEntregaFisica){ ?>
+                        
+                            <a href=<?= "archivo-solicitud?id=$model->id&idFile=".$currEntregable->documento->id ?>  target="_blank" rel="noopener noreferrer" class="btn btn-success m-1" onclick="window.location() ">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download" viewBox="0 0 16 16">
+                                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                                </svg>                
+                            </a>
+
+                    <?php } else{?>
+
+                    <?php } ?>
+
+                </tr>                                
+            <?php } ?>
+        </tbody>
+
+
+    </table>
 
     <br>
 
