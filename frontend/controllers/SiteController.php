@@ -164,6 +164,7 @@ class SiteController extends Controller
                 $modelFilesRef_TramiteMotivoCuentaConDoc["$curr->id_Documento"] =  new UploadFileVic(); 
             }
 
+            /* CONSTANCIA EJIDAL; ESCRITURA; CONSTANCIA ESCRITURA */
             $modelSolicitudGenericaCuentaConAvailables = SolicitudGenericaCuentacon::findAll(["isActivo"=>"1"]);
 
         }
@@ -173,7 +174,7 @@ class SiteController extends Controller
             $modelSolicitudGenerica->load($this->request->post(),"SolicitudGenerica");
             if($modelSolicitudGenerica->id_MotivoConstruccion == 2){//Si selecciona Registro
                 $modelSolicitudGenericaCuentaConAvailables = SolicitudGenericaCuentacon::findAll(["id"=>"3","isActivo"=>"1"]);
-            $modelSolicitudGenerica->id_SolicitudGenericaCuentaCon = 3;
+                $modelSolicitudGenerica->id_SolicitudGenericaCuentaCon = 3;
             }else{
                 //CONSTANCIA POSECIÖN EJIDAL
                 $modelSolicitudGenericaCuentaConAvailables = SolicitudGenericaCuentacon::findAll(["isActivo"=>"1"]);
@@ -192,7 +193,7 @@ class SiteController extends Controller
             $modelContacto->load($this->request->post(),"Contacto");
             
             $personaSolicita->load($this->request->post("Persona"),"personaF");
-            $personaMoralSolicita->load($this->request->post("Persona"),"personaM");
+            $personaMoralSolicita->load($this->request->post(/* "PersonaMoral" */),"PersonaMoral");
 
 
             $domicilioNotif->load($this->request->post("Domicilio2"),"0"); //Domicilio2 tambien funciona xd
@@ -294,6 +295,7 @@ class SiteController extends Controller
                         $resultValidation = $resultValidation && false;
                     }
 
+                    //iTERA LA CONFIG DE ARCHIVOS (ARCHIVO AVAILABLES) PARA SACAR EL INDEX DE LOS ARCHIVOS EN $_POST
                     foreach ($modelTramiteMotivoCuentaConDoc as $key => $curr) {
                         if(!$curr->documento->isSoloEntregaFisica){
                             
@@ -330,11 +332,11 @@ class SiteController extends Controller
                             $modelConstanciaPosecionEjidal,
                             $noPropietario,
                             $modelPropietarios,
-                            //$modelTramiteMotivoCuentaConDoc,
                             $modelFilesRef_TramiteMotivoCuentaConDoc,
                             $memoriaCalculoFile,
                             $mecanicaSuelosFile,
-                            $licenciaConstruccionAreaPreexistenteFile
+                            $licenciaConstruccionAreaPreexistenteFile,
+                            $modelTramiteMotivoCuentaConDoc
 
                         );
                         return $this->redirect(['solicitud-generica/index']); 
@@ -389,7 +391,8 @@ class SiteController extends Controller
         $modelFilesRef_TramiteMotivoCuentaConDoc,
         $memoriaCalculoFile,
         $mecanicaSuelosFile,
-        $licenciaConstruccionAreaPreexistenteFile
+        $licenciaConstruccionAreaPreexistenteFile,
+        $modelTramiteMotivoCuentaConDoc /* common/models/ConfigTramiteMotivoCuentaconDoc */
     ){
         $transaction = Yii::$app->db->beginTransaction();
 
@@ -500,23 +503,40 @@ class SiteController extends Controller
             }
             //Archivos registrados en DB
             //UploadedFileVic array           
-            foreach ($modelFilesRef_TramiteMotivoCuentaConDoc as $id_Documento/* key */ => $currFileToWrite) {
+            foreach ( $modelTramiteMotivoCuentaConDoc as $currFileAvailable ) {
 
                 $modelArchivo = new Archivo();
-                $modelArchivo->realNombreArchivo = $id_Documento . "." . $currFileToWrite->myFile->extension;
-                $modelArchivo->nombreArchivo =
-                    $currFileToWrite->myFile->baseName . "." .
-                     $currFileToWrite->myFile->extension ;
-                $modelArchivo->path = $pathFile ;
-
-                $resultSaveFile =  $currFileToWrite->myFile->saveAs($modelArchivo->path. $modelArchivo->realNombreArchivo );
-                $modelArchivo->save();
+                //$modelArchivo = Archivo::findOne(["id"=>"1"]) ;//no referencia a archivo
+                $resultSaveFile = false;
+                $currFileToWrite = $modelFilesRef_TramiteMotivoCuentaConDoc[$currFileAvailable->id_Documento] ;
 
                 $currSolicitudGeericaHasDoc = new SolicitudGenerica_has_Documento();
                 $currSolicitudGeericaHasDoc->id_SolicitudGenerica = $modelSolicitudGenerica->id;
-                $currSolicitudGeericaHasDoc->id_Documento = $id_Documento;
-                $currSolicitudGeericaHasDoc->id_Archivo = $modelArchivo->id;
-                $currSolicitudGeericaHasDoc->isEntregado = 1;
+                $currSolicitudGeericaHasDoc->id_Documento = $currFileAvailable->id_Documento;
+
+                if( $currFileAvailable->documento->isSoloEntregaFisica == "0"){
+
+                    
+                    $modelArchivo->realNombreArchivo = 
+                        $currFileAvailable->id_Documento . "." . $currFileToWrite->myFile->extension;
+                    
+                    $modelArchivo->nombreArchivo =
+                        $currFileToWrite->myFile->baseName . "." .
+                         $currFileToWrite->myFile->extension ;
+                         $modelArchivo->path = $pathFile ;
+                         
+                    $currSolicitudGeericaHasDoc->isEntregado = 1;
+                    $currSolicitudGeericaHasDoc->id_Archivo = $modelArchivo->id;
+                    
+                    $resultSaveFile =  $currFileToWrite->myFile->saveAs($modelArchivo->path. $modelArchivo->realNombreArchivo );
+                    $modelArchivo->save();
+                }else{
+                    //cuando 
+                    $resultSaveFile = true;
+                    $currSolicitudGeericaHasDoc->isEntregado = 0;
+                    $currSolicitudGeericaHasDoc->id_Archivo = 1; //archivo no existente (no se sube al sistema)
+
+                }
 
                 $currSolicitudGeericaHasDoc->save();
 
