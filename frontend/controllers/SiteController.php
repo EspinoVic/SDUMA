@@ -508,7 +508,6 @@ class SiteController extends Controller
                 $modelArchivo = new Archivo();
                 //$modelArchivo = Archivo::findOne(["id"=>"1"]) ;//no referencia a archivo
                 $resultSaveFile = false;
-                $currFileToWrite = $modelFilesRef_TramiteMotivoCuentaConDoc[$currFileAvailable->id_Documento] ;
 
                 $currSolicitudGeericaHasDoc = new SolicitudGenerica_has_Documento();
                 $currSolicitudGeericaHasDoc->id_SolicitudGenerica = $modelSolicitudGenerica->id;
@@ -516,7 +515,8 @@ class SiteController extends Controller
 
                 if( $currFileAvailable->documento->isSoloEntregaFisica == "0"){
 
-                    
+                    $currFileToWrite = $modelFilesRef_TramiteMotivoCuentaConDoc[$currFileAvailable->id_Documento] ;
+
                     $modelArchivo->realNombreArchivo = 
                         $currFileAvailable->id_Documento . "." . $currFileToWrite->myFile->extension;
                     
