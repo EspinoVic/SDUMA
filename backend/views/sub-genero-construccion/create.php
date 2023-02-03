@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\SubGeneroConstruccion $model */
 
-$this->title = 'Create Sub Genero Construccion';
+$this->title = 'Crear Subgenero Construcción';
 $this->params['breadcrumbs'][] = ['label' => 'Sub Genero Construccions', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

@@ -66,9 +66,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?php //= Html::a('Create Expediente', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
       Nuevo Expediente
-    </button>
+    </button> -->
     <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal2">Filtrar</button>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 

@@ -12,7 +12,7 @@ use common\models\WidgetStyleVic;
 /** @var common\ConfigTramiteMotivoCuentaconDocSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Config Tramite Motivo Cuentacon Docs';
+$this->title = 'Configuración de documentos';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="config-tramite-motivo-cuentacon-doc-index">
@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Config Tramite Motivo Cuentacon Doc', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Crear configuración de documentos', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

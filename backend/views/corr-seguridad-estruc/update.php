@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\CorrSeguridadEstruc $model */
 
-$this->title = 'Update Corr Seguridad Estruc: ' . $model->id;
+$this->title = 'Actualizar Corr. Seguridad Estructural: ' . $model->id;
 $this->params['breadcrumbs'][] = ['label' => 'Corr Seguridad Estrucs', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';

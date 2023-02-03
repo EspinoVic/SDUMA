@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var common\models\MotivoConstruccion $model */
 
-$this->title = 'Create Motivo Construccion';
+$this->title = 'Crear Motivo Construcción';
 $this->params['breadcrumbs'][] = ['label' => 'Motivo Construccions', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

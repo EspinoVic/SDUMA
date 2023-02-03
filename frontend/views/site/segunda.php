@@ -29,7 +29,7 @@ use common\models\SubGeneroConstruccion;
 use common\models\TipoPredio;
 use yii\web\JsExpression;
  ?>
-<h1>Solicitud Construcción V2</h1>
+<h1>Solicitud Construcción</h1>
 
 
 
