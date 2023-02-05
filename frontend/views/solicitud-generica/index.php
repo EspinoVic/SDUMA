@@ -116,8 +116,16 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => ActionColumn::className(),
                 'urlCreator' => function ($action, SolicitudGenerica $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
+
+                return Url::toRoute([$action, 'id' => $model->id]);
+                },
+                'visibleButtons'=>[                    
+                    'view' => true,
+                    'delete' => false,
+                    'update' => false,
+
+                ]
+
             ],
         ],
     ]); ?>

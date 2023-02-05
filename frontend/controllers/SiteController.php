@@ -525,11 +525,13 @@ class SiteController extends Controller
                          $currFileToWrite->myFile->extension ;
                          $modelArchivo->path = $pathFile ;
                          
+                    $resultSaveFile =  $currFileToWrite->myFile->saveAs($modelArchivo->path. $modelArchivo->realNombreArchivo ); //ESCRIBE ARCHIVO
+                    $modelArchivo->save(); //GUARDA EN DB
+
                     $currSolicitudGeericaHasDoc->isEntregado = 1;
                     $currSolicitudGeericaHasDoc->id_Archivo = $modelArchivo->id;
+                    /* $currSolicitudGeericaHasDoc->save(); */
                     
-                    $resultSaveFile =  $currFileToWrite->myFile->saveAs($modelArchivo->path. $modelArchivo->realNombreArchivo );
-                    $modelArchivo->save();
                 }else{
                     //cuando 
                     $resultSaveFile = true;

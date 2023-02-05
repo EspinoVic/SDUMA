@@ -3,9 +3,11 @@
 namespace frontend\controllers;
 
 use common\models\SolicitudGenerica;
+use common\models\SolicitudGenerica_has_Documento;
 use common\models\SolicitudGenericaSearch;
 use common\models\User;
 use Yii;
+use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -24,16 +26,39 @@ class SolicitudGenericaController extends Controller
         return array_merge(
             parent::behaviors(),
             [
+                'access' => [
+                    'class' => AccessControl::class,                    
+                   /* 'only' => ['delete','changestate','index','view','archivoSolicitud','archivo-solicitud'], */
+
+                    'rules' => [
+                       /*  [
+                            'actions' => ['signup'],
+                            'allow' => true,
+                            'roles' => ['?'],
+                        ], */
+                        [
+                            'actions' => ['delete','changestate','index','view','archivoSolicitud','archivo-solicitud'],
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ]                             
+                    ],
+                ],
+                
                 'verbs' => [
-                    'class' => VerbFilter::className(),
+                    'class' => VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST'],
-                        'changestate' => ['POST']
+                        'changestate' => ['POST'],
+                        'index' => ['GET','POST'],
+                        'view' => ['GET','POST'],
+                        'archivoSolicitud'=>['GET'],
+                        'archivo-solicitud'=>['GET'],
                     ],
                 ],
             ]
         );
     }
+
 
     /**
      * Lists all SolicitudGenerica models.
@@ -76,13 +101,77 @@ class SolicitudGenericaController extends Controller
         ]);
     }
 
+    
+    public function actionArchivoSolicitud(){
+        
+        $idSolicitud = $this->request->get('solicitud');
+        $documento = $this->request->get('documento');
+        //$solicitud id de Solicitud vaya :v
+        if(!is_numeric($idSolicitud) || intval( $idSolicitud, $base = 10)  < 1) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
+        
+        //$documento id
+        if(!is_numeric($documento) || intval( $documento, $base = 10)  < 1) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
+
+
+        $solicitud = null;
+        $isEmployee = $this->isEmployee();
+        
+        if($isEmployee){
+            $solicitud = SolicitudGenerica::findOne(["id" => $idSolicitud]);        
+        }
+        else{
+            //El metodo solo es acceible si existe sesión, por tanto, aqui solo se revisará que la solicitud pertenece al usuario de sesion no employee
+            $solicitud = SolicitudGenerica::findOne(["id" => $idSolicitud,"id_User_CreadoPor"=>Yii::$app->user->identity->id]);                
+        }
+
+        if(!$solicitud) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
+
+
+        $soliDocumentoRelation = SolicitudGenerica_has_Documento::findOne(["id_SolicitudGenerica"=>$solicitud->id,"id_Documento" => $documento]);
+
+
+        //si no existe entonces los params de URL están mal.
+        if(!$soliDocumentoRelation) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
+        
+        /* id 1, significa solo entrega fisica */
+        if($soliDocumentoRelation->id_Archivo == "1" || $soliDocumentoRelation->id_Archivo == 1) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
+        
+        $archivoToRead = $soliDocumentoRelation->archivo ;
+
+        if(!file_exists($archivoToRead->path.$archivoToRead->realNombreArchivo) ){/* ya invluye el slash inverted */
+            return $this->redirect(['site/error', 'message' =>"El archivo no existe."]); 
+        }
+
+        $mimeType = mime_content_type($archivoToRead->path.$archivoToRead->realNombreArchivo);
+        
+        return Yii::$app->response->sendFile(
+            $archivoToRead->path.$archivoToRead->realNombreArchivo,
+            $archivoToRead->nombreArchivo,
+            ['inline' => true]
+
+        );
+       /*  $fileContent = file_get_contents( $archivoToRead->path.$archivoToRead->realNombreArchivo ) ;
+        return Yii::$app->response->sendContentAsFile($fileContent, $archivoToRead->nombreArchivo  ,  );
+
+        */
+
+       /*   header("Content-Type: $mimeType");
+            header("Content-Disposition: inline ; filename=".$archivoToRead->path.$archivoToRead->realNombreArchivo); //attachement para descarga
+        
+        readfile($archivoToRead->path.$archivoToRead->realNombreArchivo); 
+        */
+        
+
+    }
+
+
     /* Id de solicitud */
     public function actionChangestate(){
         
         $id = $this->request->post("id");
         if(!$id) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
 
-        $canChangeState = $this->isEmployee($id);
+        $canChangeState = $this->isEmployee();
         if(!$canChangeState) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
         
         $solicitud = SolicitudGenerica::findOne(["id" => $id]);
