@@ -1004,7 +1004,7 @@ CREATE TABLE sduma.dbo.Expediente (
   anio INT NOT NULL,
   fechaCreacion DATETIME NOT NULL,
   fechaModificacion DATETIME NOT NULL,
-  estado BIT NOT NULL DEFAULT 0,
+  estado INT NOT NULL DEFAULT 0,
   id_SolicitudGenerica INT NOT NULL,
   id_User_CreadoPor INT NOT NULL,
   id_User_modificadoPor INT NOT NULL,

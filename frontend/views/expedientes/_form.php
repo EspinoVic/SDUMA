@@ -1,7 +1,8 @@
 <?php
 
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use common\models\Expediente;
+use yii\bootstrap5\Html;
+use yii\bootstrap5\ActiveForm;
 
 /** @var yii\web\View $this */
 /** @var common\models\Expediente $model */
@@ -12,23 +13,24 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'idAnual')->textInput() ?>
+    <div class="container">
+        <input type="hidden" name="id" value="<?=$model->id?>" />
+        <div class="  row ">
+            <p class="col-5">
+                <?= $form->field($model, 'estado')
+                ->dropDownList(Expediente::STATUS_EXPEDIENTE);
+                 ?>
 
-    <?= $form->field($model, 'anio')->textInput() ?>
+            </p>
+            <?php if( count( Expediente::STATUS_EXPEDIENTE /* $availableStates */) > 1 )  ?> <!-- Significa que la sesión es de un empleado, por tanto puede editar -->
 
-    <?= $form->field($model, 'fechaCreacion')->textInput() ?>
+            <p class="col-3">
+                <?= Html::submitButton("Cambiar estado de solicitud",["class"=>"btn btn-success "])  ?> 
+            </p>
 
-    <?= $form->field($model, 'fechaModificacion')->textInput() ?>
-
-    <?= $form->field($model, 'estado')->textInput() ?>
-
-    <?= $form->field($model, 'id_Persona_Solicita')->textInput() ?>
-
-    <?= $form->field($model, 'id_User_CreadoPor')->textInput() ?>
-
-    <?= $form->field($model, 'id_User_modificadoPor')->textInput() ?>
-
-    <?= $form->field($model, 'id_TipoTramite')->textInput() ?>
+        </div>
+    </div>
+    
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

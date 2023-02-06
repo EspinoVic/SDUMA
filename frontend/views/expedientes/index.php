@@ -93,8 +93,9 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
               'label' => "Estado",
-              'value' => function($currExpediente){              
-                return Expediente::STATUS_SOLICITUD[$currExpediente->estado];
+              'value' => function($currExpediente){
+                
+                return Expediente::STATUS_EXPEDIENTE[$currExpediente->estado];
               }
             ],
             [
