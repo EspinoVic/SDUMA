@@ -12,17 +12,16 @@ use common\models\Expediente;
  */
 class ExpedienteSearch extends Expediente
 {
-    /**
+      /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['id', 'idAnual', 'anio', 'estado', 'id_Persona_Solicita', 'id_User_CreadoPor', 'id_User_modificadoPor', 'id_TipoTramite'], 'integer'],
+            [['id', 'idAnual', 'anio', 'estado', 'id_SolicitudGenerica', 'id_User_CreadoPor', 'id_User_modificadoPor', 'id_TipoTramite'], 'integer'],
             [['fechaCreacion', 'fechaModificacion'], 'safe'],
         ];
     }
-
     /**
      * {@inheritdoc}
      */
@@ -45,9 +44,8 @@ class ExpedienteSearch extends Expediente
     public function search($params)
     {
         $query = Expediente::find()
-            ->join("LEFT JOIN","Persona",'Expediente.id_Persona_Solicita = Persona.id')
-           // ->select("Persona.*","Persona.*") //delegar 
-          
+            //->join("LEFT JOIN","Persona",'Expediente.id_Persona_Solicita = Persona.id') //ahora los datos del solicitante se obtienen por medio del relation
+           // ->select("Persona.*","Persona.*") //delegar           
            ;
         $user = $params["userModel"];
         if($user->id_UserLevel == User::USER_LEVEL_ADMIN){
@@ -79,9 +77,9 @@ class ExpedienteSearch extends Expediente
         //el actual modelo se carga en THIS, pero si el formulario de busqueda incluye parametros que no son propiedades
         //del modelo, entonces no se pasan, para accederlo seria desde params., esto lo puedo aplicar al filtro final        
         $this->load($params);
-        $this->nombre = isset( $params["nombre"]) ? $params["nombre"]:"" ;
+/*         $this->nombre = isset( $params["nombre"]) ? $params["nombre"]:"" ;
         $this->apellidoP = isset( $params["apellidoP"]) ? $params["apellidoP"]:"" ;
-        $this->apellidoM = isset( $params["apellidoM"]) ? $params["apellidoM"]:"" ;
+        $this->apellidoM = isset( $params["apellidoM"]) ? $params["apellidoM"]:"" ; */
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
@@ -99,7 +97,7 @@ class ExpedienteSearch extends Expediente
             'fechaCreacion' => $this->fechaCreacion,
             'fechaModificacion' => $this->fechaModificacion,
             'estado' => $this->estado,
-            'id_Persona_Solicita' => $this->id_Persona_Solicita,
+            'id_SolicitudGenerica' => $this->id_SolicitudGenerica,
             'id_User_CreadoPor' => $this->id_User_CreadoPor,
             'id_User_modificadoPor' => $this->id_User_modificadoPor,
             'id_TipoTramite' => $this->id_TipoTramite,
@@ -112,6 +110,7 @@ class ExpedienteSearch extends Expediente
         ]) 
          ;
 
+        
         return $dataProvider;
     }
 }

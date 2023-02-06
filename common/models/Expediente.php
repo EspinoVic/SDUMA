@@ -13,13 +13,12 @@ use Yii;
  * @property string $fechaCreacion
  * @property string $fechaModificacion
  * @property int $estado
- * @property int $id_Persona_Solicita
+ * @property int $id_SolicitudGenerica
  * @property int $id_User_CreadoPor
  * @property int $id_User_modificadoPor
  * @property int $id_TipoTramite
  *
- * @property Persona $personaSolicita
- * @property SolicitudConstruccion[] $solicitudConstruccions
+ * @property SolicitudGenerica $solicitudGenerica
  * @property TipoTramite $tipoTramite
  * @property User $userCreadoPor
  * @property User $userModificadoPor
@@ -40,13 +39,13 @@ class Expediente extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['idAnual', 'anio', 'fechaCreacion', 'fechaModificacion', 'id_Persona_Solicita', 'id_User_CreadoPor', 'id_User_modificadoPor', 'id_TipoTramite'], 'required'],
-            [['idAnual', 'anio', 'estado', 'id_Persona_Solicita', 'id_User_CreadoPor', 'id_User_modificadoPor', 'id_TipoTramite'], 'integer'],
+            [['idAnual', 'anio', 'fechaCreacion', 'fechaModificacion', 'id_SolicitudGenerica', 'id_User_CreadoPor', 'id_User_modificadoPor', 'id_TipoTramite'], 'required'],
+            [['idAnual', 'anio', 'estado', 'id_SolicitudGenerica', 'id_User_CreadoPor', 'id_User_modificadoPor', 'id_TipoTramite'], 'integer'],
             [['fechaCreacion', 'fechaModificacion'], 'safe'],
+            [['id_SolicitudGenerica'], 'exist', 'skipOnError' => true, 'targetClass' => SolicitudGenerica::class, 'targetAttribute' => ['id_SolicitudGenerica' => 'id']],
             [['id_User_CreadoPor'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['id_User_CreadoPor' => 'id']],
             [['id_User_modificadoPor'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['id_User_modificadoPor' => 'id']],
             [['id_TipoTramite'], 'exist', 'skipOnError' => true, 'targetClass' => TipoTramite::class, 'targetAttribute' => ['id_TipoTramite' => 'id']],
-            [['id_Persona_Solicita'], 'exist', 'skipOnError' => true, 'targetClass' => Persona::class, 'targetAttribute' => ['id_Persona_Solicita' => 'id']],
         ];
     }
 
@@ -62,7 +61,7 @@ class Expediente extends \yii\db\ActiveRecord
             'fechaCreacion' => 'Fecha Creación',
             'fechaModificacion' => 'Fecha Modificación',
             'estado' => 'Estado',
-            'id_Persona_Solicita' => 'Id Persona Solicita',
+            'id_SolicitudGenerica' => 'Id Solicitud Generica',
             'id_User_CreadoPor' => 'Id User Creado Por',
             'id_User_modificadoPor' => 'Id User Modificado Por',
             'id_TipoTramite' => 'Id Tipo Trámite',
@@ -70,23 +69,13 @@ class Expediente extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[PersonaSolicita]].
+     * Gets query for [[SolicitudGenerica]].
      *
      * @return \yii\db\ActiveQuery
      */
-    public function getPersonaSolicita()
+    public function getSolicitudGenerica()
     {
-        return $this->hasOne(Persona::class, ['id' => 'id_Persona_Solicita']);
-    }
-
-    /**
-     * Gets query for [[SolicitudConstruccions]].
-     *
-     * @return \yii\db\ActiveQuery
-     */
-    public function getSolicitudConstruccions()
-    {
-        return $this->hasMany(SolicitudConstruccion::class, ['id_Expediente' => 'id']);
+        return $this->hasOne(SolicitudGenerica::class, ['id' => 'id_SolicitudGenerica']);
     }
 
     /**

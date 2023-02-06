@@ -44,30 +44,33 @@ class NuevoExpedienteForm extends Model
         ];
     }
 
-
+   /*  @idSolicitudGenerica INT,
+    @newStatus INT,
+    @tipoTramite INT,
+    @idUserCreated INT  */
     public function createExpediente(){
 
-        $sql ="EXEC sp_create_expediente :nombre,:apellidoP,:apellidoM,:tipoTramite,:idUserCreated; ";
+        $sql ="EXEC sp_create_expediente :idSolicitudGenerica,:newStatus,:tipoTramite,:idUserCreated; ";
         $params =[
-                ':nombre'=>$this->nombre,
-                ':apellidoP'=>$this->apellidoP,
+                ':idSolicitudGenerica'=>$this->nombre,
+                ':newStatus'=>$this->apellidoP,
                 ':apellidoM'=>$this->apellidoM,
                 ':tipoTramite'=>$this->tipoTramiteId,
                 ':idUserCreated'=>Yii::$app->user->identity->id ,
         ];
         $res = -1;
-        try{
+       /*  try{
             $rows =  Yii::$app->db->createCommand($sql, $params) ->queryAll( );
 
-          /*   $res = $rows[0]["ROWS_INSERTED"] ; */
+           // $res = $rows[0]["ROWS_INSERTED"] ;
            
         }
         catch(Exception $ex){
-            Yii::info($ex, $category = 'Error al crear expediente.');
-            return ["success" => false, "MSG" => $ex->getMessage()."Error al crear expediente"];
-        }
-        Yii::info($res, $category = 'Expediente creado');
-        return ["success" => true,"MSG" => "Expediente creado."]; 
+        } */
+        Yii::info("ERROR", $category = 'Error al crear expediente.');
+        return ["success" => false, "MSG" =>"Error al crear expediente"];
+        /* Yii::info($res, $category = 'Expediente creado');
+        return ["success" => true,"MSG" => "Expediente creado."];  */
         
  
         

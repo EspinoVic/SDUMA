@@ -85,16 +85,19 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
     public const STATUS_SOLICITUD = 
     [
         //"EN CAPTURA",
-        "ESPERANDO VALIDACIÓN DE SOLICITUD",
+        0=>"ESPERANDO VALIDACIÓN DE SOLICITUD",
         //"VALIDANDO SOLICITUD",
-        201 => "SOLICITUD VALIDADA",
+        201 => "SOLICITUD VALIDADA",//espera de entrega documentación faltante
+
         "REVISIÓN DEL PREDIO",
         "CANCELADA",
-        200 => "APROBADA"
+        //200 => "SOLICITUD APROBADA", //documentación faltante entregada
+        200 => "EXPEDIENTE GENERADO"
+
 
     ];
 
-    public const STATUS_APROBADA = 200;
+    public const STATUS_EXPEDIENTE_GENERADO = 200;
     public const STATUS_VALIDADA = 201;
     
     

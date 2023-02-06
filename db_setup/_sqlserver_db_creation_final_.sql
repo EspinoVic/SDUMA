@@ -19,7 +19,7 @@ INSERT INTO [dbo].[MotivoConstruccion]
       ;
 
 
-CREATE TABLE sduma.dbo.Domicilio (
+/* CREATE TABLE sduma.dbo.Domicilio (
 	  id INT NOT NULL IDENTITY(1,1),
 	  coloniaFraccBarrio NVARCHAR(90) NOT NULL,
 	  calle NVARCHAR(45) NOT NULL,
@@ -30,7 +30,7 @@ CREATE TABLE sduma.dbo.Domicilio (
 	  entreCallesV NVARCHAR(90) NULL,
 	   PRIMARY KEY (id)
   
-  );
+  ); */
 
 CREATE TABLE sduma.dbo.Domicilio2 (
 	  id INT NOT NULL IDENTITY(1,1),
@@ -1005,20 +1005,18 @@ CREATE TABLE sduma.dbo.Expediente (
   fechaCreacion DATETIME NOT NULL,
   fechaModificacion DATETIME NOT NULL,
   estado BIT NOT NULL DEFAULT 0,
-  id_Persona_Solicita INT NOT NULL,
-  /* id_solicitudConstruccion INT NOT NULL, */
+  id_SolicitudGenerica INT NOT NULL,
   id_User_CreadoPor INT NOT NULL,
   id_User_modificadoPor INT NOT NULL,
   id_TipoTramite INT NOT NULL,
-  PRIMARY KEY (id/*, idAnual, */ /* ,id_Persona_Solicita, id_solicitudConstruccion, */ /* id_User_CreadoPor, id_User_modificadoPor */),
-  INDEX fk_Expediente_PersonaSolicita_idx (id_Persona_Solicita ASC)  ,
-/*   INDEX fk_Expediente_SolicitudConstruccion_idx (id_solicitudConstruccion ASC)  , */
+  PRIMARY KEY (id),
+  INDEX fk_Expediente_PersonaSolicita_idx (id_SolicitudGenerica ASC)  ,
   INDEX fk_Expediente_UserCreadoPor_idx (id_User_CreadoPor ASC)  ,
   INDEX fk_Expediente_UserModificadoPor_idx (id_User_modificadoPor ASC)  ,
   INDEX fk_Expediente_TipoTramite_idx (id_TipoTramite ASC)  ,
-  CONSTRAINT fk_Expediente_Propietario1
-    FOREIGN KEY (id_Persona_Solicita)
-    REFERENCES sduma.dbo.Persona (id)
+  CONSTRAINT fk_Expediente_Solicitudgenerica
+    FOREIGN KEY (id_SolicitudGenerica)
+    REFERENCES sduma.dbo.SolicitudGenerica (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT fk_Expediente_UserCreadoPor
@@ -1225,7 +1223,7 @@ CREATE TABLE sduma.dbo.SolicitudGenerica(
 
 );
 
-
+/* 
 CREATE TABLE sduma.dbo.SolicitudConstruccion (
   id INT NOT NULL IDENTITY(1,1),
   superficieTotal INT NULL,
@@ -1335,11 +1333,12 @@ CREATE TABLE sduma.dbo.SolicitudConstruccion (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 );
-
+ */
 
 
 
 /* Propietarios */
+/* 
 CREATE TABLE sduma.dbo.SolicitudConstruccion_has_Persona (
   SolicitudConstruccion_Id INT NOT NULL,
   Persona_id INT NOT NULL,
@@ -1356,7 +1355,7 @@ CREATE TABLE sduma.dbo.SolicitudConstruccion_has_Persona (
     REFERENCES sduma.dbo.Persona (id)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
-);
+); */
 
 /* Propietarios  x2*/
 CREATE TABLE sduma.dbo.SolicitudGenerica_has_Persona (
@@ -1403,7 +1402,7 @@ CREATE TABLE  sduma.dbo.SolicitudGenerica_has_Documento (
 
 
 
-
+/* 
 CREATE TABLE  sduma.dbo.SolicitudConstruccion_has_Documento (
   id_SolicitudConstruccion INT NOT NULL,
   id_Documento INT NOT NULL,
@@ -1425,7 +1424,7 @@ CREATE TABLE  sduma.dbo.SolicitudConstruccion_has_Documento (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION
 	);
-
+ */
 
 CREATE TYPE SoliHasDocParam AS TABLE(
      /*  id_SolicitudConstruccion INT NOT NULL, */ /* El SP le da el valor */

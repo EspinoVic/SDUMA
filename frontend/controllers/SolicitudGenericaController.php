@@ -5,7 +5,10 @@ namespace frontend\controllers;
 use common\models\SolicitudGenerica;
 use common\models\SolicitudGenerica_has_Documento;
 use common\models\SolicitudGenericaSearch;
+use common\models\TipoTramite;
 use common\models\User;
+use Exception;
+use frontend\models\NuevoExpedienteForm;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -153,15 +156,7 @@ class SolicitudGenericaController extends Controller
        /*  $fileContent = file_get_contents( $archivoToRead->path.$archivoToRead->realNombreArchivo ) ;
         return Yii::$app->response->sendContentAsFile($fileContent, $archivoToRead->nombreArchivo  ,  );
 
-        */
-
-       /*   header("Content-Type: $mimeType");
-            header("Content-Disposition: inline ; filename=".$archivoToRead->path.$archivoToRead->realNombreArchivo); //attachement para descarga
-        
-        readfile($archivoToRead->path.$archivoToRead->realNombreArchivo); 
-        */
-        
-
+        */        
     }
 
 
@@ -179,14 +174,52 @@ class SolicitudGenericaController extends Controller
 
         $newState = $this->request->post("newState");
 
-        $solicitud->statusSolicitud = $newState;
-        $updateResult = $solicitud->update();
-        if( $updateResult!= "1" && $updateResult != 1){
-            Yii::$app->session->setFlash( 'danger',   "Error al cambiar el estado, intente más tarde." );
+        if(!$newState || !is_numeric($newState)) return $this->redirect(['site/error','message' =>"Selección incorrecta."]); 
+       
+        if($solicitud->statusSolicitud == SolicitudGenerica::STATUS_EXPEDIENTE_GENERADO){
+            //no cambios.
+            Yii::$app->session->setFlash( 'danger',   "La solicitud ya cuenta con un expediente, no es posible cambiar el estado." );
+            return $this->redirect(['solicitud-generica/view',"id"=>$id]);
         }
-                        
+
+        if($newState == SolicitudGenerica::STATUS_EXPEDIENTE_GENERADO){
+                      
+            $resultCreate = $this->createExpediente($solicitud->id, $newState, TipoTramite::TIPO_TRAMITE_CONSTRUCCION,Yii::$app->user->identity->id);
+    
+            Yii::$app->session->setFlash( $resultCreate["success"]?"success":'danger', $resultCreate["MSG"]);                            
+        }
+
+
         return $this->redirect(['solicitud-generica/view',"id"=>$id]);
 
+
+    }
+
+    protected function createExpediente($idSolicitudGenerica,$newStatus,$tipoTramite,$idUserCreated){
+
+        $sql ="EXEC sp_create_expediente :idSolicitudGenerica,:newStatus,:tipoTramite,:idUserCreated; ";
+        $params =[
+                ':idSolicitudGenerica'=>$idSolicitudGenerica,
+                ':newStatus'=>$newStatus,
+                ':tipoTramite'=>$tipoTramite,
+                ':idUserCreated'=>$idUserCreated  ,
+        ];
+        $res = -1;
+        try{
+            $rows =  Yii::$app->db->createCommand($sql, $params) ->queryAll( );
+
+            $res = $rows[0]["ROWS_INSERTED"] ;
+           
+        }
+        catch(Exception $ex){
+            Yii::info("ERROR", $category = 'Error al crear expediente.');
+            return ["success" => false, "MSG" =>"Error al crear expediente"];
+        }
+        Yii::info($res, $category = 'Se creó el expediente para la solicitud '.$idSolicitudGenerica);
+        return ["success" => true,"MSG" => "Expediente creado."]; 
+        
+ 
+        
 
     }
 

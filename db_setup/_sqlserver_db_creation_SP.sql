@@ -114,12 +114,10 @@ GO
 
   		
 CREATE PROCEDURE dbo.sp_create_expediente
-    @nombre nvarchar(255),
-    @apellidoP nvarchar(255),
-    @apellidoM nvarchar(255),
+    @idSolicitudGenerica INT,
+    @newStatus INT,
     @tipoTramite INT,
-    @idUserCreated INT 
-    
+    @idUserCreated INT --el que crea el expediente es el mismo que hará modificación de la solicitud generica
  AS
     BEGIN TRY
         DECLARE @rowsInserted INT = 0;
@@ -130,8 +128,12 @@ CREATE PROCEDURE dbo.sp_create_expediente
             IF NOT (EXISTS ( SELECT  TOP (1) id FROM sduma.dbo.TipoTramite WHERE id = @tipoTramite))
             BEGIN ;
                 THROW 54323, 'El tipo de trámite no existe.',1;
-            END;   
+            END;
 
+            IF NOT (EXISTS ( SELECT  TOP (1) id FROM sduma.dbo.SolicitudGenerica WHERE id = @idSolicitudGenerica))
+            BEGIN ;
+                THROW 54323, 'La solicitud no existe.',1;
+            END;
 
             DECLARE @currentYear INT = YEAR(GETDATE());
 
@@ -157,14 +159,17 @@ CREATE PROCEDURE dbo.sp_create_expediente
             BEGIN ;
                 THROW 54324, 'Incoherencia en fechas de expedientes. -> SP_54323_C_EXPEDIENTE ',1;
             END;   
-
-
-            INSERT INTO sduma.dbo.Persona ( nombre, apellidoP, apellidoM) 
-            VALUES ( @nombre, @apellidoP, @apellidoP);                               
-
-            DECLARE @personaInsertedIndex int = (SELECT SCOPE_IDENTITY() );
-            SET @rowsInserted = @@ROWCOUNT;
             
+
+            UPDATE TOP(1) [dbo].[SolicitudGenerica]
+            SET  [statusSolicitud] = @newStatus     
+                ,[id_User_ModificadoPor] = @idUserCreated
+                ,[fechaModificacion] = GETDATE()
+            WHERE id = @idSolicitudGenerica;
+
+           -- DECLARE @solicitud int = (SELECT SCOPE_IDENTITY() ); --no need
+            SET @rowsInserted = @@ROWCOUNT;
+
             INSERT INTO [dbo].[Expediente]
                     (
 					 [idAnual]
@@ -172,7 +177,7 @@ CREATE PROCEDURE dbo.sp_create_expediente
                     ,[fechaCreacion]
                     ,[fechaModificacion]
                     ,[estado]
-                    ,[id_Persona_Solicita]
+                    ,[id_SolicitudGenerica]
                     ,[id_User_CreadoPor]
                     ,[id_User_modificadoPor]
                     ,[id_TipoTramite]
@@ -184,7 +189,7 @@ CREATE PROCEDURE dbo.sp_create_expediente
                     ,GETDATE()
                     ,GETDATE()
                     ,1
-                    ,@personaInsertedIndex
+                    ,@idSolicitudGenerica
                     ,@idUserCreated 
                     ,@idUserCreated 
                     , @tipoTramite

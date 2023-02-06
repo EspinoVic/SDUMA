@@ -9,6 +9,7 @@
 /** @var string $apellidoM */
 use common\models\Expediente;
 use common\models\WidgetStyleVic;
+use LDAP\Result;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -32,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <?= $this->render("crear",['modelNuevoExp'=>$modelNuevoExp]) ?>
+        <? //$this->render("crear",['modelNuevoExp'=>$modelNuevoExp]) ?>
 
       </div>
        
@@ -48,7 +49,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-            <?php  echo $this->render('_search', ['model' => $searchModel,'nombre'=> $nombre, 'apellidoP'=>$apellidoP,'apellidoM'=>$apellidoM]); ?>
+            <?php // echo $this->render('_search', ['model' => $searchModel,'nombre'=> $nombre, 'apellidoP'=>$apellidoP,'apellidoM'=>$apellidoM]); ?>
       </div>       
     </div>
   </div>
@@ -102,28 +103,33 @@ $this->params['breadcrumbs'][] = $this->title;
                    return date("d/M/Y h:i a",  strtotime( $currExpediente->fechaModificacion)   );  
                 }  
             ], */
-            //'id_Persona_Solicita',
-            //'id_User_CreadoPor',
-            //'id_User_modificadoPor',Expediente
-           // 'id_TipoTramite',
             [
-              'label' => "Nombre",
-              'attribute' => 'personaSolicita.nombre',
-            ],
-            [
-              'label' => "Apellido Paterno",
-              'attribute' => 'personaSolicita.apellidoP',
-            ],
-            [
-              'label' => "Apellido Materno",
-              'attribute' => 'personaSolicita.apellidoM',
-            ],
-            'estado',
-            [
-              'label' => "Tipo Trámite",
-              'attribute' => 'tipoTramite.nombre',
+              'label' => "Tipo de trámite",               
               'value' => function($currExpediente){
                 return $currExpediente->tipoTramite->nombre;
+              }
+            ],
+            [
+              'label' => "Solicita",
+              'value' => function($currExpediente){
+                $solicitaPersonaMoral =  $currExpediente->solicitudGenerica->personaMoral;
+                $solicitaPersonaFisica =  $currExpediente->solicitudGenerica->personaFisica;
+                $result = "ERROR OBTENIENDO";
+
+                $result = $solicitaPersonaFisica? 
+                    $solicitaPersonaFisica->nombre. " ". $solicitaPersonaFisica->apellidoP . " ". $solicitaPersonaFisica->apellidoM
+                    :
+                    $solicitaPersonaMoral->denominacion. " - ". $solicitaPersonaMoral->rfc 
+                    ;
+
+                return  $result;
+              }              
+            ],
+
+            [
+              'label' => "Estado",
+              'value' => function($currExpediente){
+                return $currExpediente->estado;
               }
             ],
             [
