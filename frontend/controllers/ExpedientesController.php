@@ -8,11 +8,56 @@ use frontend\models\NuevoExpedienteForm;
 
 use common\models\Expediente;
 use common\models\ExpedienteSearch;
+use common\models\UtilVic;
+use yii\filters\AccessControl;
+use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
 use yii\helpers\ArrayHelper;
 
 class ExpedientesController extends \yii\web\Controller
 {
+    /**
+     * @inheritDoc
+    */
+    public function behaviors()
+    {
+        return array_merge(
+            parent::behaviors(),
+            [
+                'access' => [
+                    'class' => AccessControl::class,                    
+                   /* 'only' => ['delete','changestate','index','view','archivoSolicitud','archivo-solicitud'], */
+
+                    'rules' => [
+                       /*  [
+                            'actions' => ['signup'],
+                            'allow' => true,
+                            'roles' => ['?'],
+                        ], */
+                        [
+                            'actions' => ['delete','changestate','index','view'],
+                            'allow' => true,
+                            'roles' => ['@'],
+                        ]                             
+                    ],
+                ],
+                
+                'verbs' => [
+                    'class' => VerbFilter::class,
+                    'actions' => [
+                        'delete' => ['POST'],
+                        'changestate' => ['POST'],
+                        'index' => ['GET','POST'],
+                        'view' => ['GET','POST'],
+                        'archivoSolicitud'=>['GET'],
+                        'archivo-solicitud'=>['GET'],
+                    ],
+                ],
+            ]
+        );
+    }
+
+
     public function actionIndex()
     {
         $searchModel = new ExpedienteSearch();
@@ -45,7 +90,7 @@ class ExpedientesController extends \yii\web\Controller
         ]);
     }
 
-    public function actionCrear()
+    private function actionCrear()
     {
        // $searchModel = new ExpedienteSearch();
         //$dataProvider = $searchModel->search($this->request->queryParams);
@@ -117,7 +162,7 @@ class ExpedientesController extends \yii\web\Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    private function actionUpdate($id)
     {
         $model = $this->findModel($id);
 
@@ -138,6 +183,9 @@ class ExpedientesController extends \yii\web\Controller
      */
     public function actionDelete($id)
     {
+        if(!UtilVic::isEmployee())  return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
+        
+
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
@@ -160,7 +208,7 @@ class ExpedientesController extends \yii\web\Controller
     }
 
     
-    public function actionCreaTest()
+    private function actionCreaTest()
     {
         $modelNuevoExp = new NuevoExpedienteForm();
         

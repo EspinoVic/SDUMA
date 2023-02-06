@@ -223,6 +223,7 @@ class SolicitudGenericaController extends Controller
 
     }
 
+    /* Iser UtilVic::isEmployee */
     protected static function isEmployee(){        
         $user =Yii::$app->user->identity;
 
