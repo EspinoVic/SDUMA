@@ -11,7 +11,7 @@ use common\models\Expediente;
 use common\models\UtilVic;
 use common\models\WidgetStyleVic;
 use LDAP\Result;
-use yii\helpers\Html;
+use yii\bootstrap5\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
@@ -38,7 +38,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
       Nuevo Expediente
     </button> -->
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
        /*  'filterModel' => $searchModel, */
@@ -94,18 +93,20 @@ $this->params['breadcrumbs'][] = $this->title;
 
             [
               'label' => "Estado",
-              'value' => function($currExpediente){
-                return $currExpediente->estado;
+              'value' => function($currExpediente){              
+                return Expediente::STATUS_SOLICITUD[$currExpediente->estado];
               }
             ],
             [
 
               'class' => ActionColumn::class,
               'urlCreator' => function ($action, Expediente $model, $key, $index, $column) {
-                  /* if ($action == "update") {
+
+                  if ($action == "view") {
                        //index decidirá si debe redireccionar a create o update 
-                    return Url::to(['solicitud-construccion/index', 'exp' => $key]);
-                  } */
+                    return Url::to(['solicitud-generica/view', 'id' => $model->id]);
+                  }
+
                   return Url::to([$action, 'id' => $key]);
 
                 },
@@ -114,7 +115,7 @@ $this->params['breadcrumbs'][] = $this->title;
                       return $model->status!=1; //puede aparecer o no, segun el estado del modelo :0 awesome xd
                   }, */
                   'view' => true,
-                  'update' => false,
+                  'update' => UtilVic::isEmployee(),
                   'delete' => UtilVic::isEmployee(),
               ]   
             ],

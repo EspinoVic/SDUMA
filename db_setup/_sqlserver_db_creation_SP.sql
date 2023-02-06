@@ -188,7 +188,7 @@ CREATE PROCEDURE dbo.sp_create_expediente
                     ,@currentYear
                     ,GETDATE()
                     ,GETDATE()
-                    ,1
+                    ,0
                     ,@idSolicitudGenerica
                     ,@idUserCreated 
                     ,@idUserCreated 

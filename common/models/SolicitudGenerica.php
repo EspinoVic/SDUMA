@@ -89,8 +89,7 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
         //"VALIDANDO SOLICITUD",
         201 => "SOLICITUD VALIDADA",//espera de entrega documentación faltante
 
-        "REVISIÓN DEL PREDIO",
-        "CANCELADA",
+        500 => "CANCELADA",
         //200 => "SOLICITUD APROBADA", //documentación faltante entregada
         200 => "EXPEDIENTE GENERADO"
 

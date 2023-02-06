@@ -35,7 +35,7 @@ class ExpedientesController extends \yii\web\Controller
                             'roles' => ['?'],
                         ], */
                         [
-                            'actions' => ['delete','changestate','index','view'],
+                            'actions' => ['delete','changestate','index','view','update'],
                             'allow' => true,
                             'roles' => ['@'],
                         ]                             
@@ -162,7 +162,7 @@ class ExpedientesController extends \yii\web\Controller
      * @return string|\yii\web\Response
      * @throws NotFoundHttpException if the model cannot be found
      */
-    private function actionUpdate($id)
+    public function actionUpdate($id)
     {
         $model = $this->findModel($id);
 

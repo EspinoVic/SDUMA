@@ -25,6 +25,14 @@ use Yii;
  */
 class Expediente extends \yii\db\ActiveRecord
 {
+    public const STATUS_SOLICITUD = [
+        "ESPERANDO ATENCIÓN",
+        "REVISIÓN DEL PREDIO",
+        "DENEGADO",
+        "APROBADO"
+        
+    ]
+;
     /**
      * {@inheritdoc}
      */

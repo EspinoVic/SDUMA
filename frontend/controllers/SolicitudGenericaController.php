@@ -174,7 +174,8 @@ class SolicitudGenericaController extends Controller
 
         $newState = $this->request->post("newState");
 
-        if(!$newState || !is_numeric($newState)) return $this->redirect(['site/error','message' =>"Selección incorrecta."]); 
+        if($newState == null || !is_numeric($newState)) 
+            return $this->redirect(['site/error','message' =>"Selección incorrecta."]); 
        
         if($solicitud->statusSolicitud == SolicitudGenerica::STATUS_EXPEDIENTE_GENERADO){
             //no cambios.
