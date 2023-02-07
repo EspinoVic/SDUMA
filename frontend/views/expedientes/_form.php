@@ -30,11 +30,6 @@ use yii\bootstrap5\ActiveForm;
 
         </div>
     </div>
-    
-
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
-    </div>
 
     <?php ActiveForm::end(); ?>
 

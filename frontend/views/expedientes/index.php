@@ -11,6 +11,7 @@ use common\models\Expediente;
 use common\models\UtilVic;
 use common\models\WidgetStyleVic;
 use LDAP\Result;
+use yii\bootstrap5\ActiveForm;
 use yii\bootstrap5\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
@@ -31,7 +32,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="collapse" id="collapseExample">
       <div class="card card-body">
 
-        <?php echo $this->render('_search', ['model' => $searchModel,'nombre'=> $nombre, 'apellidoP'=>$apellidoP,'apellidoM'=>$apellidoM]); ?>
+        <?php echo $this->render('_search', ['model' => $searchModel,/* 'nombre'=> $nombre, 'apellidoP'=>$apellidoP,'apellidoM'=>$apellidoM */]); ?>
 
       </div>
     </div>
@@ -41,12 +42,9 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
        /*  'filterModel' => $searchModel, */
-        'pager' => WidgetStyleVic::PagerStyle(),
-
+        'pager' => WidgetStyleVic::PagerStyle(),                
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            //'id',
             [
               'label' => "Expediente #",
               'attribute' => 'tipoTramite.nombre',
@@ -54,20 +52,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 return $currExpediente->idAnual . "/".$currExpediente->anio;
               }
             ],
-           // 'idAnual',
-            //'anio',
-            /* 'fechaCreacion:datetime',
-            'fechaModificacion:datetime', */
             ['label'=>'Fecha creación',
                 'value' => function($currExpediente){                    
                    return date("d/M/Y h:i a",  strtotime( $currExpediente->fechaCreacion)   );  
                 }  
             ],
-            /* ['label'=>'Fecha modificación',
-                'value' => function($currExpediente){                    
-                   return date("d/M/Y h:i a",  strtotime( $currExpediente->fechaModificacion)   );  
-                }  
-            ], */
             [
               'label' => "Tipo de trámite",               
               'value' => function($currExpediente){
@@ -99,11 +88,71 @@ $this->params['breadcrumbs'][] = $this->title;
               }
             ],
             [
-
+              'header' => 'Cambiar Estado',
               'class' => ActionColumn::class,
+              'template' => '{made}',
+              'buttons'=> [                
+                'made' => function ($url, $model) {
+                  if(!UtilVic::isEmployee()){
+                    return Html::encode( Expediente::STATUS_EXPEDIENTE[$model->estado] );
+                  }
+                  else{
+
+                      switch(Expediente::STATUS_EXPEDIENTE[$model->estado]){
+                        case Expediente::STATUS_EXPEDIENTE[0]:
+                          return Html::a( Expediente::STATUS_EXPEDIENTE[1], '/expedientes/changestate?id='.$model->id."&newState=1", ['class' => 'btn btn-success']);
+                          break;
+                        case Expediente::STATUS_EXPEDIENTE[1]:
+                          return Html::tag("div", 
+                            Html::a( Expediente::STATUS_EXPEDIENTE[2], '/expedientes/changestate?id='.$model->id."&newState=2", ['class' => 'btn btn-danger'])
+                            .
+                            Html::a( Expediente::STATUS_EXPEDIENTE[3], '/expedientes/changestate?id='.$model->id."&newState=3", ['class' => 'btn btn-success'])
+                          
+                          );
+                        break;
+                        
+                        default: 
+                          return "COMPLETADA";
+                      }                    
+
+                  }
+                  
+                }
+              ],
+            ],
+            [
+              'header' => 'Acciones',
+              'class' => ActionColumn::class,
+              'template' => '{view} {update} {delete} {print} ',   
+              'buttons'=> [                
+                'print' => function ($url, $model) {
+                  if(UtilVic::isEmployee()){
+                    if($model->estado == 3){
+                      return Html::a(
+                        '
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-printer-fill" viewBox="0 0 16 16">
+                            <path d="M5 1a2 2 0 0 0-2 2v1h10V3a2 2 0 0 0-2-2H5zm6 8H5a1 1 0 0 0-1 1v3a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1z"/>
+                            <path d="M0 7a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-1v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v2H2a2 2 0 0 1-2-2V7zm2.5 1a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>
+                          </svg>
+                        '
+                        ,$url
+                      );
+                    }
+                    return "";
+                  }
+                  else{
+                    return "";
+                  }
+                 
+                }
+              ],         
               'urlCreator' => function ($action, Expediente $model, $key, $index, $column) {
 
                   if ($action == "view") {
+                       //index decidirá si debe redireccionar a create o update 
+                    return Url::to(['solicitud-generica/view', 'id' => $model->id]);
+                  }
+                  if ($action == "print") {
                        //index decidirá si debe redireccionar a create o update 
                     return Url::to(['solicitud-generica/view', 'id' => $model->id]);
                   }
@@ -118,6 +167,7 @@ $this->params['breadcrumbs'][] = $this->title;
                   'view' => true,
                   'update' => UtilVic::isEmployee(),
                   'delete' => UtilVic::isEmployee(),
+                  'made' =>true
               ]   
             ],
         ],

@@ -46,7 +46,7 @@ class ExpedientesController extends \yii\web\Controller
                     'class' => VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST'],
-                        'changestate' => ['POST'],
+                        'changestate' => ['GET'],
                         'index' => ['GET','POST'],
                         'view' => ['GET','POST'],
                         'archivoSolicitud'=>['GET'],
@@ -83,9 +83,6 @@ class ExpedientesController extends \yii\web\Controller
             'modelNuevoExp' =>  $modelNuevoExp,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
-            'nombre' => $searchModel->nombre,
-            'apellidoP' => $searchModel->apellidoP,
-            'apellidoM' => $searchModel->apellidoM,
 
         ]);
     }
@@ -153,6 +150,42 @@ class ExpedientesController extends \yii\web\Controller
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
+    }
+
+    public function actionChangestate(){
+        
+        $id = $this->request->get("id");
+        if(!$id) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
+
+        $canChangeState = UtilVic::isEmployee();
+        if(!$canChangeState) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
+        
+        $expediente = Expediente::findOne(["id" => $id]);
+        if(!$expediente) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
+
+        $newState = $this->request->get("newState");
+
+        if($newState == null || !is_numeric($newState) || !ArrayHelper::keyExists($newState,Expediente::STATUS_EXPEDIENTE) ) {
+            Yii::$app->session->setFlash( 'danger',   "Selección incorrecta." );
+            return $this->redirect(['expedientes/index']);
+        }
+       
+        if($expediente->estado == 2 || $expediente->estado == 3){
+            //no cambios.
+            Yii::$app->session->setFlash( 'danger',   "No es posible cambiar el estado." );
+            return $this->redirect(['expedientes/index']);
+        }
+
+        $expediente->estado = $newState;    
+        
+        $resultSave = $expediente->save();
+
+        Yii::$app->session->setFlash($resultSave ?"success":'danger', $resultSave?"Cambio guardado.":"Error al guardar el estado.");
+                        
+
+        return $this->redirect(['expedientes/index']);
+
+
     }
 
     /**

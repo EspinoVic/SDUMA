@@ -174,9 +174,11 @@ class SolicitudGenericaController extends Controller
 
         $newState = $this->request->post("newState");
 
-        if($newState == null || !is_numeric($newState)) 
-            return $this->redirect(['site/error','message' =>"Selección incorrecta."]); 
-       
+        if($newState == null || !is_numeric($newState)){
+            Yii::$app->session->setFlash( 'danger',   "Selección incorrecta." );
+            return $this->redirect(['solicitud-generica/view',"id"=>$id]);
+        }
+               
         if($solicitud->statusSolicitud == SolicitudGenerica::STATUS_EXPEDIENTE_GENERADO){
             //no cambios.
             Yii::$app->session->setFlash( 'danger',   "La solicitud ya cuenta con un expediente, no es posible cambiar el estado." );
