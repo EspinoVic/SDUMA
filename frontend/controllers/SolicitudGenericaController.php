@@ -40,7 +40,7 @@ class SolicitudGenericaController extends Controller
                             'roles' => ['?'],
                         ], */
                         [
-                            'actions' => ['delete','changestate','index','view','archivoSolicitud','archivo-solicitud'],
+                            'actions' => ['delete','changestate','index','view','archivoSolicitud','archivo-solicitud','imprimir-solicitud'],
                             'allow' => true,
                             'roles' => ['@'],
                         ]                             

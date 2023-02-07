@@ -34,7 +34,15 @@ $this->registerCss("
     @page :bottom {
         margin-bottom: 0;
     }
+
 }
+/* .print-soli-cont
+{ 
+   /*  background-color: red; */
+  display: none;
+  visibility: none;
+  
+} */
 @page {
     /* size: 7in 9.25in;
     margin: 0 0 0 0; */
@@ -98,6 +106,13 @@ $this->registerCss("
     ");
 
 ?> 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    
+       window.print();
+        
+    });
+</script>
 <button id="print-btn" class="btn btn-success m-1"  onclick="window.print(); ">
     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-printer" viewBox="0 0 16 16">
         <path d="M2.5 8a.5.5 0 1 0 0-1 .5.5 0 0 0 0 1z"/>

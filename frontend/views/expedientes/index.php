@@ -136,6 +136,8 @@ $this->params['breadcrumbs'][] = $this->title;
                           </svg>
                         '
                         ,$url
+                        ,["target" => "_blank"]
+
                       );
                     }
                     return "";
@@ -149,12 +151,10 @@ $this->params['breadcrumbs'][] = $this->title;
               'urlCreator' => function ($action, Expediente $model, $key, $index, $column) {
 
                   if ($action == "view") {
-                       //index decidirá si debe redireccionar a create o update 
-                    return Url::to(['solicitud-generica/view', 'id' => $model->id]);
+                    return Url::to(['solicitud-generica/view', 'id' => $model->solicitudGenerica->id]);
                   }
                   if ($action == "print") {
-                       //index decidirá si debe redireccionar a create o update 
-                    return Url::to(['solicitud-generica/view', 'id' => $model->id]);
+                    return Url::to(['expedientes/print', 'id' => $model->id]);
                   }
 
                   return Url::to([$action, 'id' => $key]);
@@ -167,7 +167,7 @@ $this->params['breadcrumbs'][] = $this->title;
                   'view' => true,
                   'update' => UtilVic::isEmployee(),
                   'delete' => UtilVic::isEmployee(),
-                  'made' =>true
+                  'print' =>true
               ]   
             ],
         ],

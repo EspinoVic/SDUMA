@@ -9,6 +9,7 @@ use frontend\models\NuevoExpedienteForm;
 use common\models\Expediente;
 use common\models\ExpedienteSearch;
 use common\models\UtilVic;
+use Mpdf\HTMLParserMode;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
@@ -35,7 +36,7 @@ class ExpedientesController extends \yii\web\Controller
                             'roles' => ['?'],
                         ], */
                         [
-                            'actions' => ['delete','changestate','index','view','update'],
+                            'actions' => ['delete','changestate','index','view','update',"print"],
                             'allow' => true,
                             'roles' => ['@'],
                         ]                             
@@ -51,6 +52,7 @@ class ExpedientesController extends \yii\web\Controller
                         'view' => ['GET','POST'],
                         'archivoSolicitud'=>['GET'],
                         'archivo-solicitud'=>['GET'],
+                        'print'=>['GET'],
                     ],
                 ],
             ]
@@ -182,10 +184,48 @@ class ExpedientesController extends \yii\web\Controller
 
         Yii::$app->session->setFlash($resultSave ?"success":'danger', $resultSave?"Cambio guardado.":"Error al guardar el estado.");
                         
-
         return $this->redirect(['expedientes/index']);
 
+    }
 
+    /* manda imprimir LICENCIA; REGISTRO; Rectificación  */
+    public function actionPrint($id){
+        /* Imrpimir dependiento del motivo */
+
+        if(!UtilVic::isEmployee())  return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
+
+        $expediente = Expediente::findOne(["id" => $id]);
+        if(!$expediente) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
+    
+        $mpdf = new \Mpdf\Mpdf();
+        $result = $this->renderPartial("_print_expediente", ["expedienteAImprimir" => $expediente]);
+
+        /* $csscontent = file_get_contents('../../db_setup/bootstrap-5.0.2-dist/css/bootstrap.min.css'); 
+         $mpdf->WriteHTML($csscontent, HTMLParserMode::HEADER_CSS); */
+        $mpdf->WriteHTML( $result, HTMLParserMode::DEFAULT_MODE );
+        $mpdf->Output("C:\sduma_files\Licencia_mpdf.pdf");   //,\Mpdf\Output\Destination::DOWNLOAD     
+       
+/*         Yii::$app->html2pdf
+        ->convert($result)
+        ->saveAs('C:\sduma_files\Licencia_html2pdf.pdf');
+     */
+
+        $myfile = fopen("C:\sduma_files\wfile.txt", "w") or die("Unable to open file!");
+       
+        fwrite($myfile, $result);       
+        fclose($myfile);
+
+        //$mimeType = mime_content_type("C:\sduma_files\Licencia.pdf");
+        
+        return Yii::$app->response->sendFile(
+            "C:\sduma_files\Licencia.pdf",
+            "Lic",
+            ['inline' => true]
+
+        );
+
+        return $result;
+        return $this->renderPartial("nothing");
     }
 
     /**

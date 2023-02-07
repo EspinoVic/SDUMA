@@ -9,6 +9,11 @@ return [
             'password' => '',
             'charset' => 'utf8',
         ], */
+        'html2pdf' => [
+            'class' => 'yii2tech\html2pdf\Manager',
+            'viewPath' => '@app/views/pdf',
+            'converter' => 'wkhtmltopdf',
+        ],
         'db'=>array(
             'class' => 'yii\db\Connection',
             'driverName' => 'sqlsrv',
