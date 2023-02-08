@@ -197,33 +197,17 @@ class ExpedientesController extends \yii\web\Controller
         $expediente = Expediente::findOne(["id" => $id]);
         if(!$expediente) return $this->redirect(['site/error', 'message' =>"La página no existe o no tiene acceso."]); 
     
-        $mpdf = new \Mpdf\Mpdf();
-        $result = $this->renderPartial("_print_expediente", ["expedienteAImprimir" => $expediente]);
-
-        /* $csscontent = file_get_contents('../../db_setup/bootstrap-5.0.2-dist/css/bootstrap.min.css'); 
-         $mpdf->WriteHTML($csscontent, HTMLParserMode::HEADER_CSS); */
-        $mpdf->WriteHTML( $result, HTMLParserMode::DEFAULT_MODE );
-        $mpdf->Output("C:\sduma_files\Licencia_mpdf.pdf");   //,\Mpdf\Output\Destination::DOWNLOAD     
-       
-/*         Yii::$app->html2pdf
-        ->convert($result)
-        ->saveAs('C:\sduma_files\Licencia_html2pdf.pdf');
-     */
-
-        $myfile = fopen("C:\sduma_files\wfile.txt", "w") or die("Unable to open file!");
-       
-        fwrite($myfile, $result);       
-        fclose($myfile);
+        $result = $this->renderPartial("_print_expediente", ["expedienteAImprimir" => $expediente]);    
 
         //$mimeType = mime_content_type("C:\sduma_files\Licencia.pdf");
         
-        return Yii::$app->response->sendFile(
-            "C:\sduma_files\Licencia.pdf",
-            "Lic",
-            ['inline' => true]
+        /*         return Yii::$app->response->sendFile(
+                    "C:\sduma_files\Licencia.pdf",
+                    "Lic",
+                    ['inline' => true]
 
-        );
-
+                );
+        */
         return $result;
         return $this->renderPartial("nothing");
     }
