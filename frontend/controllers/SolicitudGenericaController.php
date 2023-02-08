@@ -185,12 +185,21 @@ class SolicitudGenericaController extends Controller
             return $this->redirect(['solicitud-generica/view',"id"=>$id]);
         }
 
+        /* Ya incluye el cambio de state */
         if($newState == SolicitudGenerica::STATUS_EXPEDIENTE_GENERADO){
                       
             $resultCreate = $this->createExpediente($solicitud->id, $newState, TipoTramite::TIPO_TRAMITE_CONSTRUCCION,Yii::$app->user->identity->id);
     
             Yii::$app->session->setFlash( $resultCreate["success"]?"success":'danger', $resultCreate["MSG"]);                            
+        }else{
+            $solicitud->statusSolicitud = $newState;    
+        
+            $resultSave = $solicitud->save();
+    
+            Yii::$app->session->setFlash($resultSave ?"success":'danger', $resultSave?"Cambio guardado.":"Error al guardar el estado.");
+                    
         }
+
 
 
         return $this->redirect(['solicitud-generica/view',"id"=>$id]);
@@ -215,10 +224,10 @@ class SolicitudGenericaController extends Controller
            
         }
         catch(Exception $ex){
-            Yii::info("ERROR", $category = 'Error al crear expediente.');
+            /* Yii::info("ERROR", $category = 'Error al crear expediente.'); */
             return ["success" => false, "MSG" =>"Error al crear expediente"];
         }
-        Yii::info($res, $category = 'Se creó el expediente para la solicitud '.$idSolicitudGenerica);
+        /* Yii::info($res, $category = 'Se creó el expediente para la solicitud '.$idSolicitudGenerica); */
         return ["success" => true,"MSG" => "Expediente creado."]; 
         
  
@@ -282,7 +291,7 @@ class SolicitudGenericaController extends Controller
 
 
         $solicitudAImprimir = SolicitudGenerica::findOne(["id"=>$id,]);
-        return $this->render("_printsolicitud",
+        return $this->renderPartial ("_printsolicitud",
             ["solicitudAImprimir"=>$solicitudAImprimir]
         );
     }
