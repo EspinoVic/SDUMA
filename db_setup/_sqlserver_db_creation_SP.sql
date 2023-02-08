@@ -74,14 +74,7 @@ CREATE PROCEDURE dbo.sp_create_user
     END CATCH
 GO
 
-INSERT INTO [dbo].[Persona]
-           ([nombre]
-           ,[apellidoP]
-           ,[apellidoM])
-     VALUES
-           ('Victor Alfonso'
-           ,'Pérez'
-           ,'Espino');
+
            
 INSERT INTO [dbo].[user]
            ([username]

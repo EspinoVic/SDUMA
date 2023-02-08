@@ -679,6 +679,15 @@ CREATE TABLE sduma.dbo.Persona (
   PRIMARY KEY (id)
   
   );
+  INSERT INTO [dbo].[Persona]
+           ([nombre]
+           ,[apellidoP]
+           ,[apellidoM])
+     VALUES
+           ('Victor Alfonso'
+           ,'Pérez'
+           ,'Espino');
+           
 CREATE TABLE sduma.dbo.PersonaMoral (
   id INT NOT NULL IDENTITY(1,1) ,
   rfc NVARCHAR(50) NOT NULL,
@@ -998,43 +1007,6 @@ CREATE TABLE sduma.dbo.DirectorResponsableObra (
     ON UPDATE NO ACTION
 );
 
-CREATE TABLE sduma.dbo.Expediente (
-  id INT NOT NULL IDENTITY(1,1),
-  idAnual INT NOT NULL,
-  anio INT NOT NULL,
-  fechaCreacion DATETIME NOT NULL,
-  fechaModificacion DATETIME NOT NULL,
-  estado INT NOT NULL DEFAULT 0,
-  id_SolicitudGenerica INT NOT NULL,
-  id_User_CreadoPor INT NOT NULL,
-  id_User_modificadoPor INT NOT NULL,
-  id_TipoTramite INT NOT NULL,
-  PRIMARY KEY (id),
-  INDEX fk_Expediente_PersonaSolicita_idx (id_SolicitudGenerica ASC)  ,
-  INDEX fk_Expediente_UserCreadoPor_idx (id_User_CreadoPor ASC)  ,
-  INDEX fk_Expediente_UserModificadoPor_idx (id_User_modificadoPor ASC)  ,
-  INDEX fk_Expediente_TipoTramite_idx (id_TipoTramite ASC)  ,
-  CONSTRAINT fk_Expediente_Solicitudgenerica
-    FOREIGN KEY (id_SolicitudGenerica)
-    REFERENCES sduma.dbo.SolicitudGenerica (id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT fk_Expediente_UserCreadoPor
-    FOREIGN KEY (id_User_CreadoPor)
-    REFERENCES sduma.dbo.[user] (id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT fk_Expediente_UserModifPor
-    FOREIGN KEY (id_User_modificadoPor)
-    REFERENCES sduma.dbo.[user] (id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT fk_Expediente_TipoTramite
-    FOREIGN KEY (id_TipoTramite)
-    REFERENCES sduma.dbo.[TipoTramite] (id)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION
-	);
 
 
 INSERT INTO [dbo].[DirectorResponsableObra] ([titulo] ,[abreviacion],[cedula] ,[isActivo] ,[id_Persona])
@@ -1223,6 +1195,43 @@ CREATE TABLE sduma.dbo.SolicitudGenerica(
 
 );
 
+CREATE TABLE sduma.dbo.Expediente (
+  id INT NOT NULL IDENTITY(1,1),
+  idAnual INT NOT NULL,
+  anio INT NOT NULL,
+  fechaCreacion DATETIME NOT NULL,
+  fechaModificacion DATETIME NOT NULL,
+  estado INT NOT NULL DEFAULT 0,
+  id_SolicitudGenerica INT NOT NULL,
+  id_User_CreadoPor INT NOT NULL,
+  id_User_modificadoPor INT NOT NULL,
+  id_TipoTramite INT NOT NULL,
+  PRIMARY KEY (id),
+  INDEX fk_Expediente_SolicitudGenerica_idx (id_SolicitudGenerica ASC)  ,
+  INDEX fk_Expediente_UserCreadoPor_idx (id_User_CreadoPor ASC)  ,
+  INDEX fk_Expediente_UserModificadoPor_idx (id_User_modificadoPor ASC)  ,
+  INDEX fk_Expediente_TipoTramite_idx (id_TipoTramite ASC)  ,
+  CONSTRAINT fk_Expediente_Solicitudgenerica
+    FOREIGN KEY (id_SolicitudGenerica)
+    REFERENCES sduma.dbo.SolicitudGenerica (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_Expediente_UserCreadoPor
+    FOREIGN KEY (id_User_CreadoPor)
+    REFERENCES sduma.dbo.[user] (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_Expediente_UserModifPor
+    FOREIGN KEY (id_User_modificadoPor)
+    REFERENCES sduma.dbo.[user] (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT fk_Expediente_TipoTramite
+    FOREIGN KEY (id_TipoTramite)
+    REFERENCES sduma.dbo.[TipoTramite] (id)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+	);
 /* 
 CREATE TABLE sduma.dbo.SolicitudConstruccion (
   id INT NOT NULL IDENTITY(1,1),
