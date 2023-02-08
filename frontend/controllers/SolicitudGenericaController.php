@@ -291,7 +291,7 @@ class SolicitudGenericaController extends Controller
 
 
         $solicitudAImprimir = SolicitudGenerica::findOne(["id"=>$id,]);
-        return $this->renderPartial ("_printsolicitud",
+        return $this->renderPartial("_printsolicitud",
             ["solicitudAImprimir"=>$solicitudAImprimir]
         );
     }
