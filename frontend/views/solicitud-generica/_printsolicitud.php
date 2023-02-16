@@ -251,12 +251,12 @@ $this->registerCss("
                 </div>
             </div>
 
-            <div class="container-xl outlined-box p-1 m-1 ">
+       <!--      <div class="container-xl outlined-box p-1 m-1 ">
                 <div class="row  ">
-                    <div class="col" ><b>Genero: </b>  <?= $solicitudAImprimir->generoConstruccion->nombre ?>   </div>  
-                    <div class="col" ><b>Sub-genero/clasificación: </b>  <?= $solicitudAImprimir->subGeneroConstruccion->nombre ?>   </div>  
+                    <div class="col" ><b>Genero: </b>   $solicitudAImprimir->generoConstruccion->nombre     </div>  
+                    <div class="col" ><b>Sub-genero/clasificación: </b>   $solicitudAImprimir->subGeneroConstruccion->nombre     </div>  
                 </div>
-            </div>
+            </div> -->
 
             <div class="container-xl outlined-box p-1 m-1 ">
                 <div class="row  ">

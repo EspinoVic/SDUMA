@@ -48,10 +48,10 @@ class SolicitudGenericaSearch extends SolicitudGenerica
         $user = $params["userModel"];
         if($user->id_UserLevel == User::USER_LEVEL_ADMIN){
             //TODOS
-        }
+        }else
         if($user->id_UserLevel == User::USER_LEVEL_INTERNO){
             //TODOS
-        }
+        }else
         if($user->id_UserLevel == User::USER_LEVEL_EXTERNO){
             //FILTRADO
             $query = $query->where(["id_User_CreadoPor"=>$user->id]);

@@ -17,8 +17,9 @@ use yii\bootstrap5\Html;
     ->label("Número de toma de agua")
     ?>
     <?= $form->field($modelSolicitudGenerica,"numeroReciboAgua",['options' => ['class' => 'col-md-3'],])
-    ->label("Número de recibo de agua (si entrega recibo)")
+    ->label("Número de recibo de agua")
     ?>
+    <!--  (si entrega recibo) -->
 
 <!-- SOLAMENTE SI ES EJIDAL, PODRÄ ELEJIR ENTRE CONTRATO O RECIBO -->
     <?= $form
@@ -28,8 +29,8 @@ use yii\bootstrap5\Html;
         
             ArrayHelper::merge(
                 
-                $modelSolicitudGenerica->id_SolicitudGenericaCuentaCon ==3?
-                    [ "0"=>"Contrato de agua",]: []
+                /* $modelSolicitudGenerica->id_SolicitudGenericaCuentaCon ==3?
+                    [ "0"=>"Contrato de agua",]: */ []
                     ,       
                 ["1" => "Recibo de agua"]
             )
@@ -42,8 +43,9 @@ use yii\bootstrap5\Html;
 
     ->textInput(["type"=>"date" /* ,"value"=>date("d/m/Y" ,  strtotime( $model->finActividad)) */  ])
 
-    ->label("Fecha pago de recibo o contrato de agua")
+    ->label("Fecha pago de recibo")
     ?>
+    <!--  o contrato de agua -->
 
 
 

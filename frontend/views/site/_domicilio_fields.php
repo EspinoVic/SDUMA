@@ -2,6 +2,7 @@
 /** @var common\models\Domicilio $domicilio */
 /** @var  $form */
 /** @var  $$tipoDomicilio */
+/** @var  $showCallesColindantes , */
 /* @var $id */
 use yii\bootstrap5\Html;
 ?>
@@ -20,13 +21,17 @@ use yii\bootstrap5\Html;
     
     <?= $form->field($domicilio, "[$id]cp",['options' => ['class' => 'col-md-3']])->textInput(['maxlength' => true]) ?>
     
-    <?= $form->field($domicilio, "[$id]calleNorte", ['options' => ['class' => 'col-md-6']])->textInput(['maxlength' => true]) ?>
+    <?php if($showCallesColindantes == true) {?>
     
-    <?= $form->field($domicilio, "[$id]calleSur", ['options' => ['class' => 'col-md-6']])->textInput(['maxlength' => true]) ?>
+        <?= $form->field($domicilio, "[$id]calleNorte", ['options' => ['class' => 'col-md-6']])->textInput(['maxlength' => true]) ?>
     
-    <?= $form->field($domicilio, "[$id]calleOriente", ['options' => ['class' => 'col-md-6']])->textInput(['maxlength' => true]) ?>
-    
-    <?= $form->field($domicilio, "[$id]callePoniente", ['options' => ['class' => 'col-md-6']])->textInput(['maxlength' => true]) ?>
+        <?= $form->field($domicilio, "[$id]calleSur", ['options' => ['class' => 'col-md-6']])->textInput(['maxlength' => true]) ?>
+        
+        <?= $form->field($domicilio, "[$id]calleOriente", ['options' => ['class' => 'col-md-6']])->textInput(['maxlength' => true]) ?>
+        
+        <?= $form->field($domicilio, "[$id]callePoniente", ['options' => ['class' => 'col-md-6']])->textInput(['maxlength' => true]) ?>
+        
+    <?php } ?>
     
     <?= $form 
         ->field( $domicilio, "[$id]id", ['options' => ['class' => 'col-md-1', 'display' => 'none'],] ) 

@@ -35,7 +35,7 @@ use Yii;
  * @property int|null $id_ConstanciaPosecionEjidal
  * @property int $id_TipoPredio
  * @property int $id_GeneroConstruccion
- * @property int $id_SubGeneroConstruccion
+ * @property int|null $id_SubGeneroConstruccion
  * @property int $id_DomicilioPredio
  * @property int $id_DirectorResponsableObra
  * @property int|null $id_Archivo_MemoriaCalculo
@@ -57,6 +57,7 @@ use Yii;
  * @property Domicilio2 $domicilioNotificaciones
  * @property Domicilio2 $domicilioPredio
  * @property Escritura $escritura
+ * @property Expediente[] $expedientes
  * @property GeneroConstruccion $generoConstruccion
  * @property DirectorResponsableObra $metrosLinealesDRO
  * @property MotivoConstruccion $motivoConstruccion
@@ -115,7 +116,7 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
             'id_MetrosLinealesDRO', 'id_AlturaDRO',           
             'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon',
             'id_TipoPredio', 
-            'id_GeneroConstruccion', 'id_SubGeneroConstruccion',
+            'id_GeneroConstruccion', /* 'id_SubGeneroConstruccion', */
             'id_DirectorResponsableObra', 
             'superficiePorConstruir', 'areaPreExistente', 'altura', 'metrosLineales',
             'tipoTomaAgua',
@@ -129,7 +130,7 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
             'id_MetrosLinealesDRO', 'id_AlturaDRO',           
             'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon',
             'id_TipoPredio', 
-            'id_GeneroConstruccion', 'id_SubGeneroConstruccion',
+            'id_GeneroConstruccion', /* 'id_SubGeneroConstruccion', */
             'id_DirectorResponsableObra', 
             'superficiePorConstruir', 'areaPreExistente', 'altura', 'metrosLineales',
             'tipoTomaAgua',
@@ -144,12 +145,11 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
     {
         return [
             [['statusSolicitud', 'isSolicitaPersonaFisica', 'superficieTotal', 'niveles', 'numeroTomaAgua', 'numeroReciboAgua', 'subeRecibo', 'numeroPredial', 'id_MetrosLinealesDRO', 'id_AlturaDRO', 'id_PersonaFisica', 'id_PersonaMoral', 'id_Contacto', 'id_DomicilioNotificaciones', 'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon', 'id_Escritura', 'id_ConstanciaEscritura', 'id_ConstanciaPosecionEjidal', 'id_TipoPredio', 'id_GeneroConstruccion', 'id_SubGeneroConstruccion', 'id_DomicilioPredio', 'id_DirectorResponsableObra', 'id_Archivo_MemoriaCalculo', 'id_Archivo_MecanicaSuelos', 'id_Archivo_LicenciaConstruccionAreaPreexistenteFile', 'id_User_CreadoPor', 'id_User_ModificadoPor'], 'integer'],
-            [['superficieTotal', 'numeroTomaAgua', 'fechaPagoAguaOContrato', 'id_Contacto', 'id_DomicilioNotificaciones', 'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon', 'id_TipoPredio', 'id_GeneroConstruccion', 'id_SubGeneroConstruccion', 'id_DomicilioPredio', 'id_DirectorResponsableObra', 'id_User_CreadoPor', 'id_User_ModificadoPor', 'fechaCreacion', 'fechaModificacion'], 'required'],
-            [["fechaPagoPredial","numeroPredial"],'required',"on"=>self::SCENARIO_CREATE_ESCRITURA_CONSTANCIA],
+            [['superficieTotal', 'numeroTomaAgua', 'fechaPagoAguaOContrato', 'id_Contacto', 'id_DomicilioNotificaciones', 'id_MotivoConstruccion', 'id_SolicitudGenericaCuentaCon', 'id_TipoPredio', 'id_GeneroConstruccion', 'id_DomicilioPredio', 'id_DirectorResponsableObra', 'id_User_CreadoPor', 'id_User_ModificadoPor', 'fechaCreacion', 'fechaModificacion'], 'required'],
             [['superficiePorConstruir', 'areaPreExistente', 'altura', 'metrosLineales'], 'number'],
             [['fechaPagoAguaOContrato', 'fechaPagoPredial', 'fechaCreacion', 'fechaModificacion'], 'safe'],
             [['tipoTomaAgua'], 'string', 'max' => 255],
-            [['id_DirectorResponsableObra'], 'exist', 'skipOnError' => true, 'targetClass' => DirectorResponsableObra::class, 'targetAttribute' => ['id_DirectorResponsableObra' => 'id']],
+            [['id_MetrosLinealesDRO'], 'exist', 'skipOnError' => true, 'targetClass' => DirectorResponsableObra::class, 'targetAttribute' => ['id_MetrosLinealesDRO' => 'id']],
             [['id_AlturaDRO'], 'exist', 'skipOnError' => true, 'targetClass' => DirectorResponsableObra::class, 'targetAttribute' => ['id_AlturaDRO' => 'id']],
             [['id_DirectorResponsableObra'], 'exist', 'skipOnError' => true, 'targetClass' => DirectorResponsableObra::class, 'targetAttribute' => ['id_DirectorResponsableObra' => 'id']],
             [['id_User_CreadoPor'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['id_User_CreadoPor' => 'id']],
@@ -221,7 +221,7 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
+        /**
      * Gets query for [[AlturaDRO]].
      *
      * @return \yii\db\ActiveQuery
@@ -230,8 +230,8 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
     {
         return $this->hasOne(DirectorResponsableObra::class, ['id' => 'id_AlturaDRO']);
     }
-    
-   /**
+
+    /**
      * Gets query for [[MetrosLinealesDRO]].
      *
      * @return \yii\db\ActiveQuery
@@ -352,6 +352,16 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Expedientes]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getExpedientes()
+    {
+        return $this->hasMany(Expediente::class, ['id_SolicitudGenerica' => 'id']);
+    }
+
+    /**
      * Gets query for [[GeneroConstruccion]].
      *
      * @return \yii\db\ActiveQuery
@@ -392,6 +402,16 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
     }
 
     /**
+     * Gets query for [[Personas]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPersonas()
+    {
+        return $this->hasMany(Persona::class, ['id' => 'id_Persona'])->viaTable('SolicitudGenerica_has_Persona', ['id_SolicitudGenerica' => 'id']);
+    }
+
+    /**
      * Gets query for [[SolicitudGenericaCuentaCon]].
      *
      * @return \yii\db\ActiveQuery
@@ -411,7 +431,7 @@ class SolicitudGenerica extends \yii\db\ActiveRecord
         return $this->hasMany(SolicitudGenerica_has_Documento::class, ['id_SolicitudGenerica' => 'id']);
     }
 
-   /**
+    /**
      * Gets query for [[SolicitudGenericaHasPersonas]].
      *
      * @return \yii\db\ActiveQuery

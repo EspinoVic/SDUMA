@@ -44,19 +44,20 @@ class ExpedienteSearch extends Expediente
     public function search($params)
     {
         $query = Expediente::find()
-            //->join("LEFT JOIN","Persona",'Expediente.id_Persona_Solicita = Persona.id') //ahora los datos del solicitante se obtienen por medio del relation
-           // ->select("Persona.*","Persona.*") //delegar           
+            ->join("LEFT JOIN","SolicitudGenerica",'Expediente.id_SolicitudGenerica = SolicitudGenerica.id') //ahora los datos del solicitante se obtienen por medio del relation
+            //->select("Persona.*"/* ,"Persona.*" */) //delegar           
            ;
         $user = $params["userModel"];
         if($user->id_UserLevel == User::USER_LEVEL_ADMIN){
             //TODOS
-        }
+        }else
         if($user->id_UserLevel == User::USER_LEVEL_INTERNO){
             //TODOS
-        }
+        }else
         if($user->id_UserLevel == User::USER_LEVEL_EXTERNO){
             //FILTRADO
-            $query = $query->where(["id_User_CreadoPor"=>$user->id]);
+            //$query = $query->where(["id_User_CreadoPor"=>$user->id]);
+            $query = $query->where(["SolicitudGenerica.id_User_CreadoPor"=>$user->id]);
         }
            
         

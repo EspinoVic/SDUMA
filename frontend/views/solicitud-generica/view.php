@@ -44,11 +44,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 <p class="col-5">
                     <?= Html::dropDownList("newState",$model->statusSolicitud,$availableStates,["class"=>"form-select "])  ?> 
                 </p>
-                <?php if( count( $availableStates) > 1 )  ?> <!-- Significa que la sesión es de un empleado, por tanto puede editar -->
-
-                <p class="col-3">
-                    <?= Html::submitButton("Cambiar estado de solicitud",["class"=>"btn btn-success "])  ?> 
-                </p>
+                <?php if( count( $availableStates) > 1 ) { ?> <!-- Significa que la sesión es de un empleado, por tanto puede editar -->
+                    <p class="col-3">
+                        <?= Html::submitButton("Cambiar estado de solicitud",["class"=>"btn btn-success "])  ?> 
+                    </p>
+                <?php } ?>
     
             </div>
         </div>
@@ -209,7 +209,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h5><b>Director Responsable de obra: </b><?= Html::encode($model->directorResponsableObra->abreviacion . " ". $model->directorResponsableObra->persona->nombre . " " .$model->directorResponsableObra->persona->apellidoP . " " .$model->directorResponsableObra->persona->apellidoM )  ?> </h5>            
     <br>
     <h5><b>Género de la construcción: </b><?= Html::encode($model->generoConstruccion->nombre )  ?> </h5>            
-    <h5><b>Sub Género de la construcción: </b><?= Html::encode($model->subGeneroConstruccion->nombre )  ?> </h5>            
+    <!-- <h5><b>Sub Género de la construcción: </b>  Html::encode($model->subGeneroConstruccion->nombre )    </h5>  -->           
         
     <?php if($model->id_GeneroConstruccion == GeneroConstruccion::findOne(["nombre"=>"Muros"])->id):  ?> 
         <!-- Motivo muros -->

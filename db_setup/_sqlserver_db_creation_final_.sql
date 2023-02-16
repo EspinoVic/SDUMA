@@ -686,7 +686,12 @@ CREATE TABLE sduma.dbo.Persona (
      VALUES
            ('Victor Alfonso'
            ,'Pérez'
-           ,'Espino');
+           ,'Espino')
+           ,
+            ('Ricardo'
+           ,'Martinez'
+           ,'Goméz')
+           ;
            
 CREATE TABLE sduma.dbo.PersonaMoral (
   id INT NOT NULL IDENTITY(1,1) ,
@@ -1060,7 +1065,7 @@ CREATE TABLE sduma.dbo.SolicitudGenerica(
   id_TipoPredio INT NOT NULL,
 
   id_GeneroConstruccion INT NOT NULL,
-  id_SubGeneroConstruccion INT NOT NULL,
+  id_SubGeneroConstruccion INT NULL,
 
 
   id_DomicilioPredio INT NOT NULL,

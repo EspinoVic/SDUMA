@@ -34,7 +34,7 @@ use yii\web\JsExpression;
 
 
 <?php $form = ActiveForm::begin( [        
-        'action' => [ 'site/segunda'],
+        'action' => ['site/segunda'],
 
         /*'id' => 'solicitudConstruccionForm',
         'method' => 'post',
@@ -107,7 +107,8 @@ use yii\web\JsExpression;
             'domicilio' => $domicilioNotif,
             'form' => $form,
             'id' => '0',//index del objeto domicilio
-            'tipoDomicilio'=> "Domicilio para notificaciones"
+            'tipoDomicilio'=> "Domicilio para notificaciones",
+            'showCallesColindantes' => false,
         ]) ?>  
 
   <br>
@@ -288,7 +289,7 @@ use yii\web\JsExpression;
         )
         ->label('Genero de Construcción') ?>
 
-    <?= $form
+    <!--  $form
         ->field($modelSolicitudGenerica, 'id_SubGeneroConstruccion', [
             'options' => ['class' => 'col-md-5'],
         ])
@@ -309,7 +310,7 @@ use yii\web\JsExpression;
                 )
             )
         )
-        ->label('Subgenero de Construcción') ?>
+        ->label('Subgenero de Construcción')  -->
 
 
       <?= $this->render("_niveles",["form"=>$form,"mecanicaSuelosFile"=>$mecanicaSuelosFile,"modelSolicitudGenerica"=>$modelSolicitudGenerica])  ?>
@@ -326,7 +327,8 @@ use yii\web\JsExpression;
       <?= $this->render('_domicilio_fields', [
             'domicilio' => $domicilioPredio,
             'form' => $form,'id' => '1',//index del objeto domicilio
-            'tipoDomicilio'=> "Domicilio de predio"
+            'tipoDomicilio'=> "Domicilio de predio",
+            'showCallesColindantes' => true,
         ]) ?>  
    
    <br>

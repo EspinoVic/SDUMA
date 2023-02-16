@@ -102,7 +102,23 @@ INSERT INTO [dbo].[user]
            ,'2022-11-08 11:23:41.947'
            ,'2022-11-08 11:23:41.947'
            ,'NmUSiARLUvE-raQgNIsvh61ibRfhtk_R_1667928221'
-		   );
+		   )
+           ,
+            (
+           'RicardoExtern'
+           ,'0N3Nd62-tMtHu65-8CmLk3lkVir9dXU0'
+           ,'$2y$13$M3M.jbiJn8wNmXiJc9PAYOLW9.tR93R2HqzCXrj9pmoIzjR6zRU3m'
+           ,NULL
+           ,'cortersys@gmail.com'
+           ,10
+           ,2
+           ,1
+           ,1
+           ,'2023-02-15 00:53:02.933000000'
+           ,'2023-02-15 00:53:02.933000000'
+           ,'TJAeV6EOGrzC3uORswsWFrV3-t40rQuJ_1676443975'
+           )
+           ;
 GO
 
   		
