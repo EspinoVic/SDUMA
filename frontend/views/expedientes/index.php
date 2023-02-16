@@ -167,7 +167,7 @@ $this->params['breadcrumbs'][] = $this->title;
                   'view' => true,
                   'update' => UtilVic::isEmployee(),
                   'delete' => UtilVic::isEmployee(),
-                  'print' =>true
+                  'print' =>  UtilVic::isEmployee()
               ]   
             ],
         ],
